@@ -407,7 +407,7 @@ function handleFiles(files) {
   arr.forEach(f => {
     const r = new FileReader();
     r.onload = e => {
-      pendingSlides.push({ name: f.name, dataUrl: e.target.result });
+      pendingSlides.push({ name: f.name, dataUrl: e.target.result, mime: f.type });
       if (++n === arr.length) renderPrev();
     };
     r.readAsDataURL(f);
@@ -452,7 +452,7 @@ function salvarPost() {
   posts.push({
     id: Date.now() + '_' + Math.random().toString(36).substr(2,4),
     cliente, data, horario, legenda,
-    slides: pendingSlides.map(s => ({ name: s.name, dataUrl: s.dataUrl })),
+    slides: pendingSlides.map(s => ({ name: s.name, dataUrl: s.dataUrl, mime: s.mime || 'image/png' })),
     done: false,
     at: new Date().toISOString()
   });
@@ -601,8 +601,8 @@ function downloadAll() {
     setTimeout(() => {
       const a = document.createElement('a');
       a.href = s.dataUrl;
-      // Preserve original extension from filename
-      const ext = s.name.split('.').pop().toLowerCase() || 'png';
+      const mime = s.mime || 'image/png';
+      const ext = mime === 'image/png' ? 'png' : mime === 'image/webp' ? 'webp' : 'jpg';
       a.download = `${name}_slide${i+1}.${ext}`;
       document.body.appendChild(a);
       a.click();
