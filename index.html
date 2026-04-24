@@ -449,9 +449,6 @@ function salvarPost() {
   if (!legenda)  { toast('A legenda não pode estar vazia'); return; }
   if (pendingSlides.length === 0) { toast('Adicione pelo menos 1 slide'); return; }
 
-  btn.disabled = true;
-  btn.textContent = 'Salvando...';
-
   posts.push({
     id: Date.now() + '_' + Math.random().toString(36).substr(2,4),
     cliente, data, horario, legenda,
@@ -463,14 +460,9 @@ function salvarPost() {
   toast('Post salvo!', true);
 
   document.getElementById('filterDate').value = data;
-
-  setTimeout(() => {
-    btn.disabled = false;
-    btn.textContent = 'Salvar post';
-    clearForm();
-    showView('postar', document.getElementById('nav-postar'));
-    document.getElementById('nav-novo').classList.remove('active');
-  }, 500);
+  clearForm();
+  showView('postar', document.getElementById('nav-postar'));
+  document.getElementById('nav-novo').classList.remove('active');
 }
 
 // DELETE
@@ -501,8 +493,10 @@ function toggleDone(id) {
   if (!p) return;
   p.done = !p.done;
   saveP();
-  renderPosts();
-  toast(p.done ? '✅ Marcado como postado!' : 'Desmarcado', p.done);
+  const msg = p.done ? '✅ Marcado como postado!' : 'Desmarcado';
+  const green = p.done;
+  // Force re-render
+  setTimeout(() => { renderPosts(); toast(msg, green); }, 50);
 }
 
 // RENDER POSTS
@@ -607,7 +601,9 @@ function downloadAll() {
     setTimeout(() => {
       const a = document.createElement('a');
       a.href = s.dataUrl;
-      a.download = `${name}_slide${i+1}.jpg`;
+      // Preserve original extension from filename
+      const ext = s.name.split('.').pop().toLowerCase() || 'png';
+      a.download = `${name}_slide${i+1}.${ext}`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
