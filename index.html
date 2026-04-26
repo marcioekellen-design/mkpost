@@ -315,28 +315,64 @@
 </div>
 
 <script>
-// STATE
+// ── SUPABASE ──
+const SUPA_URL = 'https://doscbiuefifcuztcgpgr.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvc2NiaXVlZmlmY3V6dGNncGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMTc1MjksImV4cCI6MjA4Nzc5MzUyOX0.w5SNjDS-9xaA7mhkt2bOm6fQ4l0TCIbBAWfxFT2kNYw';
+
+async function db(path, opts={}) {
+  const res = await fetch(SUPA_URL + '/rest/v1/' + path, {
+    ...opts,
+    headers: {
+      'apikey': SUPA_KEY,
+      'Authorization': 'Bearer ' + SUPA_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || 'return=representation',
+      ...(opts.headers||{})
+    }
+  });
+  const text = await res.text();
+  if (!res.ok) throw new Error(text);
+  return text ? JSON.parse(text) : null;
+}
+
+// ── STATE ──
 let clientes = [];
 let posts = [];
 let pendingSlides = [];
 let activePost = null;
 let deleteId = null;
 
-const DEFAULTS = ['Dra. Camila','Dra. Marina','Dra. Vanessa','Dra. Carol','Dra. Letícia','Dra. Tatiana','Dra. Dayane','Instituto Kav'];
-
-function load() {
+// ── LOAD ──
+async function load() {
+  showLoading(true);
   try {
-    const c = localStorage.getItem('mkpost_c');
-    const p = localStorage.getItem('mkpost_p');
-    clientes = c ? JSON.parse(c) : [...DEFAULTS];
-    posts = p ? JSON.parse(p) : [];
-  } catch(e) { clientes = [...DEFAULTS]; posts = []; }
+    const [c, p] = await Promise.all([
+      db('mkpost_clientes?select=*&order=ordem.asc'),
+      db('mkpost_posts?select=*&order=horario.asc')
+    ]);
+    clientes = (c||[]).map(x => ({ id: x.id, nome: x.nome }));
+    posts = (p||[]).map(x => ({
+      id: x.id,
+      cliente: x.cliente,
+      data: x.data,
+      horario: x.horario.substring(0,5),
+      legenda: x.legenda,
+      slides: x.slides || [],
+      done: x.done
+    }));
+  } catch(e) {
+    console.error(e);
+    toast('Erro ao conectar. Verifique sua conexão.');
+  }
+  showLoading(false);
 }
 
-function saveC() { localStorage.setItem('mkpost_c', JSON.stringify(clientes)); }
-function saveP() { localStorage.setItem('mkpost_p', JSON.stringify(posts)); }
+function showLoading(on) {
+  const list = document.getElementById('postsList');
+  if (on) list.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>Carregando...</p></div>';
+}
 
-// NAV
+// ── NAV ──
 function showView(v, btn) {
   document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
@@ -344,7 +380,7 @@ function showView(v, btn) {
   if (btn) btn.classList.add('active');
   if (v === 'novo') initNovoForm();
   if (v === 'clientes') renderClientes();
-  if (v === 'postar') renderPosts();
+  if (v === 'postar') { load().then(() => renderPosts()); }
 }
 
 function initNovoForm() {
@@ -355,45 +391,53 @@ function initNovoForm() {
   document.getElementById('novoHorario').value = '09:00';
 }
 
-// CLIENTES
+// ── CLIENTES ──
 function renderClientes() {
   const g = document.getElementById('clientsGrid');
   g.innerHTML = clientes.length === 0
     ? '<p style="font-size:14px;color:var(--text3)">Nenhum cliente cadastrado.</p>'
     : clientes.map((c,i) => `
         <div class="client-chip">
-          <span>${esc(c)}</span>
-          <button onclick="removeCliente(${i})" title="Remover">×</button>
+          <span>${esc(c.nome)}</span>
+          <button onclick="removeCliente('${c.id}','${esc(c.nome)}')" title="Remover">×</button>
         </div>`).join('');
 }
 
 function renderSelect() {
   document.getElementById('novoCliente').innerHTML =
-    clientes.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+    clientes.map(c => `<option value="${esc(c.nome)}">${esc(c.nome)}</option>`).join('');
 }
 
-function addCliente() {
+async function addCliente() {
   const input = document.getElementById('novoClienteNome');
   const nome = input.value.trim();
   if (!nome) { toast('Digite o nome do cliente'); return; }
-  if (clientes.includes(nome)) { toast('Cliente já cadastrado'); return; }
-  clientes.push(nome);
-  saveC();
-  renderClientes();
-  renderSelect();
-  input.value = '';
-  toast('Cliente adicionado!', true);
+  if (clientes.find(c => c.nome === nome)) { toast('Cliente já cadastrado'); return; }
+  try {
+    const res = await db('mkpost_clientes', {
+      method: 'POST',
+      body: JSON.stringify({ nome, ordem: clientes.length + 1 })
+    });
+    clientes.push({ id: res[0].id, nome: res[0].nome });
+    renderClientes();
+    renderSelect();
+    input.value = '';
+    toast('Cliente adicionado!', true);
+  } catch(e) { toast('Erro ao adicionar cliente'); }
 }
 
-function removeCliente(i) {
-  if (!confirm(`Remover "${clientes[i]}"?`)) return;
-  clientes.splice(i, 1);
-  saveC();
-  renderClientes();
-  renderSelect();
+async function removeCliente(id, nome) {
+  if (!confirm(`Remover "${nome}"?`)) return;
+  try {
+    await db('mkpost_clientes?id=eq.' + id, { method: 'DELETE', prefer: '' });
+    clientes = clientes.filter(c => c.id !== id);
+    renderClientes();
+    renderSelect();
+    toast('Cliente removido');
+  } catch(e) { toast('Erro ao remover cliente'); }
 }
 
-// UPLOAD
+// ── UPLOAD ──
 function setupDrop() {
   const z = document.getElementById('uploadZone');
   z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('drag-over'); });
@@ -433,15 +477,15 @@ function clearForm() {
   renderPrev();
 }
 
-// SAVE
-function salvarPost() {
+// ── SALVAR POST ──
+async function salvarPost() {
   const btn = document.getElementById('btnSalvar');
   if (btn.disabled) return;
 
-  const cliente  = document.getElementById('novoCliente').value;
-  const data     = document.getElementById('novaData').value;
-  const horario  = document.getElementById('novoHorario').value;
-  const legenda  = document.getElementById('novaLegenda').value.trim();
+  const cliente = document.getElementById('novoCliente').value;
+  const data    = document.getElementById('novaData').value;
+  const horario = document.getElementById('novoHorario').value;
+  const legenda = document.getElementById('novaLegenda').value.trim();
 
   if (!cliente)  { toast('Selecione um cliente'); return; }
   if (!data)     { toast('Selecione a data'); return; }
@@ -449,57 +493,78 @@ function salvarPost() {
   if (!legenda)  { toast('A legenda não pode estar vazia'); return; }
   if (pendingSlides.length === 0) { toast('Adicione pelo menos 1 slide'); return; }
 
-  posts.push({
-    id: Date.now() + '_' + Math.random().toString(36).substr(2,4),
-    cliente, data, horario, legenda,
-    slides: pendingSlides.map(s => ({ name: s.name, dataUrl: s.dataUrl, mime: s.mime || 'image/png' })),
-    done: false,
-    at: new Date().toISOString()
-  });
-  saveP();
-  toast('Post salvo!', true);
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
 
-  document.getElementById('filterDate').value = data;
-  clearForm();
-  showView('postar', document.getElementById('nav-postar'));
-  document.getElementById('nav-novo').classList.remove('active');
+  try {
+    const slides = pendingSlides.map(s => ({ name: s.name, dataUrl: s.dataUrl, mime: s.mime || 'image/png' }));
+    const res = await db('mkpost_posts', {
+      method: 'POST',
+      body: JSON.stringify({ cliente, data, horario, legenda, slides, done: false })
+    });
+    posts.push({
+      id: res[0].id,
+      cliente, data,
+      horario: res[0].horario.substring(0,5),
+      legenda, slides, done: false
+    });
+    toast('Post salvo!', true);
+    document.getElementById('filterDate').value = data;
+    clearForm();
+    showView('postar', document.getElementById('nav-postar'));
+    document.getElementById('nav-novo').classList.remove('active');
+    renderPosts();
+  } catch(e) {
+    console.error(e);
+    toast('Erro ao salvar post');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Salvar post';
 }
 
-// DELETE
+// ── DELETE ──
 function deletePost(id) {
   deleteId = id;
   document.getElementById('modalDelete').classList.add('open');
 }
 
-function confirmDelete() {
+async function confirmDelete() {
   if (!deleteId) return;
   const btn = document.getElementById('btnConfirmDelete');
   btn.disabled = true;
   btn.textContent = 'Excluindo...';
-  posts = posts.filter(p => p.id !== deleteId);
-  saveP();
-  deleteId = null;
-  setTimeout(() => {
-    btn.disabled = false;
-    btn.textContent = 'Excluir';
+  try {
+    await db('mkpost_posts?id=eq.' + deleteId, { method: 'DELETE', prefer: '' });
+    posts = posts.filter(p => p.id !== deleteId);
+    deleteId = null;
     closeModal('modalDelete');
     renderPosts();
     toast('Post excluído');
-  }, 300);
+  } catch(e) {
+    toast('Erro ao excluir');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Excluir';
 }
 
-function toggleDone(id) {
+// ── TOGGLE DONE ──
+async function toggleDone(id) {
   const p = posts.find(x => x.id === id);
   if (!p) return;
-  p.done = !p.done;
-  saveP();
-  const msg = p.done ? '✅ Marcado como postado!' : 'Desmarcado';
-  const green = p.done;
-  // Force re-render
-  setTimeout(() => { renderPosts(); toast(msg, green); }, 50);
+  const newDone = !p.done;
+  try {
+    await db('mkpost_posts?id=eq.' + id, {
+      method: 'PATCH',
+      body: JSON.stringify({ done: newDone })
+    });
+    p.done = newDone;
+    renderPosts();
+    toast(newDone ? '✅ Marcado como postado!' : 'Desmarcado', newDone);
+  } catch(e) { toast('Erro ao atualizar'); }
 }
 
-// RENDER POSTS
+// ── RENDER POSTS ──
 function renderPosts() {
   const date = document.getElementById('filterDate').value;
   const list = document.getElementById('postsList');
@@ -520,7 +585,6 @@ function renderPosts() {
   const doneL   = day.filter(p => p.done);
 
   let html = `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>`;
-
   if (pending.length) {
     html += `<div class="section-label">Pendentes <span class="badge badge-orange">${pending.length}</span></div>`;
     html += `<div class="posts-list" style="margin-bottom:24px;">${pending.map(cardHtml).join('')}</div>`;
@@ -554,7 +618,7 @@ function cardHtml(p) {
     </div>`;
 }
 
-// MODAIS
+// ── MODAIS ──
 function openLeg(id) {
   const p = posts.find(x => x.id === id);
   if (!p) return;
@@ -617,7 +681,7 @@ function closeModal(id) {
   if (id === 'modalDelete') deleteId = null;
 }
 
-// TOAST
+// ── TOAST ──
 let tTimer;
 function toast(msg, green=false) {
   const el = document.getElementById('toast');
@@ -632,15 +696,13 @@ function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// INIT
-load();
+// ── INIT ──
 const today = new Date().toISOString().split('T')[0];
 document.getElementById('filterDate').value = today;
 document.getElementById('novaData').value   = today;
 document.getElementById('novoHorario').value = '09:00';
-renderSelect();
-renderPosts();
 setupDrop();
+load().then(() => { renderSelect(); renderPosts(); });
 </script>
 </body>
 </html>
