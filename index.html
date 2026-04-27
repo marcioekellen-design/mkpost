@@ -587,14 +587,21 @@ function switchTab(tab, btn) {
 // PORTAL CLIENTE
 // ══════════════════════════════════════
 function loadClientePortal() {
-  // move cliente-view para fora do app-body
+  // Esconde topbar agência, mostra topbar cliente
   document.getElementById('main-topbar').style.display = 'none';
   document.getElementById('cliente-topbar').style.display = 'flex';
-  document.getElementById('app').style.display = 'flex';
-  const cv = document.getElementById('cliente-view');
-  document.getElementById('app').appendChild(cv);
+  // Mostra o app container
+  const app = document.getElementById('app');
+  app.style.display = 'flex';
+  // Esconde app-body (trello/clientes)
   document.getElementById('app-body').style.display = 'none';
-  cv.style.cssText = 'display:flex;flex-direction:column;flex:1;overflow:hidden;';
+  // Move e mostra cliente-view
+  const cv = document.getElementById('cliente-view');
+  app.appendChild(cv);
+  cv.style.display = 'flex';
+  cv.style.flexDirection = 'column';
+  cv.style.flex = '1';
+  cv.style.overflow = 'hidden';
 
   document.getElementById('cliente-avatar').textContent = currentUser.initials;
   document.getElementById('cliente-avatar').style.background = currentUser.color + '33';
@@ -638,7 +645,7 @@ function loadClientePortal() {
     `).join('');
   }
 
-  document.getElementById('cliente-view').classList.add('active');
+  // cv already visible via inline style
 }
 
 let ajusteCardId = null;
