@@ -345,7 +345,7 @@ body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text);
             <div id="trl-name" style="font-family:'Instrument Serif',serif;font-size:18px;">Dra. Tatiana</div>
             <div id="trl-meta" style="font-size:11px;color:var(--text-2);margin-top:1px;">Harmonização Facial</div>
           </div>
-          <button class="btn btn-ghost" onclick="showNotif('🔗 Link copiado!')">🔗 Compartilhar quadro</button>
+          
           <button class="btn btn-gold" onclick="openNewCard()">+ Novo Card</button>
         </div>
         <div class="trl-months" id="trl-month-tabs"></div>
@@ -616,12 +616,17 @@ function loadClientePortal() {
 
   // Header
   const header = document.createElement('div');
-  header.style.cssText = 'background:var(--surface);border-bottom:1px solid var(--border);padding:20px 28px;display:flex;align-items:center;gap:14px;flex-shrink:0;';
+  header.style.cssText = 'background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;';
   header.innerHTML = `
-    <div style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;background:${currentUser.color}33;color:${currentUser.color};">${currentUser.initials}</div>
-    <div>
-      <div style="font-family:'Instrument Serif',serif;font-size:20px;color:var(--text);">Olá, ${currentUser.name}!</div>
-      <div style="font-size:12px;color:var(--text-2);">Posts aguardando sua aprovação</div>
+    <div style="display:flex;align-items:center;gap:14px;padding:16px 28px 12px;">
+      <div style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;background:${currentUser.color}33;color:${currentUser.color};">${currentUser.initials}</div>
+      <div>
+        <div style="font-family:'Instrument Serif',serif;font-size:20px;color:var(--text);">Olá, ${currentUser.name}!</div>
+        <div style="font-size:12px;color:var(--text-2);">Seus posts para aprovação</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:4px;overflow-x:auto;padding:0 28px;">
+      ${trlMonths.map(m => `<button onclick="loadClientePortal('${m}')" style="padding:7px 14px;border-radius:7px 7px 0 0;font-size:12px;font-weight:600;color:${m===portalMes?'var(--gold)':'var(--text-3)'};cursor:pointer;border:none;background:${m===portalMes?'var(--gold-dim)':'transparent'};border-bottom:2px solid ${m===portalMes?'var(--gold)':'transparent'};transition:all 0.12s;font-family:'Outfit',sans-serif;white-space:nowrap;">${m}</button>`).join('')}
     </div>
   `;
   portal.appendChild(header);
@@ -634,23 +639,35 @@ function loadClientePortal() {
     area.innerHTML = '<div style="text-align:center;padding:80px 20px;color:var(--text-3);font-size:15px;">📭 Nenhum post para revisar no momento</div>';
   } else {
     cards.forEach(card => {
+      const ajuste = card.ajustePendente;
+      const badgeBg = card.approved ? 'var(--green-dim)' : ajuste ? 'var(--red-dim)' : 'var(--gold-dim)';
+      const badgeColor = card.approved ? 'var(--green)' : ajuste ? 'var(--red)' : 'var(--gold)';
+      const badgeText = card.approved ? '✅ Aprovado' : ajuste ? '⚠️ Aguardando ajuste' : '⏳ Aguardando aprovação';
+
+      // Pega último pedido de ajuste se existir
+      const lastAjuste = (card.comentarios||[]).filter(c => c.texto.startsWith('✏️ Pedido de ajuste:')).pop();
+
       const div = document.createElement('div');
       div.style.cssText = 'background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:20px;';
       div.innerHTML = `
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
           <div style="font-size:24px;">${card.emoji||'📝'}</div>
           <div style="font-size:15px;font-weight:700;color:var(--text);flex:1;">${card.title}</div>
-          <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:${card.approved?'var(--green-dim)':'var(--gold-dim)'};color:${card.approved?'var(--green)':'var(--gold)'};">${card.approved?'✅ Aprovado':'⏳ Aguardando aprovação'}</span>
+          <span id="badge-${card.id}" style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:${badgeBg};color:${badgeColor};">${badgeText}</span>
         </div>
         ${card.slides&&card.slides.length>0?`<div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;">${card.slides.map(s=>`<img src="${s.dataUrl}" style="width:90px;height:90px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);">`).join('')}</div>`:''}
         ${card.copy?`<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3);margin-bottom:6px;">📝 Legenda</div><div style="font-size:13px;color:var(--text-2);line-height:1.6;white-space:pre-wrap;margin-bottom:12px;">${card.copy}</div>`:''}
         ${card.music?`<div style="font-size:12px;color:var(--text-3);margin-bottom:8px;">🎵 <strong style="color:var(--text-2);">Música:</strong> ${card.music}</div>`:''}
         ${card.hashtags?`<div style="font-size:12px;color:var(--text-3);margin-bottom:14px;">#️⃣ ${card.hashtags}</div>`:''}
+        ${lastAjuste?`<div style="margin-bottom:12px;padding:10px 14px;background:var(--red-dim);border-radius:8px;border:1px solid rgba(255,107,107,0.3);font-size:12px;color:var(--red);">✏️ <strong>Último ajuste solicitado:</strong> ${lastAjuste.texto.replace('✏️ Pedido de ajuste: ','')}</div>`:''}
+        <div id="coment-${card.id}"></div>
         <div style="display:flex;gap:8px;padding-top:14px;border-top:1px solid var(--border);">
-          ${!card.approved
-            ? `<button onclick="clienteAprovar('${cid}','${card.id}',this)" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(62,207,142,0.3);background:var(--green-dim);color:var(--green);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✅ Aprovar</button>
-               <button onclick="clientePedirAjuste('${card.id}')" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(255,107,107,0.3);background:var(--red-dim);color:var(--red);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✏️ Pedir ajuste</button>`
-            : `<span style="font-size:13px;color:var(--green);">✅ Você aprovou este post</span>`
+          ${card.approved
+            ? `<span style="font-size:13px;color:var(--green);">✅ Você aprovou este post</span>`
+            : ajuste
+              ? `<span style="font-size:13px;color:var(--red);">⚠️ Ajuste em andamento — a equipe está trabalhando nisso</span>`
+              : `<button onclick="clienteAprovar('${cid}','${card.id}',this)" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(62,207,142,0.3);background:var(--green-dim);color:var(--green);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✅ Aprovar</button>
+                 <button onclick="clientePedirAjuste('${card.id}')" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(255,107,107,0.3);background:var(--red-dim);color:var(--red);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✏️ Pedir ajuste</button>`
           }
         </div>
       `;
@@ -676,25 +693,46 @@ function enviarAjuste() {
   const card = Object.values(trlBoardData[cid]).flat().find(c => c.id === ajusteCardId);
   if (card) {
     card.comments = (card.comments || 0) + 1;
-    card.tags = card.tags || [];
-    card.tags.push({ l: 'Ajuste solicitado', c: '#ff6b6b' });
-    if (!card.comentarios) card.comentarios = [];
-    card.comentarios.push({ autor: currentUser.name, role: 'Cliente', texto, time: new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }) });
+    card.ajustePendente = true;
     card.approved = false;
+    // Limpa tags de aprovado e adiciona ajuste
+    card.tags = (card.tags||[]).filter(t => t.l !== 'Aprovado' && t.l !== 'Ajuste solicitado');
+    card.tags.push({ l: '⚠️ Ajuste solicitado', c: '#ff6b6b' });
+    if (!card.comentarios) card.comentarios = [];
+    const time = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    card.comentarios.push({ autor: currentUser.name, role: 'Cliente', texto: '✏️ Pedido de ajuste: ' + texto, time });
+    // Atualiza badge do card no portal sem recarregar tudo
+    const badge = document.getElementById('badge-' + ajusteCardId);
+    if (badge) {
+      badge.style.background = 'var(--red-dim)';
+      badge.style.color = 'var(--red)';
+      badge.textContent = '⚠️ Aguardando ajuste';
+    }
+    // Mostra comentário enviado abaixo do card
+    const comentDiv = document.getElementById('coment-' + ajusteCardId);
+    if (comentDiv) {
+      comentDiv.innerHTML = `<div style="margin-top:10px;padding:10px 14px;background:var(--red-dim);border-radius:8px;border:1px solid rgba(255,107,107,0.3);font-size:12px;color:var(--red);">✏️ <strong>Ajuste enviado:</strong> ${texto}</div>`;
+    }
+    // Atualiza kanban
+    trlRenderBoard();
   }
   closeModal('modal-ajuste');
-  showNotif('✉️ Ajuste enviado para a equipe!');
-  setTimeout(() => loadClientePortal(), 300);
+  showNotif('✉️ Ajuste enviado! Equipe notificada.');
 }
 
 function clienteAprovar(cid, cardId, btn) {
   const card = Object.values(trlBoardData[cid]).flat().find(c => c.id === cardId);
   if (card) {
     card.approved = true;
-    card.tags = (card.tags || []).filter(t => t.l !== 'Ajuste solicitado');
+    card.ajustePendente = false;
+    card.tags = (card.tags || []).filter(t => t.l !== 'Ajuste solicitado' && t.l !== '⚠️ Ajuste solicitado' && t.l !== 'Aprovação');
     card.tags.push({ l: 'Aprovado', c: '#3ecf8e' });
     if (!card.comentarios) card.comentarios = [];
     card.comentarios.push({ autor: currentUser.name, role: 'Cliente', texto: '✅ Aprovado pela clínica!', time: new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }) });
+    // Atualiza badge imediatamente
+    const badge = document.getElementById('badge-' + cardId);
+    if (badge) { badge.style.background = 'var(--green-dim)'; badge.style.color = 'var(--green)'; badge.textContent = '✅ Aprovado'; }
+    if (btn) { btn.parentElement.innerHTML = '<span style="font-size:13px;color:var(--green);">✅ Você aprovou este post</span>'; }
     // Move para clinica se estava lá, mantém em postar se já estava
     const col = Object.keys(trlBoardData[cid]).find(col => trlBoardData[cid][col].find(c => c.id === cardId));
     if (col === 'clinica') {
@@ -702,8 +740,8 @@ function clienteAprovar(cid, cardId, btn) {
       trlBoardData[cid]['postar'].push(card);
     }
   }
+  trlRenderBoard();
   showNotif('✅ Post aprovado! A equipe foi notificada.');
-  setTimeout(() => loadClientePortal(), 300);
 }
 
 // ══════════════════════════════════════
@@ -844,7 +882,7 @@ function trlRenderBoard() {
           : cards.map(card => cardMiniHtml(card, col, cfg)).join('')
         }
       </div>
-      <button onclick="openNewCard()" style="margin:0 8px 8px;padding:7px 10px;border-radius:7px;border:1px dashed var(--border2);background:transparent;color:var(--text-3);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:5px;">+ Adicionar card</button>
+      ${col === 'design' ? '<button onclick="openNewCard()" style="margin:0 8px 8px;padding:7px 10px;border-radius:7px;border:1px dashed var(--border2);background:transparent;color:var(--text-3);font-family:Outfit,sans-serif;font-size:12px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:5px;">+ Adicionar card</button>' : ''}
     </div>`;
   }).join('');
 }
