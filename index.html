@@ -443,10 +443,20 @@ body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text);
         <input class="field-input" id="nc-hashtags" placeholder="#skincare #harmonizacao #beleza">
       </div>
       <div class="field-group">
-        <div class="field-label">🖼️ Slides do carrossel</div>
+        <div class="field-label">🖼️ Capa do carrossel (thumbnail)</div>
+        <div class="upload-zone" onclick="document.getElementById('nc-capa-input').click()" id="nc-capa-zone" style="padding:16px;">
+          <div style="font-size:20px;margin-bottom:4px;">🖼️</div>
+          <div style="font-size:12px;font-weight:500;">Clique para adicionar a capa</div>
+          <div style="font-size:10px;color:var(--text-3);margin-top:2px;">Imagem thumbnail que identifica o carrossel</div>
+        </div>
+        <input type="file" id="nc-capa-input" accept="image/*" style="display:none" onchange="handleNewCardCapa(this.files)">
+        <div id="nc-capa-preview"></div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">🗂️ Slides do carrossel</div>
         <div class="upload-zone" onclick="document.getElementById('nc-files').click()">
-          <div style="font-size:24px;margin-bottom:6px;">🖼️</div>
-          <div style="font-size:13px;font-weight:500;">Clique para adicionar imagens</div>
+          <div style="font-size:24px;margin-bottom:6px;">🗂️</div>
+          <div style="font-size:13px;font-weight:500;">Clique para adicionar os slides</div>
           <div style="font-size:11px;color:var(--text-3);margin-top:3px;">A ordem de upload será a ordem dos slides</div>
         </div>
         <input type="file" id="nc-files" multiple accept="image/*" style="display:none" onchange="handleNewCardFiles(this.files)">
@@ -479,6 +489,24 @@ body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text);
       <button class="btn btn-ghost" onclick="closeModal('modal-ajuste')">Cancelar</button>
       <div style="margin-left:auto;">
         <button class="btn btn-red" onclick="enviarAjuste()">Enviar pedido de ajuste</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ MODAL: PERFIL CLÍNICA ══ -->
+<div class="modal-overlay" id="modal-perfil" onclick="if(event.target===this)closeModal('modal-perfil')">
+  <div class="modal" style="max-width:680px;">
+    <div class="modal-header">
+      <div class="modal-title" id="perfil-modal-title">Perfil da Clínica</div>
+      <button class="modal-close" onclick="closeModal('modal-perfil')">×</button>
+    </div>
+    <div class="modal-body" id="perfil-modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-perfil')">Fechar</button>
+      <div style="margin-left:auto;">
+        <button class="btn btn-gold" onclick="salvarPerfil()">💾 Salvar alterações</button>
       </div>
     </div>
   </div>
@@ -692,57 +720,58 @@ function enviarAjuste() {
   const cid = currentUser.clientId;
   const card = Object.values(trlBoardData[cid]).flat().find(c => c.id === ajusteCardId);
   if (card) {
-    card.comments = (card.comments || 0) + 1;
     card.ajustePendente = true;
     card.approved = false;
-    // Limpa tags de aprovado e adiciona ajuste
-    card.tags = (card.tags||[]).filter(t => t.l !== 'Aprovado' && t.l !== 'Ajuste solicitado');
+    card.comments = (card.comments||0) + 1;
+    card.tags = (card.tags||[]).filter(t => !t.l.includes('Aprovado') && !t.l.includes('Ajuste'));
     card.tags.push({ l: '⚠️ Ajuste solicitado', c: '#ff6b6b' });
     if (!card.comentarios) card.comentarios = [];
-    const time = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    const time = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
     card.comentarios.push({ autor: currentUser.name, role: 'Cliente', texto: '✏️ Pedido de ajuste: ' + texto, time });
-    // Atualiza badge do card no portal sem recarregar tudo
+    // Atualiza badge no portal
     const badge = document.getElementById('badge-' + ajusteCardId);
-    if (badge) {
-      badge.style.background = 'var(--red-dim)';
-      badge.style.color = 'var(--red)';
-      badge.textContent = '⚠️ Aguardando ajuste';
-    }
-    // Mostra comentário enviado abaixo do card
+    if (badge) { badge.style.background='var(--red-dim)'; badge.style.color='var(--red)'; badge.textContent='⚠️ Aguardando ajuste'; }
+    // Atualiza botões no portal
+    const actions = document.getElementById('actions-' + ajusteCardId);
+    if (actions) actions.innerHTML = '<span style="font-size:13px;color:var(--red);">⚠️ Ajuste enviado — a equipe está trabalhando nisso</span>';
+    // Mostra resumo do ajuste
     const comentDiv = document.getElementById('coment-' + ajusteCardId);
-    if (comentDiv) {
-      comentDiv.innerHTML = `<div style="margin-top:10px;padding:10px 14px;background:var(--red-dim);border-radius:8px;border:1px solid rgba(255,107,107,0.3);font-size:12px;color:var(--red);">✏️ <strong>Ajuste enviado:</strong> ${texto}</div>`;
-    }
-    // Atualiza kanban
+    if (comentDiv) comentDiv.innerHTML = '<div style="margin-bottom:12px;padding:10px 14px;background:var(--red-dim);border-radius:8px;border:1px solid rgba(255,107,107,0.3);font-size:12px;color:var(--red);">✏️ <strong>Ajuste enviado:</strong> ' + texto + '</div>';
+    // Atualiza kanban da agência
     trlRenderBoard();
   }
   closeModal('modal-ajuste');
   showNotif('✉️ Ajuste enviado! Equipe notificada.');
 }
 
+
 function clienteAprovar(cid, cardId, btn) {
   const card = Object.values(trlBoardData[cid]).flat().find(c => c.id === cardId);
-  if (card) {
-    card.approved = true;
-    card.ajustePendente = false;
-    card.tags = (card.tags || []).filter(t => t.l !== 'Ajuste solicitado' && t.l !== '⚠️ Ajuste solicitado' && t.l !== 'Aprovação');
-    card.tags.push({ l: 'Aprovado', c: '#3ecf8e' });
-    if (!card.comentarios) card.comentarios = [];
-    card.comentarios.push({ autor: currentUser.name, role: 'Cliente', texto: '✅ Aprovado pela clínica!', time: new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }) });
-    // Atualiza badge imediatamente
-    const badge = document.getElementById('badge-' + cardId);
-    if (badge) { badge.style.background = 'var(--green-dim)'; badge.style.color = 'var(--green)'; badge.textContent = '✅ Aprovado'; }
-    if (btn) { btn.parentElement.innerHTML = '<span style="font-size:13px;color:var(--green);">✅ Você aprovou este post</span>'; }
-    // Move para clinica se estava lá, mantém em postar se já estava
-    const col = Object.keys(trlBoardData[cid]).find(col => trlBoardData[cid][col].find(c => c.id === cardId));
-    if (col === 'clinica') {
-      trlBoardData[cid]['clinica'] = trlBoardData[cid]['clinica'].filter(c => c.id !== cardId);
-      trlBoardData[cid]['postar'].push(card);
-    }
+  if (!card) return;
+  card.approved = true;
+  card.ajustePendente = false;
+  card.tags = (card.tags||[]).filter(t => !t.l.includes('Ajuste') && !t.l.includes('Aprovação'));
+  card.tags.push({ l: 'Aprovado', c: '#3ecf8e' });
+  if (!card.comentarios) card.comentarios = [];
+  const time = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+  card.comentarios.push({ autor: currentUser.name, role: 'Cliente', texto: '✅ Aprovado pela clínica!', time });
+  // Move para postar se estava em clinica
+  const col = Object.keys(trlBoardData[cid]).find(c => trlBoardData[cid][c].find(x => x.id === cardId));
+  if (col === 'clinica') {
+    trlBoardData[cid]['clinica'] = trlBoardData[cid]['clinica'].filter(c => c.id !== cardId);
+    trlBoardData[cid]['postar'].push(card);
   }
+  // Atualiza badge no portal
+  const badge = document.getElementById('badge-' + cardId);
+  if (badge) { badge.style.background='var(--green-dim)'; badge.style.color='var(--green)'; badge.textContent='✅ Aprovado'; }
+  // Atualiza botões
+  const actions = document.getElementById('actions-' + cardId);
+  if (actions) actions.innerHTML = '<span style="font-size:13px;color:var(--green);">✅ Você aprovou este post</span>';
+  // Atualiza kanban
   trlRenderBoard();
   showNotif('✅ Post aprovado! A equipe foi notificada.');
 }
+
 
 // ══════════════════════════════════════
 // TRELLO DATA
@@ -757,6 +786,18 @@ const trlClients = [
   { id:'vanessa', name:'Dra. Vanessa',  initials:'DV', bg:'#d4a84322', color:'#d4a843', meta:'Cirurgias Estéticas da Face' },
   { id:'kav',     name:'Instituto Kav', initials:'KV', bg:'#a78bfa22', color:'#a78bfa', meta:'Mentorias · BH' },
 ];
+
+// Perfis completos das clínicas (editável pela agência)
+const clinicaProfiles = {
+  tatiana: { nome:'Dra. Tatiana Lorenzi Finamor', especialidade:'Harmonização Facial · Rejuvenescimento · Bioestimuladores', cidade:'Joinville, SC', instagram:'@dra.tatianafinamor', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  camila:  { nome:'Dra. Camila Daher', especialidade:'Harmonização Facial · Laser CO2', cidade:'Joinville, SC', instagram:'@camiladaher', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  leticia: { nome:'Dra. Letícia Fridel', especialidade:'Harmonização Full Face', cidade:'', instagram:'@dra.leticiafridel', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  dayane:  { nome:'Dra. Dayane Falcomer', especialidade:'Harmonização Facial · HERUS', cidade:'', instagram:'@dradayanefalcomer', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  marina:  { nome:'Dra. Marina Flores', especialidade:'Ultrassom · HIPRO', cidade:'', instagram:'@dra.marinaflores', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  carol:   { nome:'Dra. Carolina Paulino', especialidade:'Cirurgias Estéticas · BH', cidade:'Belo Horizonte, MG', instagram:'@dra.carolinapaulino', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  vanessa: { nome:'Dra. Vanessa Pacífico', especialidade:'Cirurgias Estéticas da Face', cidade:'', instagram:'@dra.vanessapacifico', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  kav:     { nome:'Instituto Kav', especialidade:'Mentorias para Médicos', cidade:'Belo Horizonte, MG', instagram:'@institutokav', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+};
 
 const trlMonths = ['Janeiro 2026','Fevereiro 2026','Março 2026','Abril 2026','Maio 2026','Junho 2026'];
 let trlMonth = 'Maio 2026';
@@ -858,33 +899,37 @@ function trlRenderBoard() {
   const board = document.getElementById('trl-board');
   if (!board) return;
   const data = trlBoardData[trlActive] || { design:[], admin:[], clinica:[], postar:[] };
-
-  board.innerHTML = Object.entries(trlColConfig).map(([col, cfg]) => {
+  let html = '';
+  Object.entries(trlColConfig).forEach(([col, cfg]) => {
     const cards = data[col] || [];
     const isDark = currentTheme === 'dark';
     const colBg = isDark
-      ? col==='design'?'#0d1520':col==='admin'?'#141008':col==='clinica'?'#120f1e':'#0b160f'
+      ? (col==='design'?'#0d1520':col==='admin'?'#141008':col==='clinica'?'#120f1e':'#0b160f')
       : 'var(--surface)';
     const colBorder = isDark
-      ? col==='design'?'rgba(74,158,255,0.2)':col==='admin'?'rgba(212,168,67,0.2)':col==='clinica'?'rgba(167,139,250,0.2)':'rgba(62,207,142,0.2)'
+      ? (col==='design'?'rgba(74,158,255,0.2)':col==='admin'?'rgba(212,168,67,0.2)':col==='clinica'?'rgba(167,139,250,0.2)':'rgba(62,207,142,0.2)')
       : 'var(--border2)';
-
-    return `<div style="width:265px;flex-shrink:0;border-radius:12px;display:flex;flex-direction:column;max-height:100%;overflow:hidden;border:1px solid ${colBorder};background:${colBg};">
-      <div style="padding:10px 12px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border);flex-shrink:0;">
-        <div style="width:9px;height:9px;border-radius:50%;background:${cfg.color};flex-shrink:0;"></div>
-        <div style="font-size:12px;font-weight:700;color:${cfg.color};flex:1;">${cfg.label}</div>
-        <div style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--surface3);color:var(--text-3);">${cards.length}</div>
-      </div>
-      <div style="font-size:10px;color:var(--text-3);padding:5px 12px 7px;border-bottom:1px solid var(--border);flex-shrink:0;line-height:1.4;">${cfg.info}</div>
-      <div style="flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:7px;">
-        ${cards.length === 0
-          ? `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 10px;gap:6px;text-align:center;"><div style="font-size:24px;opacity:0.2;">📭</div><div style="font-size:11px;color:var(--text-3);">Nenhum card</div></div>`
-          : cards.map(card => cardMiniHtml(card, col, cfg)).join('')
-        }
-      </div>
-      ${col === 'design' ? '<button onclick="openNewCard()" style="margin:0 8px 8px;padding:7px 10px;border-radius:7px;border:1px dashed var(--border2);background:transparent;color:var(--text-3);font-family:Outfit,sans-serif;font-size:12px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:5px;">+ Adicionar card</button>' : ''}
-    </div>`;
-  }).join('');
+    let cardsHtml = '';
+    if (cards.length === 0) {
+      cardsHtml = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 10px;gap:6px;text-align:center;"><div style="font-size:24px;opacity:0.2;">📭</div><div style="font-size:11px;color:var(--text-3);">Nenhum card</div></div>';
+    } else {
+      cards.forEach(card => { cardsHtml += cardMiniHtml(card, col, cfg); });
+    }
+    const addBtn = col === 'design'
+      ? '<button onclick="openNewCard()" style="margin:0 8px 8px;padding:7px 10px;border-radius:7px;border:1px dashed var(--border2);background:transparent;color:var(--text-3);font-family:Outfit,sans-serif;font-size:12px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:5px;">+ Adicionar card</button>'
+      : '';
+    html += '<div style="width:265px;flex-shrink:0;border-radius:12px;display:flex;flex-direction:column;max-height:100%;overflow:hidden;border:1px solid ' + colBorder + ';background:' + colBg + ';">'
+      + '<div style="padding:10px 12px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border);flex-shrink:0;">'
+      + '<div style="width:9px;height:9px;border-radius:50%;background:' + cfg.color + ';flex-shrink:0;"></div>'
+      + '<div style="font-size:12px;font-weight:700;color:' + cfg.color + ';flex:1;">' + cfg.label + '</div>'
+      + '<div style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--surface3);color:var(--text-3);">' + cards.length + '</div>'
+      + '</div>'
+      + '<div style="font-size:10px;color:var(--text-3);padding:5px 12px 7px;border-bottom:1px solid var(--border);flex-shrink:0;line-height:1.4;">' + cfg.info + '</div>'
+      + '<div style="flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:7px;">' + cardsHtml + '</div>'
+      + addBtn
+      + '</div>';
+  });
+  board.innerHTML = html;
 }
 
 function cardMiniHtml(card, col, cfg) {
@@ -980,9 +1025,860 @@ function openCard(id, col) {
     </div>
 
     <div class="field-group">
-      <div class="field-label">🖼️ Slides do carrossel</div>
+      <div class="field-label">🖼️ Capa do carrossel (thumbnail)</div>
+      ${card.capa
+        ? '<div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--border2);margin-bottom:6px;"><img src="' + card.capa.dataUrl + '" style="width:100%;max-height:160px;object-fit:cover;display:block;"><button onclick="removeCardCapa('' + id + '')" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.65);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;">× Remover capa</button></div>'
+        : '<div class="upload-zone" onclick="document.getElementById('capa-file-input').click()" style="padding:14px;"><div style="font-size:16px;margin-bottom:3px;">🖼️</div><div style="font-size:12px;font-weight:500;">Clique para adicionar capa thumbnail</div></div>'
+      }
+      <input type="file" id="capa-file-input" accept="image/*" style="display:none" onchange="handleCardCapa('${id}',this.files)">
+    </div>
+    <div class="field-group">
+      <div class="field-label">🗂️ Slides do carrossel</div>
       <div class="upload-zone" onclick="document.getElementById('card-file-input').click()">
-        <div style="font-size:18px;margin-bottom:4px;">🖼️</div>
+        <div style="font-size:18px;margin-bottom:4px;">🗂️</div>
+        <div style="font-size:12px;font-weight:500;">Clique para adicionar slides</div>
+      </div>
+      <input type="file" id="card-file-input" multiple accept="image/*" style="display:none" onchange="handleCardFiles('${id}',this.files)">
+      <div class="slides-grid" id="card-slides-${id}">
+        ${(card.slides||[]).map((s,i) => `
+          <div class="slide-thumb">
+            <img src="${s.dataUrl}" alt="${i+1}">
+            <div class="slide-num">${i+1}</div>
+            <button class="slide-rm" onclick="removeCardSlide('${id}',${i})">×</button>
+          </div>`).join('')}
+      </div>
+      ${card.slides&&card.slides.length>0 ? `<button class="btn btn-ghost" style="margin-top:8px;font-size:11.5px;" onclick="downloadCardSlides('${id}')">⬇️ Baixar todos os slides</button>` : ''}
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">💬 Comentários</div>
+      <div id="card-comments" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;max-height:200px;overflow-y:auto;">
+        ${(card.comentarios||[]).map(c => `
+          <div style="display:flex;gap:8px;">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--surface3);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;">${c.autor.charAt(0)}</div>
+            <div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:8px 11px;">
+              <div style="font-size:10px;font-weight:700;color:var(--text);margin-bottom:3px;">${esc(c.autor)} <span class="badge badge-gray">${c.role}</span><span style="font-size:10px;color:var(--text-3);float:right;">${c.time}</span></div>
+              <div style="font-size:12px;color:var(--text-2);line-height:1.5;">${esc(c.texto)}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <div style="display:flex;gap:8px;">
+        <textarea id="new-comment" placeholder="Comentário ou instrução..." class="field-textarea" style="min-height:50px;flex:1;"></textarea>
+        <button class="btn btn-gold" style="align-self:flex-end;" onclick="sendComment('${id}')">Enviar</button>
+      </div>
+    </div>
+  `;
+
+  // Footer com botões de mover
+  const cols = Object.keys(trlColConfig);
+  const idx = cols.indexOf(col);
+  let footer = `<button class="btn btn-red" onclick="confirmDeleteCard('${id}')">🗑️ Excluir</button>`;
+  footer += '<div style="margin-left:auto;display:flex;gap:7px;">';
+  if (idx > 0) footer += `<button class="btn btn-ghost" onclick="moveCard('${id}','${cols[idx-1]}')">← ${trlColConfig[cols[idx-1]].label}</button>`;
+  if (idx < cols.length-1) footer += `<button class="btn" style="background:${trlColConfig[cols[idx+1]].color}22;color:${trlColConfig[cols[idx+1]].color};border:1px solid ${trlColConfig[cols[idx+1]].color}44;" onclick="moveCard('${id}','${cols[idx+1]}')">Mover para ${trlColConfig[cols[idx+1]].label} →</button>`;
+  if (col === 'postar') footer += `<button class="btn btn-green" onclick="marcarPostado('${id}')">🚀 Marcar como postado</button>`;
+  footer += '</div>';
+  document.getElementById('modal-card-footer').innerHTML = footer;
+
+  openModal('modal-card');
+}
+
+function toggleCheck(cardId, key, el) {
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+  if (!card) return;
+  card.checklist[key] = !card.checklist[key];
+  el.classList.toggle('checked');
+  el.textContent = card.checklist[key] ? '✓' : '';
+  const label = el.nextElementSibling;
+  if (label) label.classList.toggle('checked', card.checklist[key]);
+  trlRenderBoard();
+}
+
+function updateCardField(cardId, field, value) {
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+  if (card) { card[field] = value; trlRenderBoard(); }
+}
+
+
+function handleCardCapa(cardId, files) {
+  if (!files || !files[0]) return;
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+  if (!card) return;
+  const r = new FileReader();
+  r.onload = e => {
+    card.capa = { dataUrl: e.target.result, mime: files[0].type, name: files[0].name };
+    trlRenderBoard();
+    showNotif('🖼️ Capa adicionada!');
+    // Refresh modal body
+    openCard(cardId, trlActiveCol);
+  };
+  r.readAsDataURL(files[0]);
+  document.getElementById('capa-file-input').value = '';
+}
+
+function removeCardCapa(cardId) {
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+  if (card) { card.capa = null; trlRenderBoard(); openCard(cardId, trlActiveCol); }
+}
+
+function handleCardFiles(cardId, files) {
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+  if (!card) return;
+  Array.from(files).filter(f => f.type.startsWith('image/')).forEach(f => {
+    const r = new FileReader();
+    r.onload = e => {
+      card.slides = card.slides || [];
+      card.slides.push({ name: f.name, dataUrl: e.target.result, mime: f.type });
+      card.files = card.slides.length;
+      card.checklist.artes = true;
+      refreshSlidesGrid(cardId, card);
+      trlRenderBoard();
+    };
+    r.readAsDataURL(f);
+  });
+  document.getElementById('card-file-input').value = '';
+}
+
+function refreshSlidesGrid(cardId, card) {
+  const grid = document.getElementById('card-slides-' + cardId);
+  if (!grid) return;
+  grid.innerHTML = (card.slides||[]).map((s,i) => `
+    <div class="slide-thumb">
+      <img src="${s.dataUrl}" alt="${i+1}">
+      <div class="slide-num">${i+1}</div>
+      <button class="slide-rm" onclick="removeCardSlide('${cardId}',${i})">×</button>
+    </div>`).join('');
+}
+
+function removeCardSlide(cardId, idx) {
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+  if (card) { card.slides.splice(idx, 1); card.files = card.slides.length; refreshSlidesGrid(cardId, card); trlRenderBoard(); }
+}
+
+function downloadCardSlides(cardId) {
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+  if (!card || !card.slides) return;
+  const name = card.title.replace(/[\s\/]/g,'_');
+  card.slides.forEach((s,i) => {
+    setTimeout(() => {
+      const a = document.createElement('a');
+      a.href = s.dataUrl;
+      const ext = (s.mime||'image/png') === 'image/png' ? 'png' : 'jpg';
+      a.download = `${name}_slide${i+1}.${ext}`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }, i * 200);
+  });
+  showNotif('⬇️ Download iniciado!');
+}
+
+function sendComment(cardId) {
+  const input = document.getElementById('new-comment');
+  const text = input.value.trim();
+  if (!text) return;
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+  if (!card) return;
+  if (!card.comentarios) card.comentarios = [];
+  const time = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+  card.comentarios.push({ autor: currentUser.name, role: currentUser.role, texto: text, time });
+  card.comments = (card.comments||0) + 1;
+  const list = document.getElementById('card-comments');
+  const div = document.createElement('div');
+  div.style.cssText = 'display:flex;gap:8px;';
+  div.innerHTML = `<div style="width:26px;height:26px;border-radius:50%;background:var(--surface3);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;">${currentUser.initials}</div><div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:8px 11px;"><div style="font-size:10px;font-weight:700;margin-bottom:3px;">${esc(currentUser.name)} <span class="badge badge-gray">${currentUser.role}</span><span style="float:right;color:var(--text-3);">${time}</span></div><div style="font-size:12px;color:var(--text-2);">${esc(text)}</div></div>`;
+  list.appendChild(div);
+  list.scrollTop = list.scrollHeight;
+  input.value = '';
+  trlRenderBoard();
+  showNotif('💬 Comentário enviado!');
+}
+
+function copiarTexto(inputId) {
+  const el = document.getElementById(inputId);
+  const text = el.value || el.textContent;
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => showNotif('📋 Copiado!'));
+  else { el.select && el.select(); document.execCommand('copy'); showNotif('📋 Copiado!'); }
+}
+
+function moveCard(id, toCol) {
+  let card = null;
+  Object.keys(trlBoardData[trlActive]).forEach(col => {
+    const idx = trlBoardData[trlActive][col].findIndex(c => c.id === id);
+    if (idx > -1) { card = trlBoardData[trlActive][col][idx]; trlBoardData[trlActive][col].splice(idx, 1); }
+  });
+  if (card) trlBoardData[trlActive][toCol].push(card);
+  closeModal('modal-card');
+  trlRenderBoard();
+  showNotif(`✅ Movido para "${trlColConfig[toCol].label}"`);
+}
+
+function marcarPostado(id) {
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === id);
+  if (card) { card.checklist.postado = true; card.tags = [{l:'Postado',c:'#3ecf8e'}]; }
+  closeModal('modal-card');
+  trlRenderBoard();
+  showNotif('🚀 Marcado como postado!');
+}
+
+function confirmDeleteCard(id) {
+  if (confirm('Excluir este card?')) {
+    Object.keys(trlBoardData[trlActive]).forEach(col => {
+      trlBoardData[trlActive][col] = trlBoardData[trlActive][col].filter(c => c.id !== id);
+    });
+    closeModal('modal-card');
+    trlRenderBoard();
+    showNotif('🗑️ Card excluído');
+  }
+}
+
+// ══════════════════════════════════════
+// NOVO CARD
+// ══════════════════════════════════════
+ncSlides = [];
+
+let ncCapa = null;
+
+function handleNewCardCapa(files) {
+  if (!files || !files[0]) return;
+  const r = new FileReader();
+  r.onload = e => {
+    ncCapa = { dataUrl: e.target.result, mime: files[0].type, name: files[0].name };
+    const zone = document.getElementById('nc-capa-zone');
+    const preview = document.getElementById('nc-capa-preview');
+    if (zone) zone.style.display = 'none';
+    if (preview) preview.innerHTML = '<div style="position:relative;margin-top:8px;border-radius:10px;overflow:hidden;border:1px solid var(--border2);"><img src="' + e.target.result + '" style="width:100%;max-height:160px;object-fit:cover;display:block;"><button onclick="ncCapa=null;document.getElementById('nc-capa-zone').style.display='';this.parentElement.parentElement.innerHTML='';" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;">× Remover capa</button></div>';
+  };
+  r.readAsDataURL(files[0]);
+  document.getElementById('nc-capa-input').value = '';
+}
+
+function openNewCard() {
+  ncSlides = [];
+  ncCapa = null;
+  document.getElementById('nc-title').value = '';
+  document.getElementById('nc-copy').value = '';
+  document.getElementById('nc-music').value = '';
+  document.getElementById('nc-hashtags').value = '';
+  document.getElementById('nc-slides-preview').innerHTML = '';
+  document.getElementById('nc-capa-preview').innerHTML = '';
+  const capaZone = document.getElementById('nc-capa-zone');
+  if (capaZone) capaZone.style.display = '';
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('nc-date').value = today;
+  document.getElementById('nc-time').value = '09:00';
+  openModal('modal-new-card');
+}
+
+function handleNewCardFiles(files) {
+  Array.from(files).filter(f => f.type.startsWith('image/')).forEach(f => {
+    const r = new FileReader();
+    r.onload = e => {
+      ncSlides.push({ name: f.name, dataUrl: e.target.result, mime: f.type });
+      renderNcSlides();
+    };
+    r.readAsDataURL(f);
+  });
+  document.getElementById('nc-files').value = '';
+}
+
+function renderNcSlides() {
+  document.getElementById('nc-slides-preview').innerHTML = ncSlides.map((s,i) => `
+    <div class="slide-thumb">
+      <img src="${s.dataUrl}" alt="${i+1}">
+      <div class="slide-num">${i+1}</div>
+      <button class="slide-rm" onclick="ncSlides.splice(${i},1);renderNcSlides()">×</button>
+    </div>`).join('');
+}
+
+function createCard() {
+  const title = document.getElementById('nc-title').value.trim() || 'NOVO POST';
+  const dateVal = document.getElementById('nc-date').value;
+  const date = dateVal ? dateVal.split('-').reverse().slice(0,2).join('/') : '--/--';
+  const newCard = {
+    id: 'card_' + Date.now(),
+    title, date,
+    horario: document.getElementById('nc-time').value,
+    emoji: '📝',
+    copy: document.getElementById('nc-copy').value,
+    music: document.getElementById('nc-music').value,
+    hashtags: document.getElementById('nc-hashtags').value,
+    capa: ncCapa || null,
+    tags: [{ l: 'Novo', c: '#4a9eff' }],
+    comments: 0, files: ncSlides.length,
+    slides: [...ncSlides],
+    members: [currentUser.initials || 'K'],
+    checklist: {
+      copy: !!document.getElementById('nc-copy').value,
+      music: !!document.getElementById('nc-music').value,
+      hashtags: !!document.getElementById('nc-hashtags').value,
+      artes: ncSlides.length > 0,
+      aprovacao_admin: false, aprovacao_clinica: false, postado: false
+    },
+    comentarios: [], approved: false
+  };
+  if (!trlBoardData[trlActive]) trlBoardData[trlActive] = { design:[], admin:[], clinica:[], postar:[] };
+  trlBoardData[trlActive].design.push(newCard);
+  ncSlides = [];
+  closeModal('modal-new-card');
+  trlRenderBoard();
+  showNotif(`✨ Card "${title}" criado!`);
+}
+
+
+// ══════════════════════════════════════
+// PERFIL DA CLÍNICA
+// ══════════════════════════════════════
+function openPerfilClinica() {
+  const cid = trlActive;
+  const c = trlClients.find(x => x.id === cid);
+  const p = clinicaProfiles[cid];
+  if (!p) return;
+
+  document.getElementById('perfil-modal-title').textContent = 'Perfil — ' + c.name;
+
+  const body = document.getElementById('perfil-modal-body');
+  body.innerHTML = `
+    <div style="display:grid;grid-template-columns:140px 1fr;gap:20px;margin-bottom:20px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div id="perfil-foto-preview" onclick="document.getElementById('perfil-foto-input').click()" style="width:120px;height:120px;border-radius:16px;background:${c.bg};color:${c.color};display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;cursor:pointer;border:2px dashed var(--border2);overflow:hidden;position:relative;">
+          ${p.foto ? '<img src="' + p.foto + '" style="width:100%;height:100%;object-fit:cover;">' : c.initials}
+          <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.5);font-size:10px;color:#fff;text-align:center;padding:3px;">Trocar foto</div>
+        </div>
+        <input type="file" id="perfil-foto-input" accept="image/*" style="display:none" onchange="handlePerfilFoto('${cid}',this.files)">
+        <span style="font-size:10px;color:var(--text-3);text-align:center;">Clique para trocar a foto</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="field-group">
+          <div class="field-label">Nome completo</div>
+          <input class="field-input" id="pf-nome" value="${p.nome||''}" placeholder="Nome completo da doutora">
+        </div>
+        <div class="field-group">
+          <div class="field-label">Especialidade(s)</div>
+          <input class="field-input" id="pf-esp" value="${p.especialidade||''}" placeholder="Ex: Harmonização Facial · Laser CO2">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="field-group">
+            <div class="field-label">Cidade / Estado</div>
+            <input class="field-input" id="pf-cidade" value="${p.cidade||''}" placeholder="Ex: Joinville, SC">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Instagram</div>
+            <input class="field-input" id="pf-insta" value="${p.instagram||''}" placeholder="@usuario">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:1px;background:var(--border);margin:0 0 18px;"></div>
+
+    <div class="field-group">
+      <div class="field-label">📁 Link do Google Drive da clínica</div>
+      <div style="display:flex;gap:8px;">
+        <input class="field-input" id="pf-drive" value="${p.drive||''}" placeholder="https://drive.google.com/..." style="flex:1;">
+        ${p.drive ? '<a href="' + p.drive + '" target="_blank" class="btn btn-ghost" style="white-space:nowrap;">🔗 Abrir Drive</a>' : ''}
+      </div>
+    </div>
+
+    <div style="height:1px;background:var(--border);margin:0 0 18px;"></div>
+
+    <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px;">📋 Onboarding Estratégico</div>
+
+    <div class="field-group">
+      <div class="field-label">🔗 Link do Onboarding no Drive</div>
+      <div style="display:flex;gap:8px;">
+        <input class="field-input" id="pf-onb-drive" value="${p.onboarding_drive||''}" placeholder="https://drive.google.com/..." style="flex:1;">
+        ${p.onboarding_drive ? '<a href="' + p.onboarding_drive + '" target="_blank" class="btn btn-ghost" style="white-space:nowrap;">🔗 Abrir</a>' : ''}
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">📝 Notas e estratégia da clínica</div>
+      <textarea class="field-textarea" id="pf-onb-doc" style="min-height:140px;">${p.onboarding_doc||''}</textarea>
+    </div>
+  `;
+
+  openModal('modal-perfil');
+}
+
+function handlePerfilFoto(cid, files) {
+  if (!files || !files[0]) return;
+  const r = new FileReader();
+  r.onload = e => {
+    clinicaProfiles[cid].foto = e.target.result;
+    const preview = document.getElementById('perfil-foto-preview');
+    if (preview) preview.innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
+  };
+  r.readAsDataURL(files[0]);
+}
+
+function salvarPerfil() {
+  const cid = trlActive;
+  const p = clinicaProfiles[cid];
+  p.nome = document.getElementById('pf-nome').value;
+  p.especialidade = document.getElementById('pf-esp').value;
+  p.cidade = document.getElementById('pf-cidade').value;
+  p.instagram = document.getElementById('pf-insta').value;
+  p.drive = document.getElementById('pf-drive').value;
+  p.onboarding_drive = document.getElementById('pf-onb-drive').value;
+  p.onboarding_doc = document.getElementById('pf-onb-doc').value;
+  // Update trlClients meta
+  const c = trlClients.find(x => x.id === cid);
+  if (c) c.meta = p.especialidade + (p.cidade ? ' · ' + p.cidade : '');
+  closeModal('modal-perfil');
+  trlSelectClient(cid);
+  showNotif('✅ Perfil salvo!');
+}
+
+// ══════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+let notifT;
+function showNotif(msg) {
+  const n = document.getElementById('notif');
+  n.textContent = msg; n.classList.add('show');
+  clearTimeout(notifT);
+  notifT = setTimeout(() => n.classList.remove('show'), 2800);
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>let portalMes = 'Maio 2026';
+
+function loadClientePortal(mes) {
+  if (mes) portalMes = mes;
+
+  document.getElementById('main-topbar').style.display = 'none';
+  document.getElementById('cliente-topbar').style.display = 'flex';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('app-body').style.display = 'none';
+
+  // Topbar info
+  const av = document.getElementById('cliente-avatar');
+  av.textContent = currentUser.initials;
+  av.style.background = currentUser.color + '33';
+  av.style.color = currentUser.color;
+  document.getElementById('cliente-label').textContent = currentUser.name;
+
+  // Remove portal antigo
+  const oldPortal = document.getElementById('portal-dinamico');
+  if (oldPortal) oldPortal.remove();
+
+  const cid = currentUser.clientId;
+  const data = trlBoardData[cid] || { design:[], admin:[], clinica:[], postar:[] };
+  const cards = [...(data.clinica||[]), ...(data.postar||[])];
+
+  // Build portal
+  const portal = document.createElement('div');
+  portal.id = 'portal-dinamico';
+  portal.style.cssText = 'display:flex;flex-direction:column;flex:1;overflow:hidden;background:var(--bg);';
+
+  // ── Header com abas de meses
+  const header = document.createElement('div');
+  header.style.cssText = 'background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;';
+  let monthTabs = '';
+  trlMonths.forEach(m => {
+    const active = m === portalMes;
+    monthTabs += '<button onclick="loadClientePortal('' + m + '')" style="padding:7px 14px;border-radius:7px 7px 0 0;font-size:12px;font-weight:600;color:' + (active?'var(--gold)':'var(--text-3)') + ';cursor:pointer;border:none;background:' + (active?'var(--gold-dim)':'transparent') + ';border-bottom:2px solid ' + (active?'var(--gold)':'transparent') + ';transition:all 0.12s;font-family:Outfit,sans-serif;white-space:nowrap;">' + m + '</button>';
+  });
+  header.innerHTML = '<div style="display:flex;align-items:center;gap:14px;padding:16px 28px 12px;">'
+    + '<div style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;background:' + currentUser.color + '33;color:' + currentUser.color + ';">' + currentUser.initials + '</div>'
+    + '<div><div style="font-family:Instrument Serif,serif;font-size:20px;color:var(--text);">Olá, ' + currentUser.name + '!</div>'
+    + '<div style="font-size:12px;color:var(--text-2);">Seus posts para aprovação</div></div>'
+    + '</div>'
+    + '<div style="display:flex;gap:4px;overflow-x:auto;padding:0 28px;">' + monthTabs + '</div>';
+  portal.appendChild(header);
+
+  // ── Cards area
+  const area = document.createElement('div');
+  area.style.cssText = 'flex:1;overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;gap:16px;';
+
+  if (cards.length === 0) {
+    area.innerHTML = '<div style="text-align:center;padding:80px 20px;color:var(--text-3);font-size:15px;">📭 Nenhum post para revisar em ' + portalMes + '</div>';
+  } else {
+    cards.forEach(card => {
+      const isApproved = card.approved;
+      const hasAjuste = card.ajustePendente;
+      const badgeBg = isApproved ? 'var(--green-dim)' : hasAjuste ? 'var(--red-dim)' : 'var(--gold-dim)';
+      const badgeColor = isApproved ? 'var(--green)' : hasAjuste ? 'var(--red)' : 'var(--gold)';
+      const badgeText = isApproved ? '✅ Aprovado' : hasAjuste ? '⚠️ Aguardando ajuste' : '⏳ Aguardando aprovação';
+
+      const lastAjuste = (card.comentarios||[]).filter(c => c.texto && c.texto.startsWith('✏️ Pedido de ajuste:')).pop();
+
+      let slidesHtml = '';
+      if (card.slides && card.slides.length > 0) {
+        slidesHtml = '<div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;">';
+        card.slides.forEach(s => { slidesHtml += '<img src="' + s.dataUrl + '" style="width:90px;height:90px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);">'; });
+        slidesHtml += '</div>';
+      }
+
+      let actionsHtml = '';
+      if (isApproved) {
+        actionsHtml = '<span style="font-size:13px;color:var(--green);">✅ Você aprovou este post</span>';
+      } else if (hasAjuste) {
+        actionsHtml = '<span style="font-size:13px;color:var(--red);">⚠️ Ajuste enviado — a equipe está trabalhando nisso</span>';
+      } else {
+        actionsHtml = '<button onclick="clienteAprovar('' + cid + '','' + card.id + '',this)" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(62,207,142,0.3);background:var(--green-dim);color:var(--green);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✅ Aprovar</button>'
+          + '<button onclick="clientePedirAjuste('' + card.id + '')" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(255,107,107,0.3);background:var(--red-dim);color:var(--red);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✏️ Pedir ajuste</button>';
+      }
+
+      const div = document.createElement('div');
+      div.id = 'portalcard-' + card.id;
+      div.style.cssText = 'background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:20px;';
+      div.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">'
+        + '<div style="font-size:24px;">' + (card.emoji||'📝') + '</div>'
+        + '<div style="font-size:15px;font-weight:700;color:var(--text);flex:1;">' + card.title + '</div>'
+        + '<span id="badge-' + card.id + '" style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:' + badgeBg + ';color:' + badgeColor + ';">' + badgeText + '</span>'
+        + '</div>'
+        + (card.capa ? '<img src="' + card.capa.dataUrl + '" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;margin-bottom:14px;display:block;">' : '')
+        + slidesHtml
+        + (card.copy ? '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3);margin-bottom:6px;">📝 Legenda</div><div style="font-size:13px;color:var(--text-2);line-height:1.6;white-space:pre-wrap;margin-bottom:12px;">' + card.copy + '</div>' : '')
+        + (card.music ? '<div style="font-size:12px;color:var(--text-3);margin-bottom:8px;">🎵 <strong style="color:var(--text-2);">Música:</strong> ' + card.music + '</div>' : '')
+        + (card.hashtags ? '<div style="font-size:12px;color:var(--text-3);margin-bottom:14px;">#️⃣ ' + card.hashtags + '</div>' : '')
+        + (lastAjuste ? '<div style="margin-bottom:12px;padding:10px 14px;background:var(--red-dim);border-radius:8px;border:1px solid rgba(255,107,107,0.3);font-size:12px;color:var(--red);">✏️ <strong>Último ajuste solicitado:</strong> ' + lastAjuste.texto.replace('✏️ Pedido de ajuste: ','') + '</div>' : '')
+        + '<div id="coment-' + card.id + '"></div>'
+        + '<div style="display:flex;gap:8px;padding-top:14px;border-top:1px solid var(--border);" id="actions-' + card.id + '">' + actionsHtml + '</div>';
+      area.appendChild(div);
+    });
+  }
+
+  portal.appendChild(area);
+  document.getElementById('app').appendChild(portal);
+}
+
+
+let ajusteCardId = null;
+function clientePedirAjuste(cardId) {
+  ajusteCardId = cardId;
+  document.getElementById('ajuste-texto').value = '';
+  openModal('modal-ajuste');
+}
+
+function enviarAjuste() {
+  const texto = document.getElementById('ajuste-texto').value.trim();
+  if (!texto) { showNotif('⚠️ Descreva o ajuste necessário'); return; }
+  const cid = currentUser.clientId;
+  const card = Object.values(trlBoardData[cid]).flat().find(c => c.id === ajusteCardId);
+  if (card) {
+    card.comments = (card.comments || 0) + 1;
+    card.ajustePendente = true;
+    card.approved = false;
+    // Limpa tags de aprovado e adiciona ajuste
+    card.tags = (card.tags||[]).filter(t => t.l !== 'Aprovado' && t.l !== 'Ajuste solicitado');
+    card.tags.push({ l: '⚠️ Ajuste solicitado', c: '#ff6b6b' });
+    if (!card.comentarios) card.comentarios = [];
+    const time = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    card.comentarios.push({ autor: currentUser.name, role: 'Cliente', texto: '✏️ Pedido de ajuste: ' + texto, time });
+    // Atualiza badge do card no portal sem recarregar tudo
+    const badge = document.getElementById('badge-' + ajusteCardId);
+    if (badge) {
+      badge.style.background = 'var(--red-dim)';
+      badge.style.color = 'var(--red)';
+      badge.textContent = '⚠️ Aguardando ajuste';
+    }
+    // Mostra comentário enviado abaixo do card
+    const comentDiv = document.getElementById('coment-' + ajusteCardId);
+    if (comentDiv) {
+      comentDiv.innerHTML = `<div style="margin-top:10px;padding:10px 14px;background:var(--red-dim);border-radius:8px;border:1px solid rgba(255,107,107,0.3);font-size:12px;color:var(--red);">✏️ <strong>Ajuste enviado:</strong> ${texto}</div>`;
+    }
+    // Atualiza kanban
+    trlRenderBoard();
+  }
+  closeModal('modal-ajuste');
+  showNotif('✉️ Ajuste enviado! Equipe notificada.');
+}
+
+function clienteAprovar(cid, cardId, btn) {
+  const card = Object.values(trlBoardData[cid]).flat().find(c => c.id === cardId);
+  if (card) {
+    card.approved = true;
+    card.ajustePendente = false;
+    card.tags = (card.tags || []).filter(t => t.l !== 'Ajuste solicitado' && t.l !== '⚠️ Ajuste solicitado' && t.l !== 'Aprovação');
+    card.tags.push({ l: 'Aprovado', c: '#3ecf8e' });
+    if (!card.comentarios) card.comentarios = [];
+    card.comentarios.push({ autor: currentUser.name, role: 'Cliente', texto: '✅ Aprovado pela clínica!', time: new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }) });
+    // Atualiza badge imediatamente
+    const badge = document.getElementById('badge-' + cardId);
+    if (badge) { badge.style.background = 'var(--green-dim)'; badge.style.color = 'var(--green)'; badge.textContent = '✅ Aprovado'; }
+    if (btn) { btn.parentElement.innerHTML = '<span style="font-size:13px;color:var(--green);">✅ Você aprovou este post</span>'; }
+    // Move para clinica se estava lá, mantém em postar se já estava
+    const col = Object.keys(trlBoardData[cid]).find(col => trlBoardData[cid][col].find(c => c.id === cardId));
+    if (col === 'clinica') {
+      trlBoardData[cid]['clinica'] = trlBoardData[cid]['clinica'].filter(c => c.id !== cardId);
+      trlBoardData[cid]['postar'].push(card);
+    }
+  }
+  trlRenderBoard();
+  showNotif('✅ Post aprovado! A equipe foi notificada.');
+}
+
+// ══════════════════════════════════════
+// TRELLO DATA
+// ══════════════════════════════════════
+const trlClients = [
+  { id:'tatiana', name:'Dra. Tatiana',  initials:'DT', bg:'#a78bfa22', color:'#a78bfa', meta:'Harmonização Facial · Joinville' },
+  { id:'camila',  name:'Dra. Camila',   initials:'DC', bg:'#ec489922', color:'#ec4899', meta:'Harmonização · Laser CO2' },
+  { id:'leticia', name:'Dra. Letícia',  initials:'DL', bg:'#4a9eff22', color:'#4a9eff', meta:'Harmonização Full Face' },
+  { id:'dayane',  name:'Dra. Dayane',   initials:'DD', bg:'#3ecf8e22', color:'#3ecf8e', meta:'Harmonização Facial · HERUS' },
+  { id:'marina',  name:'Dra. Marina',   initials:'DM', bg:'#fb923c22', color:'#fb923c', meta:'Ultrassom · HIPRO' },
+  { id:'carol',   name:'Dra. Carol',    initials:'CB', bg:'#f43f5e22', color:'#f43f5e', meta:'Cirurgias Estéticas · BH' },
+  { id:'vanessa', name:'Dra. Vanessa',  initials:'DV', bg:'#d4a84322', color:'#d4a843', meta:'Cirurgias Estéticas da Face' },
+  { id:'kav',     name:'Instituto Kav', initials:'KV', bg:'#a78bfa22', color:'#a78bfa', meta:'Mentorias · BH' },
+];
+
+// Perfis completos das clínicas (editável pela agência)
+const clinicaProfiles = {
+  tatiana: { nome:'Dra. Tatiana Lorenzi Finamor', especialidade:'Harmonização Facial · Rejuvenescimento · Bioestimuladores', cidade:'Joinville, SC', instagram:'@dra.tatianafinamor', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  camila:  { nome:'Dra. Camila Daher', especialidade:'Harmonização Facial · Laser CO2', cidade:'Joinville, SC', instagram:'@camiladaher', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  leticia: { nome:'Dra. Letícia Fridel', especialidade:'Harmonização Full Face', cidade:'', instagram:'@dra.leticiafridel', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  dayane:  { nome:'Dra. Dayane Falcomer', especialidade:'Harmonização Facial · HERUS', cidade:'', instagram:'@dradayanefalcomer', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  marina:  { nome:'Dra. Marina Flores', especialidade:'Ultrassom · HIPRO', cidade:'', instagram:'@dra.marinaflores', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  carol:   { nome:'Dra. Carolina Paulino', especialidade:'Cirurgias Estéticas · BH', cidade:'Belo Horizonte, MG', instagram:'@dra.carolinapaulino', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  vanessa: { nome:'Dra. Vanessa Pacífico', especialidade:'Cirurgias Estéticas da Face', cidade:'', instagram:'@dra.vanessapacifico', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  kav:     { nome:'Instituto Kav', especialidade:'Mentorias para Médicos', cidade:'Belo Horizonte, MG', instagram:'@institutokav', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+};
+
+const trlMonths = ['Janeiro 2026','Fevereiro 2026','Março 2026','Abril 2026','Maio 2026','Junho 2026'];
+let trlMonth = 'Maio 2026';
+
+const trlColConfig = {
+  design:  { label:'Edição Design',   color:'#4a9eff', info:'Social media cria, designer adiciona as artes.' },
+  admin:   { label:'Aprovação Admin', color:'#d4a843', info:'Revisão interna antes de enviar para a clínica.' },
+  clinica: { label:'Clínica Aprovar', color:'#a78bfa', info:'Cliente visualiza e aprova ou pede ajuste.' },
+  postar:  { label:'Postar',          color:'#3ecf8e', info:'Aprovado! Poster baixa as artes e agenda.' },
+};
+
+const trlBoardData = {
+  tatiana: {
+    design:[
+      {id:'t1',title:'POST CARROSSEL 12/05',date:'12/05',horario:'09:00',emoji:'🖼️',copy:'✨ Renovação celular com tecnologia de ponta...',music:'Flowers — Miley Cyrus',hashtags:'#harmonizacao #rejuvenescimento #botox',tags:[{l:'Feed',c:'#ec4899'}],comments:1,files:0,slides:[],members:['ST'],checklist:{copy:true,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false},
+    ],
+    admin:[
+      {id:'t4',title:'POST CARROSSEL 10/05',date:'10/05',horario:'11:00',emoji:'✅',copy:'Harmonização Facial de Alto Padrão\n\nResultados naturais que realçam sua beleza única.',music:'Espelho — Djavan',hashtags:'#harmonizacao #beauty #procedimentos',tags:[{l:'Urgente',c:'#f43f5e'}],comments:2,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[{autor:'Kellen',role:'Social Media',texto:'Legenda e hashtags prontos! Aguardando artes da Stephanie.',time:'09:14'}],approved:false},
+    ],
+    clinica:[
+      {id:'t6',title:'POST CARROSSEL 05/05',date:'05/05',horario:'14:00',emoji:'💆‍♀️',copy:'Protocolo de rejuvenescimento exclusivo da Dra. Tatiana.',music:'Golden Hour — JVKE',hashtags:'#pele #skincare #harmonizacaofacial',tags:[{l:'Aprovação',c:'#a78bfa'}],comments:1,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:true,aprovacao_admin:true,aprovacao_clinica:false,postado:false},comentarios:[{autor:'Kellen',role:'Social Media',texto:'Tudo pronto! Enviado para aprovação da Dra. Tatiana.',time:'10:00'}],approved:false},
+    ],
+    postar:[
+      {id:'t7',title:'POST CARROSSEL 03/05',date:'03/05',horario:'10:00',emoji:'🚀',copy:'Procedimento aprovado e pronto para publicar!',music:'As It Was — Harry Styles',hashtags:'#harmonizacao #botox #fillers',tags:[{l:'Aprovado',c:'#3ecf8e'}],comments:1,files:0,slides:[],members:['KF'],checklist:{copy:true,music:true,hashtags:true,artes:true,aprovacao_admin:true,aprovacao_clinica:true,postado:false},comentarios:[{autor:'Dra. Tatiana',role:'Cliente',texto:'✅ Aprovado! Ficou lindo!',time:'11:45'}],approved:true},
+    ]
+  },
+  camila:{ design:[{id:'c1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy para Dra. Camila...',music:'',hashtags:'',tags:[{l:'Feed',c:'#ec4899'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  leticia:{ design:[{id:'l1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy Dra. Letícia',music:'',hashtags:'',tags:[{l:'Feed',c:'#4a9eff'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  dayane:{ design:[], admin:[{id:'d1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'10:00',emoji:'📸',copy:'HERUS FULL — harmonização facial completa.',music:'Blinding Lights — The Weeknd',hashtags:'#herus #harmonizacao',tags:[{l:'Urgente',c:'#f43f5e'}],comments:1,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], clinica:[], postar:[] },
+  marina:{ design:[{id:'m1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Ultrassom de imagem — Dra. Marina.',music:'',hashtags:'',tags:[{l:'Feed',c:'#fb923c'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  carol:{ design:[{id:'cb1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Cirurgias estéticas da face.',music:'',hashtags:'',tags:[{l:'Feed',c:'#f43f5e'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  vanessa:{ design:[{id:'v1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy Dra. Vanessa.',music:'',hashtags:'',tags:[{l:'Feed',c:'#d4a843'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  kav:{ design:[{id:'k1',title:'POST FIXO 10/05',date:'10/05',horario:'09:00',emoji:'🖼️',copy:'KAV MENTORIAS — transforme sua carreira.',music:'',hashtags:'',tags:[{l:'Feed',c:'#a78bfa'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+};
+
+// ══════════════════════════════════════
+// TRELLO RENDER
+// ══════════════════════════════════════
+let trlActive = 'tatiana';
+let trlActiveCardId = null;
+let trlActiveCol = 'design';
+let ncSlides = [];
+
+function trlInit() {
+  trlRenderClients();
+  trlSelectClient('tatiana');
+  renderLegend();
+}
+
+function renderLegend() {
+  document.getElementById('trl-legend-dots').innerHTML = Object.entries(trlColConfig).map(([,cfg]) =>
+    `<span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-3);">
+      <span style="width:8px;height:8px;border-radius:50%;background:${cfg.color};display:inline-block;"></span>${cfg.label}
+    </span>`
+  ).join('');
+}
+
+function trlFilterClients(v) { trlRenderClients(v); }
+
+function trlRenderClients(filter='') {
+  const list = document.getElementById('trl-clients-list');
+  if (!list) return;
+  list.innerHTML = trlClients
+    .filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
+    .map(c => {
+      const total = Object.values(trlBoardData[c.id]||{}).flat().length;
+      return `<button onclick="trlSelectClient('${c.id}')" style="width:100%;padding:8px 10px;border-radius:9px;border:none;background:${c.id===trlActive?c.bg:'transparent'};cursor:pointer;text-align:left;display:flex;align-items:center;gap:7px;margin-bottom:2px;transition:all 0.12s;">
+        <div style="width:26px;height:26px;border-radius:7px;background:${c.bg};color:${c.color};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">${c.initials}</div>
+        <div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;color:${c.id===trlActive?c.color:'var(--text-2)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.name}</div></div>
+        ${total>0?`<div style="width:16px;height:16px;border-radius:50%;background:var(--gold-dim);color:var(--gold);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;">${total}</div>`:''}
+      </button>`;
+    }).join('');
+}
+
+function trlSelectClient(id) {
+  trlActive = id;
+  trlRenderClients();
+  const c = trlClients.find(x => x.id === id);
+  document.getElementById('trl-avatar').textContent = c.initials;
+  document.getElementById('trl-avatar').style.background = c.bg;
+  document.getElementById('trl-avatar').style.color = c.color;
+  document.getElementById('trl-name').textContent = c.name;
+  document.getElementById('trl-meta').textContent = c.meta;
+  trlRenderMonths();
+  trlRenderBoard();
+}
+
+function trlRenderMonths() {
+  const wrap = document.getElementById('trl-month-tabs');
+  if (!wrap) return;
+  wrap.innerHTML = trlMonths.map(m =>
+    `<button onclick="trlSelectMonth('${m}')" style="padding:7px 14px;border-radius:7px 7px 0 0;font-size:12px;font-weight:600;color:${m===trlMonth?'var(--gold)':'var(--text-3)'};cursor:pointer;border:none;background:${m===trlMonth?'var(--gold-dim)':'transparent'};border-bottom:2px solid ${m===trlMonth?'var(--gold)':'transparent'};transition:all 0.12s;font-family:'Outfit',sans-serif;">${m}</button>`
+  ).join('') + `<button onclick="showNotif('➕ Novo mês!')" style="padding:7px 10px;font-size:14px;color:var(--text-3);border:none;background:transparent;cursor:pointer;">+</button>`;
+}
+
+function trlSelectMonth(m) { trlMonth = m; trlRenderMonths(); trlRenderBoard(); }
+
+function trlRenderBoard() {
+  const board = document.getElementById('trl-board');
+  if (!board) return;
+  const data = trlBoardData[trlActive] || { design:[], admin:[], clinica:[], postar:[] };
+  let html = '';
+  Object.entries(trlColConfig).forEach(([col, cfg]) => {
+    const cards = data[col] || [];
+    const isDark = currentTheme === 'dark';
+    const colBg = isDark
+      ? (col==='design'?'#0d1520':col==='admin'?'#141008':col==='clinica'?'#120f1e':'#0b160f')
+      : 'var(--surface)';
+    const colBorder = isDark
+      ? (col==='design'?'rgba(74,158,255,0.2)':col==='admin'?'rgba(212,168,67,0.2)':col==='clinica'?'rgba(167,139,250,0.2)':'rgba(62,207,142,0.2)')
+      : 'var(--border2)';
+    let cardsHtml = '';
+    if (cards.length === 0) {
+      cardsHtml = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 10px;gap:6px;text-align:center;"><div style="font-size:24px;opacity:0.2;">📭</div><div style="font-size:11px;color:var(--text-3);">Nenhum card</div></div>';
+    } else {
+      cards.forEach(card => { cardsHtml += cardMiniHtml(card, col, cfg); });
+    }
+    const addBtn = col === 'design'
+      ? '<button onclick="openNewCard()" style="margin:0 8px 8px;padding:7px 10px;border-radius:7px;border:1px dashed var(--border2);background:transparent;color:var(--text-3);font-family:Outfit,sans-serif;font-size:12px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:5px;">+ Adicionar card</button>'
+      : '';
+    html += '<div style="width:265px;flex-shrink:0;border-radius:12px;display:flex;flex-direction:column;max-height:100%;overflow:hidden;border:1px solid ' + colBorder + ';background:' + colBg + ';">'
+      + '<div style="padding:10px 12px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border);flex-shrink:0;">'
+      + '<div style="width:9px;height:9px;border-radius:50%;background:' + cfg.color + ';flex-shrink:0;"></div>'
+      + '<div style="font-size:12px;font-weight:700;color:' + cfg.color + ';flex:1;">' + cfg.label + '</div>'
+      + '<div style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--surface3);color:var(--text-3);">' + cards.length + '</div>'
+      + '</div>'
+      + '<div style="font-size:10px;color:var(--text-3);padding:5px 12px 7px;border-bottom:1px solid var(--border);flex-shrink:0;line-height:1.4;">' + cfg.info + '</div>'
+      + '<div style="flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:7px;">' + cardsHtml + '</div>'
+      + addBtn
+      + '</div>';
+  });
+  board.innerHTML = html;
+}
+
+function cardMiniHtml(card, col, cfg) {
+  const checkDone = Object.values(card.checklist||{}).filter(Boolean).length;
+  const checkTotal = Object.values(card.checklist||{}).length;
+  const pct = Math.round((checkDone / checkTotal) * 100);
+  return `<div onclick="openCard('${card.id}','${col}')" style="background:var(--surface2);border:1px solid var(--border);border-radius:9px;cursor:pointer;transition:all 0.15s;overflow:hidden;" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor=var('--border2');" onmouseout="this.style.transform='';this.style.borderColor='';">
+    <div style="height:2px;background:${cfg.color};width:100%;"></div>
+    <div style="padding:9px 11px 10px;">
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-3);margin-bottom:4px;">📅 ${card.date} ${card.horario||''}</div>
+      <div style="font-size:12.5px;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:5px;">${card.emoji} ${card.title}</div>
+      ${card.copy ? `<div style="font-size:11px;color:var(--text-3);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:6px;">${esc(card.copy.substring(0,80))}</div>` : ''}
+      <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:7px;">
+        ${(card.tags||[]).map(t=>`<span style="font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700;background:${t.c}22;color:${t.c};">${t.l}</span>`).join('')}
+        ${card.approved ? `<span style="font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700;background:#3ecf8e22;color:#3ecf8e;">✅ Aprovado</span>` : ''}
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;padding-top:5px;border-top:1px solid var(--border);">
+        <div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${cfg.color};border-radius:2px;"></div>
+        </div>
+        <span style="font-size:9px;color:var(--text-3);">${checkDone}/${checkTotal}</span>
+        ${card.slides&&card.slides.length>0?`<span style="font-size:10px;color:var(--text-3);">🖼️${card.slides.length}</span>`:''}
+        <span style="font-size:10px;color:var(--text-3);">💬${card.comments||0}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════
+// CARD MODAL
+// ══════════════════════════════════════
+function openCard(id, col) {
+  trlActiveCardId = id;
+  trlActiveCol = col;
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === id);
+  if (!card) return;
+  const cfg = trlColConfig[col];
+  const client = trlClients.find(c => c.id === trlActive);
+
+  document.getElementById('modal-card-title').textContent = card.title;
+
+  const checkLabels = {
+    copy: '📝 Legenda/copy preenchida',
+    music: '🎵 Música sugerida',
+    hashtags: '#️⃣ Hashtags adicionadas',
+    artes: '🖼️ Artes/slides enviados',
+    aprovacao_admin: '✅ Aprovação interna (admin)',
+    aprovacao_clinica: '✅ Aprovação da clínica',
+    postado: '🚀 Postado no Instagram'
+  };
+
+  document.getElementById('modal-card-body').innerHTML = `
+    <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;">
+      <span class="badge" style="background:${cfg.color}22;color:${cfg.color};">${cfg.label}</span>
+      <span class="badge badge-gray">📅 ${card.date}/2026</span>
+      <span class="badge" style="background:${client.bg};color:${client.color};">👤 ${client.name}</span>
+      ${card.approved ? '<span class="badge badge-green">✅ Aprovado pela clínica</span>' : ''}
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div class="field-label" style="margin-bottom:8px;">📋 Checklist de progresso</div>
+      <div class="checklist" id="card-checklist">
+        ${Object.entries(card.checklist||{}).map(([key,val]) => `
+          <div class="check-item">
+            <div class="check-box ${val?'checked':''}" onclick="toggleCheck('${id}','${key}',this)">${val?'✓':''}</div>
+            <span class="check-label ${val?'checked':''}">${checkLabels[key]||key}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">📅 Data e horário de postagem</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <input class="field-input" value="${card.date||''}" placeholder="DD/MM" onchange="updateCardField('${id}','date',this.value)">
+        <input class="field-input" type="time" value="${card.horario||'09:00'}" onchange="updateCardField('${id}','horario',this.value)">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">📝 Legenda / Copy</div>
+      <textarea class="field-textarea" id="card-copy" onchange="updateCardField('${id}','copy',this.value)">${esc(card.copy||'')}</textarea>
+      <button class="btn btn-ghost" style="font-size:11.5px;margin-top:6px;" onclick="copiarTexto('card-copy')">📋 Copiar legenda</button>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">🎵 Música sugerida</div>
+      <input class="field-input" value="${esc(card.music||'')}" placeholder="Nome da música — Artista" onchange="updateCardField('${id}','music',this.value)">
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">#️⃣ Hashtags</div>
+      <input class="field-input" value="${esc(card.hashtags||'')}" placeholder="#skincare #harmonizacao" onchange="updateCardField('${id}','hashtags',this.value)">
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">🖼️ Capa do carrossel (thumbnail)</div>
+      ${card.capa
+        ? '<div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--border2);margin-bottom:6px;"><img src="' + card.capa.dataUrl + '" style="width:100%;max-height:160px;object-fit:cover;display:block;"><button onclick="removeCardCapa('' + id + '')" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.65);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;">× Remover capa</button></div>'
+        : '<div class="upload-zone" onclick="document.getElementById('capa-file-input').click()" style="padding:14px;"><div style="font-size:16px;margin-bottom:3px;">🖼️</div><div style="font-size:12px;font-weight:500;">Clique para adicionar capa thumbnail</div></div>'
+      }
+      <input type="file" id="capa-file-input" accept="image/*" style="display:none" onchange="handleCardCapa('${id}',this.files)">
+    </div>
+    <div class="field-group">
+      <div class="field-label">🗂️ Slides do carrossel</div>
+      <div class="upload-zone" onclick="document.getElementById('card-file-input').click()">
+        <div style="font-size:18px;margin-bottom:4px;">🗂️</div>
         <div style="font-size:12px;font-weight:500;">Clique para adicionar slides</div>
       </div>
       <input type="file" id="card-file-input" multiple accept="image/*" style="display:none" onchange="handleCardFiles('${id}',this.files)">
@@ -1160,13 +2056,33 @@ function confirmDeleteCard(id) {
 // ══════════════════════════════════════
 ncSlides = [];
 
+let ncCapa = null;
+
+function handleNewCardCapa(files) {
+  if (!files || !files[0]) return;
+  const r = new FileReader();
+  r.onload = e => {
+    ncCapa = { dataUrl: e.target.result, mime: files[0].type, name: files[0].name };
+    const zone = document.getElementById('nc-capa-zone');
+    const preview = document.getElementById('nc-capa-preview');
+    if (zone) zone.style.display = 'none';
+    if (preview) preview.innerHTML = '<div style="position:relative;margin-top:8px;border-radius:10px;overflow:hidden;border:1px solid var(--border2);"><img src="' + e.target.result + '" style="width:100%;max-height:160px;object-fit:cover;display:block;"><button onclick="ncCapa=null;document.getElementById('nc-capa-zone').style.display='';this.parentElement.parentElement.innerHTML='';" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;">× Remover capa</button></div>';
+  };
+  r.readAsDataURL(files[0]);
+  document.getElementById('nc-capa-input').value = '';
+}
+
 function openNewCard() {
   ncSlides = [];
+  ncCapa = null;
   document.getElementById('nc-title').value = '';
   document.getElementById('nc-copy').value = '';
   document.getElementById('nc-music').value = '';
   document.getElementById('nc-hashtags').value = '';
   document.getElementById('nc-slides-preview').innerHTML = '';
+  document.getElementById('nc-capa-preview').innerHTML = '';
+  const capaZone = document.getElementById('nc-capa-zone');
+  if (capaZone) capaZone.style.display = '';
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('nc-date').value = today;
   document.getElementById('nc-time').value = '09:00';
@@ -1206,6 +2122,7 @@ function createCard() {
     copy: document.getElementById('nc-copy').value,
     music: document.getElementById('nc-music').value,
     hashtags: document.getElementById('nc-hashtags').value,
+    capa: ncCapa || null,
     tags: [{ l: 'Novo', c: '#4a9eff' }],
     comments: 0, files: ncSlides.length,
     slides: [...ncSlides],
