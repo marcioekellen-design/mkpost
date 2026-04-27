@@ -534,7 +534,8 @@ function doLogin() {
   document.getElementById('login-screen').style.display = 'none';
 
   if (currentUser.role === 'cliente') {
-    loadClientePortal();
+    // Small timeout ensures all JS is parsed before accessing trlBoardData
+    setTimeout(() => loadClientePortal(), 10);
   } else {
     loadAgenciaApp();
   }
@@ -618,6 +619,7 @@ function loadClientePortal() {
   const all = [...(data.clinica||[]), ...(data.postar||[])];
 
   const container = document.getElementById('portal-cards');
+  if (!container) { alert('ERRO: portal-cards nao encontrado!'); return; }
   if (all.length === 0) {
     container.innerHTML = '<div style="text-align:center;padding:60px 20px;color:var(--text-3);">Nenhum post para revisar no momento 📭</div>';
   } else {
