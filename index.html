@@ -2,707 +2,1184 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>MKPost</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MKhof · Plataforma</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #F7F7F5;
-    --surface: #FFFFFF;
-    --surface2: #F0F0ED;
-    --border: #E4E4E0;
-    --text: #1A1A18;
-    --text2: #6B6B66;
-    --text3: #9B9B96;
-    --accent: #2D6A4F;
-    --accent-light: #E8F4EE;
-    --accent2: #E76F51;
-    --done-bg: #F0FAF4;
-    --done-border: #B7DFC8;
-    --pending-bg: #FFF8F5;
-    --pending-border: #F4C5B5;
-    --shadow: 0 1px 3px rgba(0,0,0,0.06);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-    --radius: 12px;
-    --radius-sm: 8px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; }
-  .app { display: flex; flex-direction: column; min-height: 100vh; }
-  header {
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    padding: 0 24px; height: 56px; display: flex; align-items: center;
-    justify-content: space-between; position: sticky; top: 0; z-index: 100;
-  }
-  .logo { font-family: 'DM Mono', monospace; font-size: 17px; font-weight: 500; letter-spacing: -0.5px; }
-  .logo span { color: var(--accent); }
-  nav { display: flex; gap: 4px; }
-  .nav-btn {
-    padding: 6px 14px; border-radius: 20px; border: none;
-    background: transparent; color: var(--text2);
-    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-    cursor: pointer; transition: all 0.15s;
-  }
-  .nav-btn:hover { background: var(--surface2); color: var(--text); }
-  .nav-btn.active { background: var(--text); color: white; }
-  main { flex: 1; padding: 24px; max-width: 900px; margin: 0 auto; width: 100%; }
-  .view { display: none; }
-  .view.active { display: block; }
-  .page-title { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
-  .page-subtitle { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 8px 16px; border-radius: var(--radius-sm); border: none;
-    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-    cursor: pointer; transition: all 0.15s;
-  }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-primary { background: var(--text); color: white; }
-  .btn-primary:hover:not(:disabled) { background: #333; }
-  .btn-accent { background: var(--accent); color: white; }
-  .btn-accent:hover:not(:disabled) { background: #245c43; }
-  .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
-  .btn-ghost:hover:not(:disabled) { background: var(--surface2); color: var(--text); }
-  .btn-danger { background: #FEE2E2; color: #DC2626; border: none; }
-  .btn-danger:hover:not(:disabled) { background: #FECACA; }
-  .btn-sm { padding: 5px 10px; font-size: 13px; }
-  .btn-xs { padding: 4px 8px; font-size: 12px; border-radius: 6px; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
-  .form-grid { display: grid; gap: 16px; }
-  .form-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
-  .field { display: flex; flex-direction: column; gap: 6px; }
-  .field label { font-size: 13px; font-weight: 500; color: var(--text2); }
-  .field input, .field select, .field textarea {
-    padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
-    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
-    background: var(--surface); transition: border-color 0.15s; outline: none;
-  }
-  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
-  .field textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
-  .upload-zone {
-    border: 2px dashed var(--border); border-radius: var(--radius);
-    padding: 32px; text-align: center; cursor: pointer; transition: all 0.15s; background: var(--bg);
-  }
-  .upload-zone:hover, .upload-zone.drag-over { border-color: var(--accent); background: var(--accent-light); }
-  .upload-icon { font-size: 32px; margin-bottom: 8px; }
-  .upload-title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
-  .upload-sub { font-size: 13px; color: var(--text2); }
-  .slides-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin-top: 12px; }
-  .slide-thumb { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
-  .slide-thumb img { width: 100%; height: 100%; object-fit: cover; }
-  .remove-slide {
-    position: absolute; top: 3px; right: 3px; width: 18px; height: 18px;
-    border-radius: 50%; background: rgba(0,0,0,0.6); color: white; border: none;
-    cursor: pointer; font-size: 10px; display: flex; align-items: center; justify-content: center;
-  }
-  .slide-order {
-    position: absolute; bottom: 3px; left: 3px; background: rgba(0,0,0,0.6);
-    color: white; font-size: 10px; padding: 1px 5px; border-radius: 4px;
-    font-family: 'DM Mono', monospace;
-  }
-  .date-bar {
-    display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 12px 16px; flex-wrap: wrap;
-  }
-  .date-bar label { font-size: 13px; color: var(--text2); font-weight: 500; }
-  .date-bar input[type="date"] {
-    border: 1px solid var(--border); border-radius: var(--radius-sm);
-    padding: 6px 10px; font-family: 'DM Sans', sans-serif; font-size: 14px;
-    color: var(--text); background: var(--bg); outline: none; cursor: pointer;
-  }
-  .date-bar input[type="date"]:focus { border-color: var(--accent); }
-  .date-summary { margin-left: auto; font-size: 13px; color: var(--text2); }
-  .date-summary strong { color: var(--text); }
-  .posts-list { display: flex; flex-direction: column; gap: 12px; }
-  .post-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px 20px; box-shadow: var(--shadow); transition: all 0.2s;
-  }
-  .post-card.done { background: var(--done-bg); border-color: var(--done-border); }
-  .post-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-  .post-time { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 500; min-width: 48px; }
-  .post-client { font-size: 14px; font-weight: 600; flex: 1; }
-  .post-status { font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
-  .status-pending { background: var(--pending-bg); color: var(--accent2); border: 1px solid var(--pending-border); }
-  .status-done { background: var(--done-bg); color: var(--accent); border: 1px solid var(--done-border); }
-  .post-legenda { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 12px; white-space: pre-wrap; word-break: break-word; }
-  .post-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  .empty-state { text-align: center; padding: 60px 20px; color: var(--text2); }
-  .empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; }
-  .empty-state p { font-size: 15px; }
-  .empty-state small { font-size: 13px; color: var(--text3); }
-  .clients-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px; }
-  .client-chip {
-    display: flex; align-items: center; justify-content: space-between;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius-sm); padding: 10px 14px; font-size: 14px; font-weight: 500;
-  }
-  .client-chip button { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 18px; padding: 0 0 0 8px; line-height: 1; transition: color 0.15s; }
-  .client-chip button:hover { color: #DC2626; }
-  .add-client-form { display: flex; gap: 8px; align-items: center; }
-  .add-client-form input { flex: 1; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; }
-  .add-client-form input:focus { border-color: var(--accent); }
-  .toast {
-    position: fixed; bottom: 24px; left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--text); color: white; padding: 10px 20px;
-    border-radius: 20px; font-size: 14px; font-weight: 500;
-    z-index: 999; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    white-space: nowrap; pointer-events: none;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast.green { background: var(--accent); }
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-    z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px;
-  }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--surface); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-md); }
-  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-  .modal-title { font-size: 17px; font-weight: 600; }
-  .modal-close { background: none; border: none; cursor: pointer; font-size: 22px; color: var(--text2); padding: 2px 6px; border-radius: 6px; transition: background 0.15s; line-height: 1; }
-  .modal-close:hover { background: var(--surface2); }
-  .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
-  .divider { height: 1px; background: var(--border); margin: 20px 0; }
-  .section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-  .progress-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 20px; }
-  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s ease; }
-  .badge { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; font-size: 11px; font-weight: 600; color: white; }
-  .badge-orange { background: var(--accent2); }
-  .badge-green { background: var(--accent); }
-  .form-footer { display: flex; justify-content: flex-end; gap: 8px; padding-top: 16px; border-top: 1px solid var(--border); }
-  @media (max-width: 600px) {
-    main { padding: 16px; }
-    .form-grid-3 { grid-template-columns: 1fr; }
-    header { padding: 0 16px; }
-    .nav-btn { padding: 6px 10px; font-size: 13px; }
-    .btn { padding: 7px 12px; font-size: 13px; }
-    .post-actions { gap: 6px; }
-  }
+/* ── TEMAS ── */
+[data-theme="dark"] {
+  --bg: #0a0a0f; --surface: #111118; --surface2: #18181f; --surface3: #1e1e28;
+  --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+  --text: #f0eff4; --text-2: #9d9baa; --text-3: #5c5a6b;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4); --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+  --input-bg: #18181f;
+}
+[data-theme="light"] {
+  --bg: #F7F7F5; --surface: #FFFFFF; --surface2: #F0F0ED; --surface3: #E8E8E4;
+  --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.14);
+  --text: #1A1A18; --text-2: #6B6B66; --text-3: #9B9B96;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08); --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --input-bg: #F0F0ED;
+}
+:root {
+  --gold: #d4a843; --gold-light: #f0c96a; --gold-dim: rgba(212,168,67,0.15);
+  --blue: #4a9eff; --blue-dim: rgba(74,158,255,0.12);
+  --green: #3ecf8e; --green-dim: rgba(62,207,142,0.12);
+  --red: #ff6b6b; --red-dim: rgba(255,107,107,0.12);
+  --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.12);
+  --orange: #fb923c; --pink: #f472b6;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; }
+body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text); display:flex; flex-direction:column; transition:background 0.2s,color 0.2s; }
+
+/* ── LOGIN ── */
+#login-screen {
+  position:fixed; inset:0; background:var(--bg); display:flex;
+  align-items:center; justify-content:center; z-index:9999;
+  flex-direction:column; gap:0;
+}
+.login-box {
+  background:var(--surface); border:1px solid var(--border2);
+  border-radius:20px; padding:40px 36px; width:360px;
+  box-shadow:var(--shadow);
+}
+.login-logo {
+  display:flex; align-items:center; gap:10px; margin-bottom:28px; justify-content:center;
+}
+.login-mark {
+  width:40px; height:40px; border-radius:10px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-light));
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Instrument Serif',serif; font-size:20px; color:#0a0a0f;
+}
+.login-title { font-family:'Instrument Serif',serif; font-size:22px; }
+.login-title span { color:var(--gold); }
+.login-field { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+.login-field label { font-size:12px; font-weight:600; color:var(--text-2); text-transform:uppercase; letter-spacing:0.8px; }
+.login-field input {
+  padding:10px 14px; border:1px solid var(--border2); border-radius:9px;
+  background:var(--input-bg); color:var(--text); font-family:'Outfit',sans-serif;
+  font-size:14px; outline:none; transition:border-color 0.15s;
+}
+.login-field input:focus { border-color:var(--gold); }
+.login-btn {
+  width:100%; padding:11px; border-radius:9px; border:none;
+  background:var(--gold); color:#0a0808; font-family:'Outfit',sans-serif;
+  font-size:14px; font-weight:700; cursor:pointer; margin-top:6px;
+  transition:opacity 0.15s;
+}
+.login-btn:hover { opacity:0.9; }
+.login-err { font-size:12px; color:var(--red); text-align:center; margin-top:8px; min-height:18px; }
+
+/* ── TOPBAR ── */
+.topbar {
+  height:52px; background:var(--surface); border-bottom:1px solid var(--border);
+  display:flex; align-items:center; padding:0 20px; gap:12px;
+  flex-shrink:0; position:relative; z-index:100;
+}
+.topbar::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,var(--gold),transparent 60%);
+}
+.brand { display:flex; align-items:center; gap:10px; }
+.brand-mark {
+  width:32px; height:32px; border-radius:8px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-light));
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Instrument Serif',serif; font-size:16px; color:#0a0a0f;
+}
+.brand-name { font-family:'Instrument Serif',serif; font-size:16px; }
+.brand-name span { color:var(--gold); }
+.topbar-tabs { display:flex; gap:2px; flex:1; }
+.topbar-tab {
+  padding:6px 14px; border-radius:7px; font-size:12.5px; font-weight:500;
+  color:var(--text-2); cursor:pointer; border:none; background:transparent;
+  display:flex; align-items:center; gap:6px; transition:all 0.15s;
+  font-family:'Outfit',sans-serif;
+}
+.topbar-tab:hover { background:var(--surface2); color:var(--text); }
+.topbar-tab.active { background:var(--gold-dim); color:var(--gold); }
+.topbar-right { display:flex; align-items:center; gap:8px; margin-left:auto; }
+.theme-toggle {
+  width:32px; height:32px; border-radius:8px; border:1px solid var(--border2);
+  background:transparent; color:var(--text-2); cursor:pointer; font-size:14px;
+  display:flex; align-items:center; justify-content:center; transition:all 0.15s;
+}
+.theme-toggle:hover { background:var(--surface2); }
+.user-chip {
+  display:flex; align-items:center; gap:7px; padding:4px 10px 4px 4px;
+  border-radius:20px; border:1px solid var(--border2); background:var(--surface2);
+  cursor:pointer; font-size:12px; color:var(--text-2);
+}
+.user-avatar {
+  width:24px; height:24px; border-radius:50%;
+  background:var(--gold-dim); color:var(--gold);
+  display:flex; align-items:center; justify-content:center;
+  font-size:9px; font-weight:700;
+}
+.logout-btn {
+  padding:5px 10px; border-radius:7px; border:1px solid var(--border2);
+  background:transparent; color:var(--text-3); font-family:'Outfit',sans-serif;
+  font-size:11.5px; cursor:pointer; transition:all 0.15s;
+}
+.logout-btn:hover { background:var(--red-dim); color:var(--red); border-color:var(--red-dim); }
+
+/* ── CONTENT ── */
+.app-body { flex:1; overflow:hidden; display:flex; flex-direction:column; }
+.tab-content { display:none; flex:1; overflow:hidden; flex-direction:column; }
+.tab-content.active { display:flex; }
+
+/* ── CLIENTE VIEW ── */
+#cliente-view {
+  display:none; flex:1; flex-direction:column; overflow:hidden;
+}
+#cliente-view.active { display:flex; }
+
+/* ── TRELLO ── */
+.trl-workspace { display:flex; flex-direction:column; height:100%; overflow:hidden; }
+.trl-header {
+  padding:0 24px; border-bottom:1px solid var(--border);
+  flex-shrink:0; background:var(--surface);
+}
+.trl-header-top { display:flex; align-items:center; gap:12px; padding:14px 0 10px; }
+.trl-months { display:flex; gap:4px; overflow-x:auto; }
+.trl-body { display:flex; flex:1; overflow:hidden; }
+.trl-sidebar {
+  width:190px; flex-shrink:0; background:var(--surface);
+  border-right:1px solid var(--border); display:flex;
+  flex-direction:column; overflow:hidden;
+}
+.trl-kanban { flex:1; overflow:hidden; display:flex; flex-direction:column; }
+.trl-legend {
+  padding:8px 20px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:14px; flex-shrink:0;
+}
+.trl-board-wrap { flex:1; overflow-x:auto; overflow-y:hidden; padding:14px 18px; display:flex; gap:12px; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.6);
+  z-index:500; display:none; align-items:center; justify-content:center; padding:20px;
+}
+.modal-overlay.open { display:flex; }
+.modal {
+  background:var(--surface); border-radius:16px; width:100%;
+  max-width:600px; max-height:90vh; overflow-y:auto;
+  box-shadow:var(--shadow); border:1px solid var(--border2);
+}
+.modal-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 20px 14px; border-bottom:1px solid var(--border); flex-shrink:0;
+}
+.modal-title { font-size:15px; font-weight:700; }
+.modal-close {
+  width:28px; height:28px; border-radius:7px; border:none;
+  background:var(--surface2); color:var(--text-2); cursor:pointer;
+  font-size:16px; display:flex; align-items:center; justify-content:center;
+}
+.modal-body { padding:18px 20px; }
+.modal-footer {
+  padding:14px 20px; border-top:1px solid var(--border);
+  display:flex; align-items:center; gap:8px;
+}
+
+/* ── CHECKLIST ── */
+.checklist { display:flex; flex-direction:column; gap:6px; margin-bottom:16px; }
+.check-item { display:flex; align-items:center; gap:8px; }
+.check-box {
+  width:18px; height:18px; border-radius:5px; border:1.5px solid var(--border2);
+  background:transparent; cursor:pointer; flex-shrink:0; display:flex;
+  align-items:center; justify-content:center; font-size:11px; transition:all 0.15s;
+}
+.check-box.checked { background:var(--green); border-color:var(--green); color:#fff; }
+.check-label { font-size:13px; color:var(--text-2); }
+.check-label.checked { text-decoration:line-through; color:var(--text-3); }
+
+/* ── FORM FIELDS ── */
+.field-group { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+.field-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-3); }
+.field-input, .field-textarea {
+  width:100%; background:var(--surface2); border:1px solid var(--border2);
+  border-radius:9px; padding:9px 13px; font-family:'Outfit',sans-serif;
+  font-size:13px; color:var(--text); outline:none; transition:border-color 0.15s;
+}
+.field-input:focus, .field-textarea:focus { border-color:var(--gold); }
+.field-textarea { resize:vertical; min-height:80px; line-height:1.6; }
+
+/* ── UPLOAD ZONE ── */
+.upload-zone {
+  border:1.5px dashed var(--border2); border-radius:9px; padding:20px;
+  text-align:center; cursor:pointer; transition:all 0.15s;
+}
+.upload-zone:hover { border-color:var(--gold); background:var(--gold-dim); }
+.slides-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(70px,1fr)); gap:7px; margin-top:10px; }
+.slide-thumb { position:relative; aspect-ratio:1; border-radius:7px; overflow:hidden; border:1px solid var(--border); }
+.slide-thumb img { width:100%; height:100%; object-fit:cover; }
+.slide-num { position:absolute; bottom:3px; left:3px; background:rgba(0,0,0,0.65); color:#fff; font-size:9px; padding:1px 5px; border-radius:4px; }
+.slide-rm { position:absolute; top:3px; right:3px; width:16px; height:16px; border-radius:50%; background:rgba(0,0,0,0.65); color:#fff; border:none; cursor:pointer; font-size:9px; display:flex; align-items:center; justify-content:center; }
+
+/* ── BUTTONS ── */
+.btn { display:inline-flex; align-items:center; gap:6px; padding:7px 13px; border-radius:8px; border:none; font-family:'Outfit',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+.btn-gold { background:var(--gold); color:#0a0808; }
+.btn-ghost { background:transparent; color:var(--text-2); border:1px solid var(--border2); }
+.btn-ghost:hover { background:var(--surface2); }
+.btn-green { background:var(--green-dim); color:var(--green); border:1px solid rgba(62,207,142,0.3); }
+.btn-red { background:var(--red-dim); color:var(--red); border:1px solid rgba(255,107,107,0.3); }
+.btn-blue { background:var(--blue-dim); color:var(--blue); border:1px solid rgba(74,158,255,0.3); }
+
+/* ── NOTIF ── */
+#notif {
+  position:fixed; bottom:24px; left:50%;
+  transform:translateX(-50%) translateY(60px);
+  background:var(--surface); border:1px solid var(--border2);
+  padding:9px 18px; border-radius:20px; font-size:13px; font-weight:500;
+  box-shadow:var(--shadow); z-index:9998; transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  white-space:nowrap; pointer-events:none;
+}
+#notif.show { transform:translateX(-50%) translateY(0); }
+
+/* ── CLIENTE PORTAL ── */
+.portal-header {
+  background:var(--surface); border-bottom:1px solid var(--border);
+  padding:20px 28px; display:flex; align-items:center; gap:14px;
+}
+.portal-cards { padding:20px 28px; display:flex; flex-direction:column; gap:12px; overflow-y:auto; flex:1; }
+.portal-card {
+  background:var(--surface); border:1px solid var(--border2);
+  border-radius:12px; padding:16px 18px;
+}
+.portal-card-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.portal-card-title { font-size:14px; font-weight:700; flex:1; }
+.portal-slides { display:flex; gap:8px; overflow-x:auto; margin-bottom:12px; }
+.portal-slide { width:80px; height:80px; border-radius:8px; object-fit:cover; flex-shrink:0; border:1px solid var(--border); }
+.portal-legenda { font-size:13px; color:var(--text-2); line-height:1.6; margin-bottom:12px; white-space:pre-wrap; }
+.portal-actions { display:flex; gap:8px; }
+
+/* ── SCROLL ── */
+::-webkit-scrollbar { width:4px; height:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:4px; }
+
+.badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:700; }
+.badge-green { background:var(--green-dim); color:var(--green); }
+.badge-gold { background:var(--gold-dim); color:var(--gold); }
+.badge-blue { background:var(--blue-dim); color:var(--blue); }
+.badge-purple { background:var(--purple-dim); color:var(--purple); }
+.badge-red { background:var(--red-dim); color:var(--red); }
+.badge-gray { background:var(--surface2); color:var(--text-3); }
 </style>
 </head>
-<body>
-<div class="app">
-  <header>
-    <div class="logo">MK<span>Post</span></div>
-    <nav>
-      <button class="nav-btn active" id="nav-postar" onclick="showView('postar',this)">Postar</button>
-      <button class="nav-btn" id="nav-novo" onclick="showView('novo',this)">+ Novo</button>
-      <button class="nav-btn" id="nav-clientes" onclick="showView('clientes',this)">Clientes</button>
-    </nav>
-  </header>
-  <main>
+<body data-theme="dark">
 
-    <!-- POSTAR -->
-    <div class="view active" id="view-postar">
-      <div class="date-bar">
-        <label>📅 Data</label>
-        <input type="date" id="filterDate" onchange="renderPosts()">
-        <div class="date-summary" id="dateSummary"></div>
-      </div>
-      <div id="postsList"></div>
+<!-- ══ LOGIN ══ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-mark">M</div>
+      <div class="login-title">MKhof <span>Marketing</span></div>
     </div>
+    <div class="login-field">
+      <label>Usuário</label>
+      <input type="text" id="login-user" placeholder="seu.usuario" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-field">
+      <label>Senha</label>
+      <input type="password" id="login-pass" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
 
-    <!-- NOVO -->
-    <div class="view" id="view-novo">
-      <div class="page-title">Novo Post</div>
-      <div class="page-subtitle">Preencha os dados e faça o upload dos slides</div>
-      <div class="card">
-        <div class="form-grid">
-          <div class="form-grid form-grid-3">
-            <div class="field">
-              <label>Cliente</label>
-              <select id="novoCliente"></select>
-            </div>
-            <div class="field">
-              <label>Data de postagem</label>
-              <input type="date" id="novaData">
-            </div>
-            <div class="field">
-              <label>Horário</label>
-              <input type="time" id="novoHorario">
+<!-- ══ APP ══ -->
+<div id="app" style="display:none;flex-direction:column;height:100%;">
+
+<!-- TOPBAR -->
+<div class="topbar" id="main-topbar">
+  <div class="brand">
+    <div class="brand-mark">M</div>
+    <div class="brand-name">MKhof <span>Marketing</span></div>
+  </div>
+  <div style="width:1px;height:24px;background:var(--border);"></div>
+  <div class="topbar-tabs" id="topbar-tabs">
+    <button class="topbar-tab active" onclick="switchTab('trello',this)" id="t-trello">🎯 MK Trello</button>
+    <button class="topbar-tab" onclick="switchTab('clientes',this)" id="t-clientes">👥 Clientes</button>
+  </div>
+  <div class="topbar-right">
+    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Alternar tema">🌙</button>
+    <div class="user-chip">
+      <div class="user-avatar" id="user-avatar">?</div>
+      <span id="user-label">...</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Sair</button>
+  </div>
+</div>
+
+<!-- TOPBAR CLIENTE -->
+<div class="topbar" id="cliente-topbar" style="display:none;">
+  <div class="brand">
+    <div class="brand-mark">M</div>
+    <div class="brand-name">MKhof <span>Marketing</span></div>
+  </div>
+  <div class="topbar-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Alternar tema">🌙</button>
+    <div class="user-chip">
+      <div class="user-avatar" id="cliente-avatar" style="background:var(--purple-dim);color:var(--purple);">?</div>
+      <span id="cliente-label">...</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Sair</button>
+  </div>
+</div>
+
+<!-- APP BODY -->
+<div class="app-body" id="app-body">
+
+  <!-- ══ TRELLO ══ -->
+  <div class="tab-content active" id="tab-trello">
+    <div class="trl-workspace">
+      <div class="trl-header">
+        <div class="trl-header-top">
+          <div id="trl-avatar" style="width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;background:#a78bfa22;color:#a78bfa;">DT</div>
+          <div style="flex:1;">
+            <div id="trl-name" style="font-family:'Instrument Serif',serif;font-size:18px;">Dra. Tatiana</div>
+            <div id="trl-meta" style="font-size:11px;color:var(--text-2);margin-top:1px;">Harmonização Facial</div>
+          </div>
+          <button class="btn btn-ghost" onclick="showNotif('🔗 Link copiado!')">🔗 Compartilhar quadro</button>
+          <button class="btn btn-gold" onclick="openNewCard()">+ Novo Card</button>
+        </div>
+        <div class="trl-months" id="trl-month-tabs"></div>
+      </div>
+      <div class="trl-body">
+        <div class="trl-sidebar">
+          <div style="padding:10px 10px 6px;">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-3);margin-bottom:8px;padding:0 4px;">Clínicas</div>
+            <input style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:6px 10px;font-family:'Outfit',sans-serif;font-size:12px;color:var(--text);outline:none;" placeholder="🔍 Buscar..." oninput="trlFilterClients(this.value)">
+          </div>
+          <div style="flex:1;overflow-y:auto;padding:4px 8px 8px;" id="trl-clients-list"></div>
+          <div style="padding:8px;">
+            <button onclick="showNotif('➕ Nova clínica em breve!')" style="width:100%;padding:8px;border-radius:8px;border:1px dashed var(--border2);background:transparent;color:var(--text-3);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;">+ Nova clínica</button>
+          </div>
+        </div>
+        <div class="trl-kanban">
+          <div class="trl-legend">
+            <div style="display:flex;gap:12px;" id="trl-legend-dots"></div>
+            <div style="margin-left:auto;display:flex;gap:7px;">
+              <button class="btn btn-ghost" style="font-size:11.5px;padding:5px 10px;" onclick="showNotif('🔍 Filtros em breve!')">🔍 Filtrar</button>
             </div>
           </div>
-          <div class="field">
-            <label>Legenda completa (com hashtags e música sugerida)</label>
-            <textarea id="novaLegenda" placeholder="Cole aqui a legenda completa..."></textarea>
-          </div>
-          <div class="field">
-            <label>Slides do carrossel</label>
-            <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
-              <div class="upload-icon">🖼️</div>
-              <div class="upload-title">Clique ou arraste as imagens aqui</div>
-              <div class="upload-sub">JPG, PNG — a ordem de upload será a ordem dos slides</div>
-            </div>
-            <input type="file" id="fileInput" multiple accept="image/*" style="display:none" onchange="handleFiles(this.files)">
-            <div class="slides-preview" id="slidesPreview"></div>
-          </div>
-          <div class="form-footer">
-            <button class="btn btn-ghost" onclick="clearForm()">Limpar tudo</button>
-            <button class="btn btn-primary" id="btnSalvar" onclick="salvarPost()">Salvar post</button>
-          </div>
+          <div class="trl-board-wrap" id="trl-board"></div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- CLIENTES -->
-    <div class="view" id="view-clientes">
-      <div class="page-title">Clientes</div>
-      <div class="page-subtitle">Gerencie os clientes da agência</div>
-      <div class="card">
-        <div class="section-label">Clientes cadastrados</div>
-        <div class="clients-grid" id="clientsGrid"></div>
-        <div class="divider"></div>
-        <div class="section-label">Adicionar novo cliente</div>
-        <div class="add-client-form">
-          <input type="text" id="novoClienteNome" placeholder="Ex: Dra. Julia" maxlength="50" onkeydown="if(event.key==='Enter')addCliente()">
-          <button class="btn btn-primary" onclick="addCliente()">Adicionar</button>
-        </div>
+  <!-- ══ CLIENTES TAB ══ -->
+  <div class="tab-content" id="tab-clientes">
+    <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-3);font-size:15px;">
+      Aba Clientes em desenvolvimento 🚧
+    </div>
+  </div>
+
+  <!-- ══ PORTAL CLIENTE ══ -->
+  <div id="cliente-view">
+    <div class="portal-header">
+      <div id="portal-avatar" style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;background:var(--purple-dim);color:var(--purple);">?</div>
+      <div>
+        <div style="font-family:'Instrument Serif',serif;font-size:20px;" id="portal-name">Bem-vinda!</div>
+        <div style="font-size:12px;color:var(--text-2);">Aqui estão seus posts para aprovação</div>
       </div>
     </div>
+    <div class="portal-cards" id="portal-cards"></div>
+  </div>
 
-  </main>
+</div><!-- /app-body -->
+</div><!-- /app -->
+
+<!-- ══ MODAL: CARD COMPLETO ══ -->
+<div class="modal-overlay" id="modal-card" onclick="if(event.target===this)closeModal('modal-card')">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-card-title">Card</div>
+      <button class="modal-close" onclick="closeModal('modal-card')">×</button>
+    </div>
+    <div class="modal-body" id="modal-card-body"></div>
+    <div class="modal-footer" id="modal-card-footer"></div>
+  </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<!-- MODAL LEGENDA -->
-<div class="modal-overlay" id="modalLegenda" onclick="if(event.target===this)closeModal('modalLegenda')">
-  <div class="modal">
+<!-- ══ MODAL: NOVO CARD ══ -->
+<div class="modal-overlay" id="modal-new-card" onclick="if(event.target===this)closeModal('modal-new-card')">
+  <div class="modal" style="max-width:560px;">
     <div class="modal-header">
-      <div class="modal-title" id="modalLegendaTitle"></div>
-      <button class="modal-close" onclick="closeModal('modalLegenda')">×</button>
+      <div class="modal-title">Novo Card</div>
+      <button class="modal-close" onclick="closeModal('modal-new-card')">×</button>
     </div>
-    <div id="modalLegendaText" style="font-size:14px;line-height:1.7;white-space:pre-wrap;color:var(--text);"></div>
+    <div class="modal-body">
+      <div class="field-group">
+        <div class="field-label">Título do post</div>
+        <input class="field-input" id="nc-title" placeholder="Ex: POST CARROSSEL 28/04">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="field-group">
+          <div class="field-label">Data de postagem</div>
+          <input class="field-input" type="date" id="nc-date">
+        </div>
+        <div class="field-group">
+          <div class="field-label">Horário</div>
+          <input class="field-input" type="time" id="nc-time" value="09:00">
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">📝 Legenda / Copy</div>
+        <textarea class="field-textarea" id="nc-copy" placeholder="Cole a legenda completa aqui..."></textarea>
+      </div>
+      <div class="field-group">
+        <div class="field-label">🎵 Música sugerida</div>
+        <input class="field-input" id="nc-music" placeholder="Ex: Nome da música — Artista">
+      </div>
+      <div class="field-group">
+        <div class="field-label">#️⃣ Hashtags</div>
+        <input class="field-input" id="nc-hashtags" placeholder="#skincare #harmonizacao #beleza">
+      </div>
+      <div class="field-group">
+        <div class="field-label">🖼️ Slides do carrossel</div>
+        <div class="upload-zone" onclick="document.getElementById('nc-files').click()">
+          <div style="font-size:24px;margin-bottom:6px;">🖼️</div>
+          <div style="font-size:13px;font-weight:500;">Clique para adicionar imagens</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:3px;">A ordem de upload será a ordem dos slides</div>
+        </div>
+        <input type="file" id="nc-files" multiple accept="image/*" style="display:none" onchange="handleNewCardFiles(this.files)">
+        <div class="slides-grid" id="nc-slides-preview"></div>
+      </div>
+    </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modalLegenda')">Fechar</button>
-      <button class="btn btn-primary" onclick="copyLegenda()">📋 Copiar legenda</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-new-card')">Cancelar</button>
+      <div style="margin-left:auto;">
+        <button class="btn btn-gold" onclick="createCard()">Criar Card</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- MODAL SLIDES -->
-<div class="modal-overlay" id="modalSlides" onclick="if(event.target===this)closeModal('modalSlides')">
-  <div class="modal">
+<!-- ══ MODAL: AJUSTE CLIENTE ══ -->
+<div class="modal-overlay" id="modal-ajuste" onclick="if(event.target===this)closeModal('modal-ajuste')">
+  <div class="modal" style="max-width:420px;">
     <div class="modal-header">
-      <div class="modal-title" id="modalSlidesTitle"></div>
-      <button class="modal-close" onclick="closeModal('modalSlides')">×</button>
+      <div class="modal-title">Pedir Ajuste</div>
+      <button class="modal-close" onclick="closeModal('modal-ajuste')">×</button>
     </div>
-    <div id="modalSlidesGrid" class="slides-preview" style="grid-template-columns:repeat(auto-fill,minmax(100px,1fr));"></div>
+    <div class="modal-body">
+      <div class="field-group">
+        <div class="field-label">O que precisa mudar?</div>
+        <textarea class="field-textarea" id="ajuste-texto" placeholder="Descreva o ajuste necessário..." style="min-height:100px;"></textarea>
+      </div>
+    </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modalSlides')">Fechar</button>
-      <button class="btn btn-primary" onclick="downloadAll()">⬇️ Baixar todos</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-ajuste')">Cancelar</button>
+      <div style="margin-left:auto;">
+        <button class="btn btn-red" onclick="enviarAjuste()">Enviar pedido de ajuste</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- MODAL DELETE -->
-<div class="modal-overlay" id="modalDelete" onclick="if(event.target===this)closeModal('modalDelete')">
-  <div class="modal" style="max-width:380px;">
-    <div class="modal-header">
-      <div class="modal-title">Excluir post?</div>
-      <button class="modal-close" onclick="closeModal('modalDelete')">×</button>
-    </div>
-    <p style="font-size:14px;color:var(--text2);line-height:1.6;">Essa ação não pode ser desfeita. O post e todos os slides serão removidos permanentemente.</p>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modalDelete')">Cancelar</button>
-      <button class="btn btn-danger" id="btnConfirmDelete" onclick="confirmDelete()">Excluir</button>
-    </div>
-  </div>
-</div>
+<div id="notif"></div>
 
 <script>
-// ── SUPABASE ──
-const SUPA_URL = 'https://doscbiuefifcuztcgpgr.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvc2NiaXVlZmlmY3V6dGNncGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMTc1MjksImV4cCI6MjA4Nzc5MzUyOX0.w5SNjDS-9xaA7mhkt2bOm6fQ4l0TCIbBAWfxFT2kNYw';
+// ══════════════════════════════════════
+// USERS
+// ══════════════════════════════════════
+const USERS = {
+  'kellen.franco':    { name:'Kellen Franco',    role:'social_media', initials:'KF', color:'#d4a843' },
+  'stephanie':        { name:'Stephanie',         role:'designer',     initials:'ST', color:'#4a9eff' },
+  'marcio.franco':    { name:'Márcio Franco',     role:'poster',       initials:'MF', color:'#3ecf8e' },
+  'marina.flores':    { name:'Dra. Marina',       role:'cliente',      clientId:'marina',  initials:'DM', color:'#fb923c' },
+  'tatiana.finamor':  { name:'Dra. Tatiana',      role:'cliente',      clientId:'tatiana', initials:'DT', color:'#a78bfa' },
+  'vanessa.pacifico': { name:'Dra. Vanessa',      role:'cliente',      clientId:'vanessa', initials:'DV', color:'#d4a843' },
+  'dayane.falcomer':  { name:'Dra. Dayane',       role:'cliente',      clientId:'dayane',  initials:'DD', color:'#3ecf8e' },
+  'camila.daher':     { name:'Dra. Camila',       role:'cliente',      clientId:'camila',  initials:'DC', color:'#ec4899' },
+  'carolina.paulino': { name:'Dra. Carol',        role:'cliente',      clientId:'carol',   initials:'CB', color:'#f43f5e' },
+  'leticia.fridel':   { name:'Dra. Letícia',      role:'cliente',      clientId:'leticia', initials:'DL', color:'#4a9eff' },
+  'instituto.kav':    { name:'Instituto Kav',     role:'cliente',      clientId:'kav',     initials:'KV', color:'#a78bfa' },
+};
+const PASS = '123456';
 
-async function db(path, opts={}) {
-  const res = await fetch(SUPA_URL + '/rest/v1/' + path, {
-    ...opts,
-    headers: {
-      'apikey': SUPA_KEY,
-      'Authorization': 'Bearer ' + SUPA_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': opts.prefer || 'return=representation',
-      ...(opts.headers||{})
-    }
+let currentUser = null;
+let currentTheme = localStorage.getItem('mktheme') || 'dark';
+document.body.setAttribute('data-theme', currentTheme);
+updateThemeBtn();
+
+function updateThemeBtn() {
+  document.querySelectorAll('.theme-toggle').forEach(btn => {
+    btn.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
   });
-  const text = await res.text();
-  if (!res.ok) throw new Error(text);
-  return text ? JSON.parse(text) : null;
 }
 
-// ── STATE ──
-let clientes = [];
-let posts = [];
-let pendingSlides = [];
-let activePost = null;
-let deleteId = null;
+// ══════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════
+function doLogin() {
+  const user = document.getElementById('login-user').value.trim().toLowerCase();
+  const pass = document.getElementById('login-pass').value;
+  const err  = document.getElementById('login-err');
 
-// ── LOAD ──
-async function load() {
-  showLoading(true);
-  try {
-    const [c, p] = await Promise.all([
-      db('mkpost_clientes?select=*&order=ordem.asc'),
-      db('mkpost_posts?select=*&order=horario.asc')
-    ]);
-    clientes = (c||[]).map(x => ({ id: x.id, nome: x.nome }));
-    posts = (p||[]).map(x => ({
-      id: x.id,
-      cliente: x.cliente,
-      data: x.data,
-      horario: x.horario.substring(0,5),
-      legenda: x.legenda,
-      slides: x.slides || [],
-      done: x.done
-    }));
-  } catch(e) {
-    console.error(e);
-    toast('Erro ao conectar. Verifique sua conexão.');
-  }
-  showLoading(false);
-}
-
-function showLoading(on) {
-  const list = document.getElementById('postsList');
-  if (on) list.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>Carregando...</p></div>';
-}
-
-// ── NAV ──
-function showView(v, btn) {
-  document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
-  document.getElementById('view-' + v).classList.add('active');
-  if (btn) btn.classList.add('active');
-  if (v === 'novo') initNovoForm();
-  if (v === 'clientes') renderClientes();
-  if (v === 'postar') { load().then(() => renderPosts()); }
-}
-
-function initNovoForm() {
-  clearForm();
-  renderSelect();
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('novaData').value = today;
-  document.getElementById('novoHorario').value = '09:00';
-}
-
-// ── CLIENTES ──
-function renderClientes() {
-  const g = document.getElementById('clientsGrid');
-  g.innerHTML = clientes.length === 0
-    ? '<p style="font-size:14px;color:var(--text3)">Nenhum cliente cadastrado.</p>'
-    : clientes.map((c,i) => `
-        <div class="client-chip">
-          <span>${esc(c.nome)}</span>
-          <button onclick="removeCliente('${c.id}','${esc(c.nome)}')" title="Remover">×</button>
-        </div>`).join('');
-}
-
-function renderSelect() {
-  document.getElementById('novoCliente').innerHTML =
-    clientes.map(c => `<option value="${esc(c.nome)}">${esc(c.nome)}</option>`).join('');
-}
-
-async function addCliente() {
-  const input = document.getElementById('novoClienteNome');
-  const nome = input.value.trim();
-  if (!nome) { toast('Digite o nome do cliente'); return; }
-  if (clientes.find(c => c.nome === nome)) { toast('Cliente já cadastrado'); return; }
-  try {
-    const res = await db('mkpost_clientes', {
-      method: 'POST',
-      body: JSON.stringify({ nome, ordem: clientes.length + 1 })
-    });
-    clientes.push({ id: res[0].id, nome: res[0].nome });
-    renderClientes();
-    renderSelect();
-    input.value = '';
-    toast('Cliente adicionado!', true);
-  } catch(e) { toast('Erro ao adicionar cliente'); }
-}
-
-async function removeCliente(id, nome) {
-  if (!confirm(`Remover "${nome}"?`)) return;
-  try {
-    await db('mkpost_clientes?id=eq.' + id, { method: 'DELETE', prefer: '' });
-    clientes = clientes.filter(c => c.id !== id);
-    renderClientes();
-    renderSelect();
-    toast('Cliente removido');
-  } catch(e) { toast('Erro ao remover cliente'); }
-}
-
-// ── UPLOAD ──
-function setupDrop() {
-  const z = document.getElementById('uploadZone');
-  z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('drag-over'); });
-  z.addEventListener('dragleave', () => z.classList.remove('drag-over'));
-  z.addEventListener('drop', e => { e.preventDefault(); z.classList.remove('drag-over'); handleFiles(e.dataTransfer.files); });
-}
-
-function handleFiles(files) {
-  const arr = Array.from(files).filter(f => f.type.startsWith('image/'));
-  let n = 0;
-  arr.forEach(f => {
-    const r = new FileReader();
-    r.onload = e => {
-      pendingSlides.push({ name: f.name, dataUrl: e.target.result, mime: f.type });
-      if (++n === arr.length) renderPrev();
-    };
-    r.readAsDataURL(f);
-  });
-  document.getElementById('fileInput').value = '';
-}
-
-function renderPrev() {
-  document.getElementById('slidesPreview').innerHTML =
-    pendingSlides.map((s,i) => `
-      <div class="slide-thumb">
-        <img src="${s.dataUrl}" alt="${i+1}">
-        <button class="remove-slide" onclick="rmSlide(${i})">×</button>
-        <div class="slide-order">${i+1}</div>
-      </div>`).join('');
-}
-
-function rmSlide(i) { pendingSlides.splice(i,1); renderPrev(); }
-
-function clearForm() {
-  document.getElementById('novaLegenda').value = '';
-  pendingSlides = [];
-  renderPrev();
-}
-
-// ── SALVAR POST ──
-async function salvarPost() {
-  const btn = document.getElementById('btnSalvar');
-  if (btn.disabled) return;
-
-  const cliente = document.getElementById('novoCliente').value;
-  const data    = document.getElementById('novaData').value;
-  const horario = document.getElementById('novoHorario').value;
-  const legenda = document.getElementById('novaLegenda').value.trim();
-
-  if (!cliente)  { toast('Selecione um cliente'); return; }
-  if (!data)     { toast('Selecione a data'); return; }
-  if (!horario)  { toast('Selecione o horário'); return; }
-  if (!legenda)  { toast('A legenda não pode estar vazia'); return; }
-  if (pendingSlides.length === 0) { toast('Adicione pelo menos 1 slide'); return; }
-
-  btn.disabled = true;
-  btn.textContent = 'Salvando...';
-
-  try {
-    const slides = pendingSlides.map(s => ({ name: s.name, dataUrl: s.dataUrl, mime: s.mime || 'image/png' }));
-    const res = await db('mkpost_posts', {
-      method: 'POST',
-      body: JSON.stringify({ cliente, data, horario, legenda, slides, done: false })
-    });
-    posts.push({
-      id: res[0].id,
-      cliente, data,
-      horario: res[0].horario.substring(0,5),
-      legenda, slides, done: false
-    });
-    toast('Post salvo!', true);
-    document.getElementById('filterDate').value = data;
-    clearForm();
-    showView('postar', document.getElementById('nav-postar'));
-    document.getElementById('nav-novo').classList.remove('active');
-    renderPosts();
-  } catch(e) {
-    console.error(e);
-    toast('Erro ao salvar post');
-  }
-
-  btn.disabled = false;
-  btn.textContent = 'Salvar post';
-}
-
-// ── DELETE ──
-function deletePost(id) {
-  deleteId = id;
-  document.getElementById('modalDelete').classList.add('open');
-}
-
-async function confirmDelete() {
-  if (!deleteId) return;
-  const btn = document.getElementById('btnConfirmDelete');
-  btn.disabled = true;
-  btn.textContent = 'Excluindo...';
-  try {
-    await db('mkpost_posts?id=eq.' + deleteId, { method: 'DELETE', prefer: '' });
-    posts = posts.filter(p => p.id !== deleteId);
-    deleteId = null;
-    closeModal('modalDelete');
-    renderPosts();
-    toast('Post excluído');
-  } catch(e) {
-    toast('Erro ao excluir');
-  }
-  btn.disabled = false;
-  btn.textContent = 'Excluir';
-}
-
-// ── TOGGLE DONE ──
-async function toggleDone(id) {
-  const p = posts.find(x => x.id === id);
-  if (!p) return;
-  const newDone = !p.done;
-  try {
-    await db('mkpost_posts?id=eq.' + id, {
-      method: 'PATCH',
-      body: JSON.stringify({ done: newDone })
-    });
-    p.done = newDone;
-    renderPosts();
-    toast(newDone ? '✅ Marcado como postado!' : 'Desmarcado', newDone);
-  } catch(e) { toast('Erro ao atualizar'); }
-}
-
-// ── RENDER POSTS ──
-function renderPosts() {
-  const date = document.getElementById('filterDate').value;
-  const list = document.getElementById('postsList');
-  const sum  = document.getElementById('dateSummary');
-
-  const day  = posts.filter(p => p.data === date).sort((a,b) => a.horario.localeCompare(b.horario));
-  const done = day.filter(p => p.done).length;
-  const pct  = day.length ? Math.round(done/day.length*100) : 0;
-
-  sum.innerHTML = day.length ? `<strong>${done}/${day.length}</strong> postados` : 'Nenhum post neste dia';
-
-  if (!day.length) {
-    list.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>Nenhum post para este dia</p><small>Clique em "+ Novo" para adicionar</small></div>`;
+  if (!USERS[user] || pass !== PASS) {
+    err.textContent = 'Usuário ou senha incorretos.';
     return;
   }
 
-  const pending = day.filter(p => !p.done);
-  const doneL   = day.filter(p => p.done);
+  currentUser = { username: user, ...USERS[user] };
+  err.textContent = '';
+  document.getElementById('login-screen').style.display = 'none';
 
-  let html = `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>`;
-  if (pending.length) {
-    html += `<div class="section-label">Pendentes <span class="badge badge-orange">${pending.length}</span></div>`;
-    html += `<div class="posts-list" style="margin-bottom:24px;">${pending.map(cardHtml).join('')}</div>`;
+  if (currentUser.role === 'cliente') {
+    loadClientePortal();
+  } else {
+    loadAgenciaApp();
   }
-  if (doneL.length) {
-    html += `<div class="section-label">Postados <span class="badge badge-green">${doneL.length}</span></div>`;
-    html += `<div class="posts-list">${doneL.map(cardHtml).join('')}</div>`;
-  }
-  list.innerHTML = html;
 }
 
-function cardHtml(p) {
-  const lines   = p.legenda.split('\n');
-  const preview = lines.slice(0,3).join('\n') + (lines.length > 3 ? '\n...' : '');
-  return `
-    <div class="post-card ${p.done ? 'done' : ''}">
-      <div class="post-card-header">
-        <div class="post-time">${p.horario}</div>
-        <div class="post-client">${esc(p.cliente)}</div>
-        <div class="post-status ${p.done ? 'status-done' : 'status-pending'}">${p.done ? '✅ Postado' : '⏳ Pendente'}</div>
+function doLogout() {
+  currentUser = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('cliente-view').classList.remove('active');
+  document.getElementById('main-topbar').style.display = '';
+  document.getElementById('cliente-topbar').style.display = 'none';
+}
+
+function toggleTheme() {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.body.setAttribute('data-theme', currentTheme);
+  localStorage.setItem('mktheme', currentTheme);
+  updateThemeBtn();
+}
+
+// ══════════════════════════════════════
+// AGENCIA APP
+// ══════════════════════════════════════
+function loadAgenciaApp() {
+  const app = document.getElementById('app');
+  app.style.display = 'flex';
+
+  document.getElementById('user-avatar').textContent  = currentUser.initials;
+  document.getElementById('user-avatar').style.background = currentUser.color + '33';
+  document.getElementById('user-avatar').style.color  = currentUser.color;
+  document.getElementById('user-label').textContent   = currentUser.name;
+
+  // Poster vê só a coluna postar — mas sem travar
+  setTimeout(() => { trlInit(); }, 50);
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.topbar-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (tab === 'trello') setTimeout(() => trlInit(), 50);
+}
+
+// ══════════════════════════════════════
+// PORTAL CLIENTE
+// ══════════════════════════════════════
+function loadClientePortal() {
+  document.getElementById('main-topbar').style.display = 'none';
+  document.getElementById('cliente-topbar').style.display = 'flex';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('app-body').style.display = 'none';
+
+  document.getElementById('cliente-avatar').textContent = currentUser.initials;
+  document.getElementById('cliente-avatar').style.background = currentUser.color + '33';
+  document.getElementById('cliente-avatar').style.color = currentUser.color;
+  document.getElementById('cliente-label').textContent = currentUser.name;
+
+  document.getElementById('portal-avatar').textContent = currentUser.initials;
+  document.getElementById('portal-avatar').style.background = currentUser.color + '33';
+  document.getElementById('portal-avatar').style.color = currentUser.color;
+  document.getElementById('portal-name').textContent = 'Olá, ' + currentUser.name + '!';
+
+  const cid = currentUser.clientId;
+  const data = trlBoardData[cid] || { design:[], admin:[], clinica:[], postar:[] };
+  const all = [...(data.clinica||[]), ...(data.postar||[])];
+
+  const container = document.getElementById('portal-cards');
+  if (all.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:60px 20px;color:var(--text-3);">Nenhum post para revisar no momento 📭</div>';
+  } else {
+    container.innerHTML = all.map(card => `
+      <div class="portal-card">
+        <div class="portal-card-header">
+          <div style="font-size:22px;">${card.emoji}</div>
+          <div class="portal-card-title">${card.title}</div>
+          <span class="badge ${card.approved ? 'badge-green' : 'badge-gold'}">${card.approved ? '✅ Aprovado' : '⏳ Aguardando aprovação'}</span>
+        </div>
+        ${card.slides && card.slides.length > 0 ? `
+          <div class="portal-slides">
+            ${card.slides.map(s => `<img class="portal-slide" src="${s.dataUrl}" alt="slide">`).join('')}
+          </div>` : ''}
+        ${card.copy ? `<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3);margin-bottom:5px;">📝 Legenda</div><div class="portal-legenda">${esc(card.copy)}</div>` : ''}
+        ${card.music ? `<div style="font-size:12px;color:var(--text-3);margin-bottom:8px;">🎵 <strong>Música:</strong> ${esc(card.music)}</div>` : ''}
+        ${card.hashtags ? `<div style="font-size:12px;color:var(--text-3);margin-bottom:12px;">#️⃣ ${esc(card.hashtags)}</div>` : ''}
+        <div class="portal-actions">
+          ${!card.approved ? `
+            <button class="btn btn-green" onclick="clienteAprovar('${cid}','${card.id}',this)">✅ Aprovar</button>
+            <button class="btn btn-red" onclick="clientePedirAjuste('${card.id}')">✏️ Pedir ajuste</button>
+          ` : `<span style="font-size:12px;color:var(--green);">✅ Você aprovou este post</span>`}
+        </div>
       </div>
-      <div class="post-legenda" style="${p.done?'opacity:.6;':''}">${esc(preview)}</div>
-      <div class="post-actions">
-        <button class="btn btn-ghost btn-sm" onclick="openLeg('${p.id}')">📋 Ver legenda</button>
-        <button class="btn btn-ghost btn-sm" onclick="openSlides('${p.id}')">🖼️ Slides (${p.slides.length})</button>
-        ${p.done
-          ? `<button class="btn btn-ghost btn-sm" onclick="toggleDone('${p.id}')">Desmarcar</button>`
-          : `<button class="btn btn-accent btn-sm" onclick="toggleDone('${p.id}')">Marcar como postado</button>`}
-        <button class="btn btn-danger btn-xs" style="margin-left:auto" onclick="deletePost('${p.id}')" title="Excluir">🗑️</button>
+    `).join('');
+  }
+
+  document.getElementById('cliente-view').classList.add('active');
+}
+
+let ajusteCardId = null;
+function clientePedirAjuste(cardId) {
+  ajusteCardId = cardId;
+  document.getElementById('ajuste-texto').value = '';
+  openModal('modal-ajuste');
+}
+
+function enviarAjuste() {
+  const texto = document.getElementById('ajuste-texto').value.trim();
+  if (!texto) { showNotif('⚠️ Descreva o ajuste necessário'); return; }
+  const cid = currentUser.clientId;
+  const card = Object.values(trlBoardData[cid]).flat().find(c => c.id === ajusteCardId);
+  if (card) {
+    card.comments = (card.comments || 0) + 1;
+    card.tags = card.tags || [];
+    card.tags.push({ l: 'Ajuste solicitado', c: '#ff6b6b' });
+    if (!card.comentarios) card.comentarios = [];
+    card.comentarios.push({ autor: currentUser.name, role: 'Cliente', texto, time: new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }) });
+    card.approved = false;
+  }
+  closeModal('modal-ajuste');
+  showNotif('✉️ Ajuste enviado para a equipe!');
+  setTimeout(() => loadClientePortal(), 300);
+}
+
+function clienteAprovar(cid, cardId, btn) {
+  const card = Object.values(trlBoardData[cid]).flat().find(c => c.id === cardId);
+  if (card) {
+    card.approved = true;
+    card.tags = (card.tags || []).filter(t => t.l !== 'Ajuste solicitado');
+    card.tags.push({ l: 'Aprovado', c: '#3ecf8e' });
+    if (!card.comentarios) card.comentarios = [];
+    card.comentarios.push({ autor: currentUser.name, role: 'Cliente', texto: '✅ Aprovado pela clínica!', time: new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }) });
+    // Move para clinica se estava lá, mantém em postar se já estava
+    const col = Object.keys(trlBoardData[cid]).find(col => trlBoardData[cid][col].find(c => c.id === cardId));
+    if (col === 'clinica') {
+      trlBoardData[cid]['clinica'] = trlBoardData[cid]['clinica'].filter(c => c.id !== cardId);
+      trlBoardData[cid]['postar'].push(card);
+    }
+  }
+  showNotif('✅ Post aprovado! A equipe foi notificada.');
+  setTimeout(() => loadClientePortal(), 300);
+}
+
+// ══════════════════════════════════════
+// TRELLO DATA
+// ══════════════════════════════════════
+const trlClients = [
+  { id:'tatiana', name:'Dra. Tatiana',  initials:'DT', bg:'#a78bfa22', color:'#a78bfa', meta:'Harmonização Facial · Joinville' },
+  { id:'camila',  name:'Dra. Camila',   initials:'DC', bg:'#ec489922', color:'#ec4899', meta:'Harmonização · Laser CO2' },
+  { id:'leticia', name:'Dra. Letícia',  initials:'DL', bg:'#4a9eff22', color:'#4a9eff', meta:'Harmonização Full Face' },
+  { id:'dayane',  name:'Dra. Dayane',   initials:'DD', bg:'#3ecf8e22', color:'#3ecf8e', meta:'Harmonização Facial · HERUS' },
+  { id:'marina',  name:'Dra. Marina',   initials:'DM', bg:'#fb923c22', color:'#fb923c', meta:'Ultrassom · HIPRO' },
+  { id:'carol',   name:'Dra. Carol',    initials:'CB', bg:'#f43f5e22', color:'#f43f5e', meta:'Cirurgias Estéticas · BH' },
+  { id:'vanessa', name:'Dra. Vanessa',  initials:'DV', bg:'#d4a84322', color:'#d4a843', meta:'Cirurgias Estéticas da Face' },
+  { id:'kav',     name:'Instituto Kav', initials:'KV', bg:'#a78bfa22', color:'#a78bfa', meta:'Mentorias · BH' },
+];
+
+const trlMonths = ['Janeiro 2026','Fevereiro 2026','Março 2026','Abril 2026','Maio 2026','Junho 2026'];
+let trlMonth = 'Maio 2026';
+
+const trlColConfig = {
+  design:  { label:'Edição Design',   color:'#4a9eff', info:'Social media cria, designer adiciona as artes.' },
+  admin:   { label:'Aprovação Admin', color:'#d4a843', info:'Revisão interna antes de enviar para a clínica.' },
+  clinica: { label:'Clínica Aprovar', color:'#a78bfa', info:'Cliente visualiza e aprova ou pede ajuste.' },
+  postar:  { label:'Postar',          color:'#3ecf8e', info:'Aprovado! Poster baixa as artes e agenda.' },
+};
+
+const trlBoardData = {
+  tatiana: {
+    design:[
+      {id:'t1',title:'POST CARROSSEL 12/05',date:'12/05',horario:'09:00',emoji:'🖼️',copy:'✨ Renovação celular com tecnologia de ponta...',music:'Flowers — Miley Cyrus',hashtags:'#harmonizacao #rejuvenescimento #botox',tags:[{l:'Feed',c:'#ec4899'}],comments:1,files:0,slides:[],members:['ST'],checklist:{copy:true,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false},
+    ],
+    admin:[
+      {id:'t4',title:'POST CARROSSEL 10/05',date:'10/05',horario:'11:00',emoji:'✅',copy:'Harmonização Facial de Alto Padrão\n\nResultados naturais que realçam sua beleza única.',music:'Espelho — Djavan',hashtags:'#harmonizacao #beauty #procedimentos',tags:[{l:'Urgente',c:'#f43f5e'}],comments:2,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[{autor:'Kellen',role:'Social Media',texto:'Legenda e hashtags prontos! Aguardando artes da Stephanie.',time:'09:14'}],approved:false},
+    ],
+    clinica:[
+      {id:'t6',title:'POST CARROSSEL 05/05',date:'05/05',horario:'14:00',emoji:'💆‍♀️',copy:'Protocolo de rejuvenescimento exclusivo da Dra. Tatiana.',music:'Golden Hour — JVKE',hashtags:'#pele #skincare #harmonizacaofacial',tags:[{l:'Aprovação',c:'#a78bfa'}],comments:1,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:true,aprovacao_admin:true,aprovacao_clinica:false,postado:false},comentarios:[{autor:'Kellen',role:'Social Media',texto:'Tudo pronto! Enviado para aprovação da Dra. Tatiana.',time:'10:00'}],approved:false},
+    ],
+    postar:[
+      {id:'t7',title:'POST CARROSSEL 03/05',date:'03/05',horario:'10:00',emoji:'🚀',copy:'Procedimento aprovado e pronto para publicar!',music:'As It Was — Harry Styles',hashtags:'#harmonizacao #botox #fillers',tags:[{l:'Aprovado',c:'#3ecf8e'}],comments:1,files:0,slides:[],members:['KF'],checklist:{copy:true,music:true,hashtags:true,artes:true,aprovacao_admin:true,aprovacao_clinica:true,postado:false},comentarios:[{autor:'Dra. Tatiana',role:'Cliente',texto:'✅ Aprovado! Ficou lindo!',time:'11:45'}],approved:true},
+    ]
+  },
+  camila:{ design:[{id:'c1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy para Dra. Camila...',music:'',hashtags:'',tags:[{l:'Feed',c:'#ec4899'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  leticia:{ design:[{id:'l1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy Dra. Letícia',music:'',hashtags:'',tags:[{l:'Feed',c:'#4a9eff'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  dayane:{ design:[], admin:[{id:'d1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'10:00',emoji:'📸',copy:'HERUS FULL — harmonização facial completa.',music:'Blinding Lights — The Weeknd',hashtags:'#herus #harmonizacao',tags:[{l:'Urgente',c:'#f43f5e'}],comments:1,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], clinica:[], postar:[] },
+  marina:{ design:[{id:'m1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Ultrassom de imagem — Dra. Marina.',music:'',hashtags:'',tags:[{l:'Feed',c:'#fb923c'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  carol:{ design:[{id:'cb1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Cirurgias estéticas da face.',music:'',hashtags:'',tags:[{l:'Feed',c:'#f43f5e'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  vanessa:{ design:[{id:'v1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy Dra. Vanessa.',music:'',hashtags:'',tags:[{l:'Feed',c:'#d4a843'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  kav:{ design:[{id:'k1',title:'POST FIXO 10/05',date:'10/05',horario:'09:00',emoji:'🖼️',copy:'KAV MENTORIAS — transforme sua carreira.',music:'',hashtags:'',tags:[{l:'Feed',c:'#a78bfa'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+};
+
+// ══════════════════════════════════════
+// TRELLO RENDER
+// ══════════════════════════════════════
+let trlActive = 'tatiana';
+let trlActiveCardId = null;
+let trlActiveCol = 'design';
+let ncSlides = [];
+
+function trlInit() {
+  trlRenderClients();
+  trlSelectClient('tatiana');
+  renderLegend();
+}
+
+function renderLegend() {
+  document.getElementById('trl-legend-dots').innerHTML = Object.entries(trlColConfig).map(([,cfg]) =>
+    `<span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-3);">
+      <span style="width:8px;height:8px;border-radius:50%;background:${cfg.color};display:inline-block;"></span>${cfg.label}
+    </span>`
+  ).join('');
+}
+
+function trlFilterClients(v) { trlRenderClients(v); }
+
+function trlRenderClients(filter='') {
+  const list = document.getElementById('trl-clients-list');
+  if (!list) return;
+  list.innerHTML = trlClients
+    .filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
+    .map(c => {
+      const total = Object.values(trlBoardData[c.id]||{}).flat().length;
+      return `<button onclick="trlSelectClient('${c.id}')" style="width:100%;padding:8px 10px;border-radius:9px;border:none;background:${c.id===trlActive?c.bg:'transparent'};cursor:pointer;text-align:left;display:flex;align-items:center;gap:7px;margin-bottom:2px;transition:all 0.12s;">
+        <div style="width:26px;height:26px;border-radius:7px;background:${c.bg};color:${c.color};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">${c.initials}</div>
+        <div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;color:${c.id===trlActive?c.color:'var(--text-2)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.name}</div></div>
+        ${total>0?`<div style="width:16px;height:16px;border-radius:50%;background:var(--gold-dim);color:var(--gold);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;">${total}</div>`:''}
+      </button>`;
+    }).join('');
+}
+
+function trlSelectClient(id) {
+  trlActive = id;
+  trlRenderClients();
+  const c = trlClients.find(x => x.id === id);
+  document.getElementById('trl-avatar').textContent = c.initials;
+  document.getElementById('trl-avatar').style.background = c.bg;
+  document.getElementById('trl-avatar').style.color = c.color;
+  document.getElementById('trl-name').textContent = c.name;
+  document.getElementById('trl-meta').textContent = c.meta;
+  trlRenderMonths();
+  trlRenderBoard();
+}
+
+function trlRenderMonths() {
+  const wrap = document.getElementById('trl-month-tabs');
+  if (!wrap) return;
+  wrap.innerHTML = trlMonths.map(m =>
+    `<button onclick="trlSelectMonth('${m}')" style="padding:7px 14px;border-radius:7px 7px 0 0;font-size:12px;font-weight:600;color:${m===trlMonth?'var(--gold)':'var(--text-3)'};cursor:pointer;border:none;background:${m===trlMonth?'var(--gold-dim)':'transparent'};border-bottom:2px solid ${m===trlMonth?'var(--gold)':'transparent'};transition:all 0.12s;font-family:'Outfit',sans-serif;">${m}</button>`
+  ).join('') + `<button onclick="showNotif('➕ Novo mês!')" style="padding:7px 10px;font-size:14px;color:var(--text-3);border:none;background:transparent;cursor:pointer;">+</button>`;
+}
+
+function trlSelectMonth(m) { trlMonth = m; trlRenderMonths(); trlRenderBoard(); }
+
+function trlRenderBoard() {
+  const board = document.getElementById('trl-board');
+  if (!board) return;
+  const data = trlBoardData[trlActive] || { design:[], admin:[], clinica:[], postar:[] };
+
+  board.innerHTML = Object.entries(trlColConfig).map(([col, cfg]) => {
+    const cards = data[col] || [];
+    const isDark = currentTheme === 'dark';
+    const colBg = isDark
+      ? col==='design'?'#0d1520':col==='admin'?'#141008':col==='clinica'?'#120f1e':'#0b160f'
+      : 'var(--surface)';
+    const colBorder = isDark
+      ? col==='design'?'rgba(74,158,255,0.2)':col==='admin'?'rgba(212,168,67,0.2)':col==='clinica'?'rgba(167,139,250,0.2)':'rgba(62,207,142,0.2)'
+      : 'var(--border2)';
+
+    return `<div style="width:265px;flex-shrink:0;border-radius:12px;display:flex;flex-direction:column;max-height:100%;overflow:hidden;border:1px solid ${colBorder};background:${colBg};">
+      <div style="padding:10px 12px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border);flex-shrink:0;">
+        <div style="width:9px;height:9px;border-radius:50%;background:${cfg.color};flex-shrink:0;"></div>
+        <div style="font-size:12px;font-weight:700;color:${cfg.color};flex:1;">${cfg.label}</div>
+        <div style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--surface3);color:var(--text-3);">${cards.length}</div>
       </div>
+      <div style="font-size:10px;color:var(--text-3);padding:5px 12px 7px;border-bottom:1px solid var(--border);flex-shrink:0;line-height:1.4;">${cfg.info}</div>
+      <div style="flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:7px;">
+        ${cards.length === 0
+          ? `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 10px;gap:6px;text-align:center;"><div style="font-size:24px;opacity:0.2;">📭</div><div style="font-size:11px;color:var(--text-3);">Nenhum card</div></div>`
+          : cards.map(card => cardMiniHtml(card, col, cfg)).join('')
+        }
+      </div>
+      <button onclick="openNewCard()" style="margin:0 8px 8px;padding:7px 10px;border-radius:7px;border:1px dashed var(--border2);background:transparent;color:var(--text-3);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:5px;">+ Adicionar card</button>
     </div>`;
+  }).join('');
 }
 
-// ── MODAIS ──
-function openLeg(id) {
-  const p = posts.find(x => x.id === id);
-  if (!p) return;
-  activePost = p;
-  document.getElementById('modalLegendaTitle').textContent = `${p.cliente} — ${p.horario}`;
-  document.getElementById('modalLegendaText').textContent  = p.legenda;
-  document.getElementById('modalLegenda').classList.add('open');
+function cardMiniHtml(card, col, cfg) {
+  const checkDone = Object.values(card.checklist||{}).filter(Boolean).length;
+  const checkTotal = Object.values(card.checklist||{}).length;
+  const pct = Math.round((checkDone / checkTotal) * 100);
+  return `<div onclick="openCard('${card.id}','${col}')" style="background:var(--surface2);border:1px solid var(--border);border-radius:9px;cursor:pointer;transition:all 0.15s;overflow:hidden;" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor=var('--border2');" onmouseout="this.style.transform='';this.style.borderColor='';">
+    <div style="height:2px;background:${cfg.color};width:100%;"></div>
+    <div style="padding:9px 11px 10px;">
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-3);margin-bottom:4px;">📅 ${card.date} ${card.horario||''}</div>
+      <div style="font-size:12.5px;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:5px;">${card.emoji} ${card.title}</div>
+      ${card.copy ? `<div style="font-size:11px;color:var(--text-3);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:6px;">${esc(card.copy.substring(0,80))}</div>` : ''}
+      <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:7px;">
+        ${(card.tags||[]).map(t=>`<span style="font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700;background:${t.c}22;color:${t.c};">${t.l}</span>`).join('')}
+        ${card.approved ? `<span style="font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700;background:#3ecf8e22;color:#3ecf8e;">✅ Aprovado</span>` : ''}
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;padding-top:5px;border-top:1px solid var(--border);">
+        <div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${cfg.color};border-radius:2px;"></div>
+        </div>
+        <span style="font-size:9px;color:var(--text-3);">${checkDone}/${checkTotal}</span>
+        ${card.slides&&card.slides.length>0?`<span style="font-size:10px;color:var(--text-3);">🖼️${card.slides.length}</span>`:''}
+        <span style="font-size:10px;color:var(--text-3);">💬${card.comments||0}</span>
+      </div>
+    </div>
+  </div>`;
 }
 
-function copyLegenda() {
-  if (!activePost) return;
-  const t = activePost.legenda;
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(t).then(() => toast('Legenda copiada!', true)).catch(() => fbCopy(t));
-  } else { fbCopy(t); }
+// ══════════════════════════════════════
+// CARD MODAL
+// ══════════════════════════════════════
+function openCard(id, col) {
+  trlActiveCardId = id;
+  trlActiveCol = col;
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === id);
+  if (!card) return;
+  const cfg = trlColConfig[col];
+  const client = trlClients.find(c => c.id === trlActive);
+
+  document.getElementById('modal-card-title').textContent = card.title;
+
+  const checkLabels = {
+    copy: '📝 Legenda/copy preenchida',
+    music: '🎵 Música sugerida',
+    hashtags: '#️⃣ Hashtags adicionadas',
+    artes: '🖼️ Artes/slides enviados',
+    aprovacao_admin: '✅ Aprovação interna (admin)',
+    aprovacao_clinica: '✅ Aprovação da clínica',
+    postado: '🚀 Postado no Instagram'
+  };
+
+  document.getElementById('modal-card-body').innerHTML = `
+    <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;">
+      <span class="badge" style="background:${cfg.color}22;color:${cfg.color};">${cfg.label}</span>
+      <span class="badge badge-gray">📅 ${card.date}/2026</span>
+      <span class="badge" style="background:${client.bg};color:${client.color};">👤 ${client.name}</span>
+      ${card.approved ? '<span class="badge badge-green">✅ Aprovado pela clínica</span>' : ''}
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div class="field-label" style="margin-bottom:8px;">📋 Checklist de progresso</div>
+      <div class="checklist" id="card-checklist">
+        ${Object.entries(card.checklist||{}).map(([key,val]) => `
+          <div class="check-item">
+            <div class="check-box ${val?'checked':''}" onclick="toggleCheck('${id}','${key}',this)">${val?'✓':''}</div>
+            <span class="check-label ${val?'checked':''}">${checkLabels[key]||key}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">📅 Data e horário de postagem</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <input class="field-input" value="${card.date||''}" placeholder="DD/MM" onchange="updateCardField('${id}','date',this.value)">
+        <input class="field-input" type="time" value="${card.horario||'09:00'}" onchange="updateCardField('${id}','horario',this.value)">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">📝 Legenda / Copy</div>
+      <textarea class="field-textarea" id="card-copy" onchange="updateCardField('${id}','copy',this.value)">${esc(card.copy||'')}</textarea>
+      <button class="btn btn-ghost" style="font-size:11.5px;margin-top:6px;" onclick="copiarTexto('card-copy')">📋 Copiar legenda</button>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">🎵 Música sugerida</div>
+      <input class="field-input" value="${esc(card.music||'')}" placeholder="Nome da música — Artista" onchange="updateCardField('${id}','music',this.value)">
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">#️⃣ Hashtags</div>
+      <input class="field-input" value="${esc(card.hashtags||'')}" placeholder="#skincare #harmonizacao" onchange="updateCardField('${id}','hashtags',this.value)">
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">🖼️ Slides do carrossel</div>
+      <div class="upload-zone" onclick="document.getElementById('card-file-input').click()">
+        <div style="font-size:18px;margin-bottom:4px;">🖼️</div>
+        <div style="font-size:12px;font-weight:500;">Clique para adicionar slides</div>
+      </div>
+      <input type="file" id="card-file-input" multiple accept="image/*" style="display:none" onchange="handleCardFiles('${id}',this.files)">
+      <div class="slides-grid" id="card-slides-${id}">
+        ${(card.slides||[]).map((s,i) => `
+          <div class="slide-thumb">
+            <img src="${s.dataUrl}" alt="${i+1}">
+            <div class="slide-num">${i+1}</div>
+            <button class="slide-rm" onclick="removeCardSlide('${id}',${i})">×</button>
+          </div>`).join('')}
+      </div>
+      ${card.slides&&card.slides.length>0 ? `<button class="btn btn-ghost" style="margin-top:8px;font-size:11.5px;" onclick="downloadCardSlides('${id}')">⬇️ Baixar todos os slides</button>` : ''}
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">💬 Comentários</div>
+      <div id="card-comments" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;max-height:200px;overflow-y:auto;">
+        ${(card.comentarios||[]).map(c => `
+          <div style="display:flex;gap:8px;">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--surface3);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;">${c.autor.charAt(0)}</div>
+            <div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:8px 11px;">
+              <div style="font-size:10px;font-weight:700;color:var(--text);margin-bottom:3px;">${esc(c.autor)} <span class="badge badge-gray">${c.role}</span><span style="font-size:10px;color:var(--text-3);float:right;">${c.time}</span></div>
+              <div style="font-size:12px;color:var(--text-2);line-height:1.5;">${esc(c.texto)}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <div style="display:flex;gap:8px;">
+        <textarea id="new-comment" placeholder="Comentário ou instrução..." class="field-textarea" style="min-height:50px;flex:1;"></textarea>
+        <button class="btn btn-gold" style="align-self:flex-end;" onclick="sendComment('${id}')">Enviar</button>
+      </div>
+    </div>
+  `;
+
+  // Footer com botões de mover
+  const cols = Object.keys(trlColConfig);
+  const idx = cols.indexOf(col);
+  let footer = `<button class="btn btn-red" onclick="confirmDeleteCard('${id}')">🗑️ Excluir</button>`;
+  footer += '<div style="margin-left:auto;display:flex;gap:7px;">';
+  if (idx > 0) footer += `<button class="btn btn-ghost" onclick="moveCard('${id}','${cols[idx-1]}')">← ${trlColConfig[cols[idx-1]].label}</button>`;
+  if (idx < cols.length-1) footer += `<button class="btn" style="background:${trlColConfig[cols[idx+1]].color}22;color:${trlColConfig[cols[idx+1]].color};border:1px solid ${trlColConfig[cols[idx+1]].color}44;" onclick="moveCard('${id}','${cols[idx+1]}')">Mover para ${trlColConfig[cols[idx+1]].label} →</button>`;
+  if (col === 'postar') footer += `<button class="btn btn-green" onclick="marcarPostado('${id}')">🚀 Marcar como postado</button>`;
+  footer += '</div>';
+  document.getElementById('modal-card-footer').innerHTML = footer;
+
+  openModal('modal-card');
 }
 
-function fbCopy(t) {
-  const ta = document.createElement('textarea');
-  ta.value = t; ta.style.cssText = 'position:fixed;opacity:0';
-  document.body.appendChild(ta); ta.select();
-  try { document.execCommand('copy'); toast('Legenda copiada!', true); }
-  catch(e) { toast('Não foi possível copiar'); }
-  document.body.removeChild(ta);
+function toggleCheck(cardId, key, el) {
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+  if (!card) return;
+  card.checklist[key] = !card.checklist[key];
+  el.classList.toggle('checked');
+  el.textContent = card.checklist[key] ? '✓' : '';
+  const label = el.nextElementSibling;
+  if (label) label.classList.toggle('checked', card.checklist[key]);
+  trlRenderBoard();
 }
 
-function openSlides(id) {
-  const p = posts.find(x => x.id === id);
-  if (!p) return;
-  activePost = p;
-  document.getElementById('modalSlidesTitle').textContent = `${p.cliente} — ${p.slides.length} slides`;
-  document.getElementById('modalSlidesGrid').innerHTML = p.slides.map((s,i) => `
-    <div class="slide-thumb" style="aspect-ratio:1">
-      <img src="${s.dataUrl}" alt="${i+1}" loading="lazy">
-      <div class="slide-order">${i+1}</div>
+function updateCardField(cardId, field, value) {
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+  if (card) { card[field] = value; trlRenderBoard(); }
+}
+
+function handleCardFiles(cardId, files) {
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+  if (!card) return;
+  Array.from(files).filter(f => f.type.startsWith('image/')).forEach(f => {
+    const r = new FileReader();
+    r.onload = e => {
+      card.slides = card.slides || [];
+      card.slides.push({ name: f.name, dataUrl: e.target.result, mime: f.type });
+      card.files = card.slides.length;
+      card.checklist.artes = true;
+      refreshSlidesGrid(cardId, card);
+      trlRenderBoard();
+    };
+    r.readAsDataURL(f);
+  });
+  document.getElementById('card-file-input').value = '';
+}
+
+function refreshSlidesGrid(cardId, card) {
+  const grid = document.getElementById('card-slides-' + cardId);
+  if (!grid) return;
+  grid.innerHTML = (card.slides||[]).map((s,i) => `
+    <div class="slide-thumb">
+      <img src="${s.dataUrl}" alt="${i+1}">
+      <div class="slide-num">${i+1}</div>
+      <button class="slide-rm" onclick="removeCardSlide('${cardId}',${i})">×</button>
     </div>`).join('');
-  document.getElementById('modalSlides').classList.add('open');
 }
 
-function downloadAll() {
-  if (!activePost) return;
-  const name = activePost.cliente.replace(/[\s.]/g,'_');
-  activePost.slides.forEach((s,i) => {
+function removeCardSlide(cardId, idx) {
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+  if (card) { card.slides.splice(idx, 1); card.files = card.slides.length; refreshSlidesGrid(cardId, card); trlRenderBoard(); }
+}
+
+function downloadCardSlides(cardId) {
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+  if (!card || !card.slides) return;
+  const name = card.title.replace(/[\s\/]/g,'_');
+  card.slides.forEach((s,i) => {
     setTimeout(() => {
       const a = document.createElement('a');
       a.href = s.dataUrl;
-      const mime = s.mime || 'image/png';
-      const ext = mime === 'image/png' ? 'png' : mime === 'image/webp' ? 'webp' : 'jpg';
+      const ext = (s.mime||'image/png') === 'image/png' ? 'png' : 'jpg';
       a.download = `${name}_slide${i+1}.${ext}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }, i * 250);
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }, i * 200);
   });
-  toast('Download iniciado!', true);
+  showNotif('⬇️ Download iniciado!');
 }
 
-function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
-  if (id === 'modalDelete') deleteId = null;
+function sendComment(cardId) {
+  const input = document.getElementById('new-comment');
+  const text = input.value.trim();
+  if (!text) return;
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+  if (!card) return;
+  if (!card.comentarios) card.comentarios = [];
+  const time = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+  card.comentarios.push({ autor: currentUser.name, role: currentUser.role, texto: text, time });
+  card.comments = (card.comments||0) + 1;
+  const list = document.getElementById('card-comments');
+  const div = document.createElement('div');
+  div.style.cssText = 'display:flex;gap:8px;';
+  div.innerHTML = `<div style="width:26px;height:26px;border-radius:50%;background:var(--surface3);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;">${currentUser.initials}</div><div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:8px 11px;"><div style="font-size:10px;font-weight:700;margin-bottom:3px;">${esc(currentUser.name)} <span class="badge badge-gray">${currentUser.role}</span><span style="float:right;color:var(--text-3);">${time}</span></div><div style="font-size:12px;color:var(--text-2);">${esc(text)}</div></div>`;
+  list.appendChild(div);
+  list.scrollTop = list.scrollHeight;
+  input.value = '';
+  trlRenderBoard();
+  showNotif('💬 Comentário enviado!');
 }
 
-// ── TOAST ──
-let tTimer;
-function toast(msg, green=false) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'toast' + (green ? ' green' : '');
-  clearTimeout(tTimer);
-  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
-  tTimer = setTimeout(() => el.classList.remove('show'), 2800);
+function copiarTexto(inputId) {
+  const el = document.getElementById(inputId);
+  const text = el.value || el.textContent;
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => showNotif('📋 Copiado!'));
+  else { el.select && el.select(); document.execCommand('copy'); showNotif('📋 Copiado!'); }
+}
+
+function moveCard(id, toCol) {
+  let card = null;
+  Object.keys(trlBoardData[trlActive]).forEach(col => {
+    const idx = trlBoardData[trlActive][col].findIndex(c => c.id === id);
+    if (idx > -1) { card = trlBoardData[trlActive][col][idx]; trlBoardData[trlActive][col].splice(idx, 1); }
+  });
+  if (card) trlBoardData[trlActive][toCol].push(card);
+  closeModal('modal-card');
+  trlRenderBoard();
+  showNotif(`✅ Movido para "${trlColConfig[toCol].label}"`);
+}
+
+function marcarPostado(id) {
+  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === id);
+  if (card) { card.checklist.postado = true; card.tags = [{l:'Postado',c:'#3ecf8e'}]; }
+  closeModal('modal-card');
+  trlRenderBoard();
+  showNotif('🚀 Marcado como postado!');
+}
+
+function confirmDeleteCard(id) {
+  if (confirm('Excluir este card?')) {
+    Object.keys(trlBoardData[trlActive]).forEach(col => {
+      trlBoardData[trlActive][col] = trlBoardData[trlActive][col].filter(c => c.id !== id);
+    });
+    closeModal('modal-card');
+    trlRenderBoard();
+    showNotif('🗑️ Card excluído');
+  }
+}
+
+// ══════════════════════════════════════
+// NOVO CARD
+// ══════════════════════════════════════
+ncSlides = [];
+
+function openNewCard() {
+  ncSlides = [];
+  document.getElementById('nc-title').value = '';
+  document.getElementById('nc-copy').value = '';
+  document.getElementById('nc-music').value = '';
+  document.getElementById('nc-hashtags').value = '';
+  document.getElementById('nc-slides-preview').innerHTML = '';
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('nc-date').value = today;
+  document.getElementById('nc-time').value = '09:00';
+  openModal('modal-new-card');
+}
+
+function handleNewCardFiles(files) {
+  Array.from(files).filter(f => f.type.startsWith('image/')).forEach(f => {
+    const r = new FileReader();
+    r.onload = e => {
+      ncSlides.push({ name: f.name, dataUrl: e.target.result, mime: f.type });
+      renderNcSlides();
+    };
+    r.readAsDataURL(f);
+  });
+  document.getElementById('nc-files').value = '';
+}
+
+function renderNcSlides() {
+  document.getElementById('nc-slides-preview').innerHTML = ncSlides.map((s,i) => `
+    <div class="slide-thumb">
+      <img src="${s.dataUrl}" alt="${i+1}">
+      <div class="slide-num">${i+1}</div>
+      <button class="slide-rm" onclick="ncSlides.splice(${i},1);renderNcSlides()">×</button>
+    </div>`).join('');
+}
+
+function createCard() {
+  const title = document.getElementById('nc-title').value.trim() || 'NOVO POST';
+  const dateVal = document.getElementById('nc-date').value;
+  const date = dateVal ? dateVal.split('-').reverse().slice(0,2).join('/') : '--/--';
+  const newCard = {
+    id: 'card_' + Date.now(),
+    title, date,
+    horario: document.getElementById('nc-time').value,
+    emoji: '📝',
+    copy: document.getElementById('nc-copy').value,
+    music: document.getElementById('nc-music').value,
+    hashtags: document.getElementById('nc-hashtags').value,
+    tags: [{ l: 'Novo', c: '#4a9eff' }],
+    comments: 0, files: ncSlides.length,
+    slides: [...ncSlides],
+    members: [currentUser.initials || 'K'],
+    checklist: {
+      copy: !!document.getElementById('nc-copy').value,
+      music: !!document.getElementById('nc-music').value,
+      hashtags: !!document.getElementById('nc-hashtags').value,
+      artes: ncSlides.length > 0,
+      aprovacao_admin: false, aprovacao_clinica: false, postado: false
+    },
+    comentarios: [], approved: false
+  };
+  if (!trlBoardData[trlActive]) trlBoardData[trlActive] = { design:[], admin:[], clinica:[], postar:[] };
+  trlBoardData[trlActive].design.push(newCard);
+  ncSlides = [];
+  closeModal('modal-new-card');
+  trlRenderBoard();
+  showNotif(`✨ Card "${title}" criado!`);
+}
+
+// ══════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+let notifT;
+function showNotif(msg) {
+  const n = document.getElementById('notif');
+  n.textContent = msg; n.classList.add('show');
+  clearTimeout(notifT);
+  notifT = setTimeout(() => n.classList.remove('show'), 2800);
 }
 
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
-
-// ── INIT ──
-const today = new Date().toISOString().split('T')[0];
-document.getElementById('filterDate').value = today;
-document.getElementById('novaData').value   = today;
-document.getElementById('novoHorario').value = '09:00';
-setupDrop();
-load().then(() => { renderSelect(); renderPosts(); });
 </script>
 </body>
 </html>
