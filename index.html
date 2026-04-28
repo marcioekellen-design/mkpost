@@ -6,1396 +6,1092 @@
 <title>MKhof · Plataforma</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ── TEMAS ── */
-[data-theme="dark"] {
-  --bg: #0a0a0f; --surface: #111118; --surface2: #18181f; --surface3: #1e1e28;
-  --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
-  --text: #f0eff4; --text-2: #9d9baa; --text-3: #5c5a6b;
-  --shadow: 0 4px 24px rgba(0,0,0,0.4); --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
-  --input-bg: #18181f;
-}
-[data-theme="light"] {
-  --bg: #F7F7F5; --surface: #FFFFFF; --surface2: #F0F0ED; --surface3: #E8E8E4;
-  --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.14);
-  --text: #1A1A18; --text-2: #6B6B66; --text-3: #9B9B96;
-  --shadow: 0 4px 24px rgba(0,0,0,0.08); --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
-  --input-bg: #F0F0ED;
-}
-:root {
-  --gold: #d4a843; --gold-light: #f0c96a; --gold-dim: rgba(212,168,67,0.15);
-  --blue: #4a9eff; --blue-dim: rgba(74,158,255,0.12);
-  --green: #3ecf8e; --green-dim: rgba(62,207,142,0.12);
-  --red: #ff6b6b; --red-dim: rgba(255,107,107,0.12);
-  --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.12);
-  --orange: #fb923c; --pink: #f472b6;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-html, body { height:100%; }
-body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text); display:flex; flex-direction:column; transition:background 0.2s,color 0.2s; }
+[data-theme="dark"]{--bg:#0a0a0f;--surface:#111118;--surface2:#18181f;--surface3:#1e1e28;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--text:#f0eff4;--text2:#9d9baa;--text3:#5c5a6b;--shadow:0 4px 24px rgba(0,0,0,0.4);--input-bg:#18181f}
+[data-theme="light"]{--bg:#F7F7F5;--surface:#FFFFFF;--surface2:#F0F0ED;--surface3:#E8E8E4;--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);--text:#1A1A18;--text2:#6B6B66;--text3:#9B9B96;--shadow:0 4px 24px rgba(0,0,0,0.08);--input-bg:#F0F0ED}
+:root{--gold:#d4a843;--gold-light:#f0c96a;--gold-dim:rgba(212,168,67,0.15);--blue:#4a9eff;--blue-dim:rgba(74,158,255,0.12);--green:#3ecf8e;--green-dim:rgba(62,207,142,0.12);--red:#ff6b6b;--red-dim:rgba(255,107,107,0.12);--purple:#a78bfa;--purple-dim:rgba(167,139,250,0.12);--orange:#fb923c}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;transition:background .2s,color .2s}
 
-/* ── LOGIN ── */
-#login-screen {
-  position:fixed; inset:0; background:var(--bg); display:flex;
-  align-items:center; justify-content:center; z-index:9999;
-  flex-direction:column; gap:0;
-}
-.login-box {
-  background:var(--surface); border:1px solid var(--border2);
-  border-radius:20px; padding:40px 36px; width:360px;
-  box-shadow:var(--shadow);
-}
-.login-logo {
-  display:flex; align-items:center; gap:10px; margin-bottom:28px; justify-content:center;
-}
-.login-mark {
-  width:40px; height:40px; border-radius:10px;
-  background:linear-gradient(135deg,var(--gold),var(--gold-light));
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Instrument Serif',serif; font-size:20px; color:#0a0a0f;
-}
-.login-title { font-family:'Instrument Serif',serif; font-size:22px; }
-.login-title span { color:var(--gold); }
-.login-field { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
-.login-field label { font-size:12px; font-weight:600; color:var(--text-2); text-transform:uppercase; letter-spacing:0.8px; }
-.login-field input {
-  padding:10px 14px; border:1px solid var(--border2); border-radius:9px;
-  background:var(--input-bg); color:var(--text); font-family:'Outfit',sans-serif;
-  font-size:14px; outline:none; transition:border-color 0.15s;
-}
-.login-field input:focus { border-color:var(--gold); }
-.login-btn {
-  width:100%; padding:11px; border-radius:9px; border:none;
-  background:var(--gold); color:#0a0808; font-family:'Outfit',sans-serif;
-  font-size:14px; font-weight:700; cursor:pointer; margin-top:6px;
-  transition:opacity 0.15s;
-}
-.login-btn:hover { opacity:0.9; }
-.login-err { font-size:12px; color:var(--red); text-align:center; margin-top:8px; min-height:18px; }
+/* LOGIN */
+#login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-box{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:40px 36px;width:360px;box-shadow:var(--shadow)}
+.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center}
+.login-mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-size:20px;color:#0a0a0f}
+.login-name{font-family:'Instrument Serif',serif;font-size:22px}
+.login-name span{color:var(--gold)}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.8px}
+.field input{padding:10px 14px;border:1px solid var(--border2);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .15s}
+.field input:focus{border-color:var(--gold)}
+.login-btn{width:100%;padding:11px;border-radius:9px;border:none;background:var(--gold);color:#0a0808;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px}
+.login-btn:hover{opacity:.9}
+.login-err{font-size:12px;color:var(--red);text-align:center;margin-top:8px;min-height:18px}
 
-/* ── TOPBAR ── */
-.topbar {
-  height:52px; background:var(--surface); border-bottom:1px solid var(--border);
-  display:flex; align-items:center; padding:0 20px; gap:12px;
-  flex-shrink:0; position:relative; z-index:100;
-}
-.topbar::after {
-  content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
-  background:linear-gradient(90deg,var(--gold),transparent 60%);
-}
-.brand { display:flex; align-items:center; gap:10px; }
-.brand-mark {
-  width:32px; height:32px; border-radius:8px;
-  background:linear-gradient(135deg,var(--gold),var(--gold-light));
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Instrument Serif',serif; font-size:16px; color:#0a0a0f;
-}
-.brand-name { font-family:'Instrument Serif',serif; font-size:16px; }
-.brand-name span { color:var(--gold); }
-.topbar-tabs { display:flex; gap:2px; flex:1; }
-.topbar-tab {
-  padding:6px 14px; border-radius:7px; font-size:12.5px; font-weight:500;
-  color:var(--text-2); cursor:pointer; border:none; background:transparent;
-  display:flex; align-items:center; gap:6px; transition:all 0.15s;
-  font-family:'Outfit',sans-serif;
-}
-.topbar-tab:hover { background:var(--surface2); color:var(--text); }
-.topbar-tab.active { background:var(--gold-dim); color:var(--gold); }
-.topbar-right { display:flex; align-items:center; gap:8px; margin-left:auto; }
-.theme-toggle {
-  width:32px; height:32px; border-radius:8px; border:1px solid var(--border2);
-  background:transparent; color:var(--text-2); cursor:pointer; font-size:14px;
-  display:flex; align-items:center; justify-content:center; transition:all 0.15s;
-}
-.theme-toggle:hover { background:var(--surface2); }
-.user-chip {
-  display:flex; align-items:center; gap:7px; padding:4px 10px 4px 4px;
-  border-radius:20px; border:1px solid var(--border2); background:var(--surface2);
-  cursor:pointer; font-size:12px; color:var(--text-2);
-}
-.user-avatar {
-  width:24px; height:24px; border-radius:50%;
-  background:var(--gold-dim); color:var(--gold);
-  display:flex; align-items:center; justify-content:center;
-  font-size:9px; font-weight:700;
-}
-.logout-btn {
-  padding:5px 10px; border-radius:7px; border:1px solid var(--border2);
-  background:transparent; color:var(--text-3); font-family:'Outfit',sans-serif;
-  font-size:11.5px; cursor:pointer; transition:all 0.15s;
-}
-.logout-btn:hover { background:var(--red-dim); color:var(--red); border-color:var(--red-dim); }
+/* APP */
+#app{display:none;flex-direction:column;height:100%}
+.topbar{height:52px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0;position:relative;z-index:100}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--gold),transparent 60%)}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-size:16px;color:#0a0a0f}
+.brand-name{font-family:'Instrument Serif',serif;font-size:16px}
+.brand-name span{color:var(--gold)}
+.topbar-tabs{display:flex;gap:2px;flex:1}
+.tab-btn{padding:6px 14px;border-radius:7px;font-size:12.5px;font-weight:500;color:var(--text2);cursor:pointer;border:none;background:transparent;font-family:'Outfit',sans-serif;transition:all .15s}
+.tab-btn:hover{background:var(--surface2);color:var(--text)}
+.tab-btn.active{background:var(--gold-dim);color:var(--gold)}
+.topbar-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.theme-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.user-chip{display:flex;align-items:center;gap:7px;padding:4px 10px 4px 4px;border-radius:20px;border:1px solid var(--border2);background:var(--surface2);font-size:12px;color:var(--text2)}
+.avatar{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+.sair-btn{padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-family:'Outfit',sans-serif;font-size:11.5px;cursor:pointer}
+.sair-btn:hover{background:var(--red-dim);color:var(--red);border-color:var(--red-dim)}
 
-/* ── CONTENT ── */
-.app-body { flex:1; overflow:hidden; display:flex; flex-direction:column; }
-.tab-content { display:none; flex:1; overflow:hidden; flex-direction:column; }
-.tab-content.active { display:flex; }
+/* BODY */
+.app-body{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.view{display:none;flex:1;overflow:hidden;flex-direction:column}
+.view.active{display:flex}
 
-/* ── CLIENTE VIEW ── */
-#cliente-view {
-  display:none; flex:1; flex-direction:column; overflow:hidden;
-}
-#cliente-view.active { display:flex; }
+/* TRELLO */
+.trl-header{padding:0 24px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--surface)}
+.trl-header-top{display:flex;align-items:center;gap:12px;padding:14px 0 10px}
+.trl-months{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px}
+.month-btn{padding:7px 14px;border-radius:7px 7px 0 0;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;font-family:'Outfit',sans-serif;transition:all .12s}
+.month-btn.active{color:var(--gold);background:var(--gold-dim);border-bottom-color:var(--gold)}
+.trl-body{display:flex;flex:1;overflow:hidden}
+.trl-sidebar{width:190px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.client-btn{width:100%;padding:8px 10px;border-radius:9px;border:none;background:transparent;cursor:pointer;text-align:left;display:flex;align-items:center;gap:7px;margin-bottom:2px;transition:all .12s;font-family:'Outfit',sans-serif}
+.trl-kanban{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.trl-legend{padding:8px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;flex-shrink:0}
+.trl-board{flex:1;overflow-x:auto;overflow-y:hidden;padding:14px 18px;display:flex;gap:12px}
+.col{width:265px;flex-shrink:0;border-radius:12px;display:flex;flex-direction:column;max-height:100%;overflow:hidden}
+.col-header{padding:10px 12px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border);flex-shrink:0}
+.col-info{font-size:10px;color:var(--text3);padding:5px 12px 7px;border-bottom:1px solid var(--border);flex-shrink:0;line-height:1.4}
+.col-cards{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:7px}
+.mini-card{background:var(--surface2);border:1px solid var(--border);border-radius:9px;cursor:pointer;overflow:hidden;transition:transform .15s}
+.mini-card:hover{transform:translateY(-2px)}
+.mini-card-body{padding:9px 11px 10px}
+.add-card-btn{margin:0 8px 8px;padding:7px 10px;border-radius:7px;border:1px dashed var(--border2);background:transparent;color:var(--text3);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;text-align:left;width:calc(100% - 16px)}
 
-/* ── TRELLO ── */
-.trl-workspace { display:flex; flex-direction:column; height:100%; overflow:hidden; }
-.trl-header {
-  padding:0 24px; border-bottom:1px solid var(--border);
-  flex-shrink:0; background:var(--surface);
-}
-.trl-header-top { display:flex; align-items:center; gap:12px; padding:14px 0 10px; }
-.trl-months { display:flex; gap:4px; overflow-x:auto; }
-.trl-body { display:flex; flex:1; overflow:hidden; }
-.trl-sidebar {
-  width:190px; flex-shrink:0; background:var(--surface);
-  border-right:1px solid var(--border); display:flex;
-  flex-direction:column; overflow:hidden;
-}
-.trl-kanban { flex:1; overflow:hidden; display:flex; flex-direction:column; }
-.trl-legend {
-  padding:8px 20px; border-bottom:1px solid var(--border);
-  display:flex; align-items:center; gap:14px; flex-shrink:0;
-}
-.trl-board-wrap { flex:1; overflow-x:auto; overflow-y:hidden; padding:14px 18px; display:flex; gap:12px; }
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:16px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow);border:1px solid var(--border2)}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.modal-title{font-size:15px;font-weight:700}
+.modal-close{width:28px;height:28px;border-radius:7px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.modal-body{padding:18px 20px}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px}
 
-/* ── MODAL ── */
-.modal-overlay {
-  position:fixed; inset:0; background:rgba(0,0,0,0.6);
-  z-index:500; display:none; align-items:center; justify-content:center; padding:20px;
-}
-.modal-overlay.open { display:flex; }
-.modal {
-  background:var(--surface); border-radius:16px; width:100%;
-  max-width:600px; max-height:90vh; overflow-y:auto;
-  box-shadow:var(--shadow); border:1px solid var(--border2);
-}
-.modal-header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:18px 20px 14px; border-bottom:1px solid var(--border); flex-shrink:0;
-}
-.modal-title { font-size:15px; font-weight:700; }
-.modal-close {
-  width:28px; height:28px; border-radius:7px; border:none;
-  background:var(--surface2); color:var(--text-2); cursor:pointer;
-  font-size:16px; display:flex; align-items:center; justify-content:center;
-}
-.modal-body { padding:18px 20px; }
-.modal-footer {
-  padding:14px 20px; border-top:1px solid var(--border);
-  display:flex; align-items:center; gap:8px;
-}
+/* FORM */
+.fgroup{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.flabel{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3)}
+.finput,.ftextarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:9px 13px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .15s}
+.finput:focus,.ftextarea:focus{border-color:var(--gold)}
+.ftextarea{resize:vertical;min-height:80px;line-height:1.6}
 
-/* ── CHECKLIST ── */
-.checklist { display:flex; flex-direction:column; gap:6px; margin-bottom:16px; }
-.check-item { display:flex; align-items:center; gap:8px; }
-.check-box {
-  width:18px; height:18px; border-radius:5px; border:1.5px solid var(--border2);
-  background:transparent; cursor:pointer; flex-shrink:0; display:flex;
-  align-items:center; justify-content:center; font-size:11px; transition:all 0.15s;
-}
-.check-box.checked { background:var(--green); border-color:var(--green); color:#fff; }
-.check-label { font-size:13px; color:var(--text-2); }
-.check-label.checked { text-decoration:line-through; color:var(--text-3); }
+/* UPLOAD */
+.upload-zone{border:1.5px dashed var(--border2);border-radius:9px;padding:20px;text-align:center;cursor:pointer;transition:all .15s}
+.upload-zone:hover{border-color:var(--gold);background:var(--gold-dim)}
+.slides-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:7px;margin-top:10px}
+.sthumb{position:relative;aspect-ratio:1;border-radius:7px;overflow:hidden;border:1px solid var(--border)}
+.sthumb img{width:100%;height:100%;object-fit:cover}
+.snum{position:absolute;bottom:3px;left:3px;background:rgba(0,0,0,0.65);color:#fff;font-size:9px;padding:1px 5px;border-radius:4px}
+.srm{position:absolute;top:3px;right:3px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,0.65);color:#fff;border:none;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center}
 
-/* ── FORM FIELDS ── */
-.field-group { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
-.field-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-3); }
-.field-input, .field-textarea {
-  width:100%; background:var(--surface2); border:1px solid var(--border2);
-  border-radius:9px; padding:9px 13px; font-family:'Outfit',sans-serif;
-  font-size:13px; color:var(--text); outline:none; transition:border-color 0.15s;
-}
-.field-input:focus, .field-textarea:focus { border-color:var(--gold); }
-.field-textarea { resize:vertical; min-height:80px; line-height:1.6; }
+/* CHECKLIST */
+.check-item{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.check-box{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--border2);background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s}
+.check-box.on{background:var(--green);border-color:var(--green);color:#fff}
+.check-lbl{font-size:13px;color:var(--text2)}
+.check-lbl.on{text-decoration:line-through;color:var(--text3)}
 
-/* ── UPLOAD ZONE ── */
-.upload-zone {
-  border:1.5px dashed var(--border2); border-radius:9px; padding:20px;
-  text-align:center; cursor:pointer; transition:all 0.15s;
-}
-.upload-zone:hover { border-color:var(--gold); background:var(--gold-dim); }
-.slides-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(70px,1fr)); gap:7px; margin-top:10px; }
-.slide-thumb { position:relative; aspect-ratio:1; border-radius:7px; overflow:hidden; border:1px solid var(--border); }
-.slide-thumb img { width:100%; height:100%; object-fit:cover; }
-.slide-num { position:absolute; bottom:3px; left:3px; background:rgba(0,0,0,0.65); color:#fff; font-size:9px; padding:1px 5px; border-radius:4px; }
-.slide-rm { position:absolute; top:3px; right:3px; width:16px; height:16px; border-radius:50%; background:rgba(0,0,0,0.65); color:#fff; border:none; cursor:pointer; font-size:9px; display:flex; align-items:center; justify-content:center; }
+/* BTN */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:8px;border:none;font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-gold{background:var(--gold);color:#0a0808}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn-green{background:var(--green-dim);color:var(--green);border:1px solid rgba(62,207,142,0.3)}
+.btn-red{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,107,107,0.3)}
 
-/* ── BUTTONS ── */
-.btn { display:inline-flex; align-items:center; gap:6px; padding:7px 13px; border-radius:8px; border:none; font-family:'Outfit',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer; transition:all 0.15s; }
-.btn-gold { background:var(--gold); color:#0a0808; }
-.btn-ghost { background:transparent; color:var(--text-2); border:1px solid var(--border2); }
-.btn-ghost:hover { background:var(--surface2); }
-.btn-green { background:var(--green-dim); color:var(--green); border:1px solid rgba(62,207,142,0.3); }
-.btn-red { background:var(--red-dim); color:var(--red); border:1px solid rgba(255,107,107,0.3); }
-.btn-blue { background:var(--blue-dim); color:var(--blue); border:1px solid rgba(74,158,255,0.3); }
+/* PORTAL CLIENTE */
+#portal{display:none;flex-direction:column;flex:1;overflow:hidden}
+#portal.active{display:flex}
+.portal-hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 28px;flex-shrink:0}
+.portal-months{display:flex;gap:4px;overflow-x:auto;padding-top:10px}
+.portal-cards-area{flex:1;overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;gap:16px}
+.portal-card{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:20px}
 
-/* ── NOTIF ── */
-#notif {
-  position:fixed; bottom:24px; left:50%;
-  transform:translateX(-50%) translateY(60px);
-  background:var(--surface); border:1px solid var(--border2);
-  padding:9px 18px; border-radius:20px; font-size:13px; font-weight:500;
-  box-shadow:var(--shadow); z-index:9998; transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  white-space:nowrap; pointer-events:none;
-}
-#notif.show { transform:translateX(-50%) translateY(0); }
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--surface);border:1px solid var(--border2);padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;box-shadow:var(--shadow);z-index:9998;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0)}
 
-/* ── CLIENTE PORTAL ── */
-.portal-header {
-  background:var(--surface); border-bottom:1px solid var(--border);
-  padding:20px 28px; display:flex; align-items:center; gap:14px;
-}
-.portal-cards { padding:20px 28px; display:flex; flex-direction:column; gap:12px; overflow-y:auto; flex:1; }
-.portal-card {
-  background:var(--surface); border:1px solid var(--border2);
-  border-radius:12px; padding:16px 18px;
-}
-.portal-card-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
-.portal-card-title { font-size:14px; font-weight:700; flex:1; }
-.portal-slides { display:flex; gap:8px; overflow-x:auto; margin-bottom:12px; }
-.portal-slide { width:80px; height:80px; border-radius:8px; object-fit:cover; flex-shrink:0; border:1px solid var(--border); }
-.portal-legenda { font-size:13px; color:var(--text-2); line-height:1.6; margin-bottom:12px; white-space:pre-wrap; }
-.portal-actions { display:flex; gap:8px; }
-
-/* ── SCROLL ── */
-::-webkit-scrollbar { width:4px; height:4px; }
-::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:var(--border2); border-radius:4px; }
-
-.badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:700; }
-.badge-green { background:var(--green-dim); color:var(--green); }
-.badge-gold { background:var(--gold-dim); color:var(--gold); }
-.badge-blue { background:var(--blue-dim); color:var(--blue); }
-.badge-purple { background:var(--purple-dim); color:var(--purple); }
-.badge-red { background:var(--red-dim); color:var(--red); }
-.badge-gray { background:var(--surface2); color:var(--text-3); }
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+.divider{height:1px;background:var(--border);margin:16px 0}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700}
 </style>
 </head>
 <body data-theme="dark">
 
-<!-- ══ LOGIN ══ -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">
       <div class="login-mark">M</div>
-      <div class="login-title">MKhof <span>Marketing</span></div>
+      <div class="login-name">MKhof <span>Marketing</span></div>
     </div>
-    <div class="login-field">
+    <div class="field">
       <label>Usuário</label>
-      <input type="text" id="login-user" placeholder="seu.usuario" onkeydown="if(event.key==='Enter')doLogin()">
+      <input type="text" id="login-user" placeholder="seu.usuario" autocomplete="off">
     </div>
-    <div class="login-field">
+    <div class="field">
       <label>Senha</label>
-      <input type="password" id="login-pass" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      <input type="password" id="login-pass" placeholder="••••••">
     </div>
-    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <button class="login-btn" id="login-btn">Entrar</button>
     <div class="login-err" id="login-err"></div>
   </div>
 </div>
 
-<!-- ══ APP ══ -->
-<div id="app" style="display:none;flex-direction:column;height:100%;">
-
-<!-- TOPBAR -->
-<div class="topbar" id="main-topbar">
-  <div class="brand">
-    <div class="brand-mark">M</div>
-    <div class="brand-name">MKhof <span>Marketing</span></div>
-  </div>
-  <div style="width:1px;height:24px;background:var(--border);"></div>
-  <div class="topbar-tabs" id="topbar-tabs">
-    <button class="topbar-tab active" onclick="switchTab('trello',this)" id="t-trello">🎯 MK Trello</button>
-    <button class="topbar-tab" onclick="switchTab('clientes',this)" id="t-clientes">👥 Clientes</button>
-  </div>
-  <div class="topbar-right">
-    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Alternar tema">🌙</button>
-    <div class="user-chip">
-      <div class="user-avatar" id="user-avatar">?</div>
-      <span id="user-label">...</span>
+<!-- APP AGÊNCIA -->
+<div id="app">
+  <div class="topbar" id="topbar-agencia">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div class="brand-name">MKhof <span>Marketing</span></div>
     </div>
-    <button class="logout-btn" onclick="doLogout()">Sair</button>
-  </div>
-</div>
-
-<!-- TOPBAR CLIENTE -->
-<div class="topbar" id="cliente-topbar" style="display:none;">
-  <div class="brand">
-    <div class="brand-mark">M</div>
-    <div class="brand-name">MKhof <span>Marketing</span></div>
-  </div>
-  <div class="topbar-right">
-    <button class="theme-toggle" onclick="toggleTheme()" title="Alternar tema">🌙</button>
-    <div class="user-chip">
-      <div class="user-avatar" id="cliente-avatar" style="background:var(--purple-dim);color:var(--purple);">?</div>
-      <span id="cliente-label">...</span>
+    <div style="width:1px;height:24px;background:var(--border)"></div>
+    <div class="topbar-tabs">
+      <button class="tab-btn active" onclick="showView('trello',this)">🎯 MK Trello</button>
+      <button class="tab-btn" onclick="showView('clientes',this)">👥 Clientes</button>
     </div>
-    <button class="logout-btn" onclick="doLogout()">Sair</button>
+    <div class="topbar-right">
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+      <div class="user-chip">
+        <div class="avatar" id="user-av"></div>
+        <span id="user-name"></span>
+      </div>
+      <button class="sair-btn" onclick="logout()">Sair</button>
+    </div>
   </div>
-</div>
 
-<!-- APP BODY -->
-<div class="app-body" id="app-body">
-
-  <!-- ══ TRELLO ══ -->
-  <div class="tab-content active" id="tab-trello">
-    <div class="trl-workspace">
+  <div class="app-body">
+    <!-- TRELLO VIEW -->
+    <div class="view active" id="view-trello">
       <div class="trl-header">
         <div class="trl-header-top">
-          <div id="trl-avatar" style="width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;background:#a78bfa22;color:#a78bfa;">DT</div>
-          <div style="flex:1;">
-            <div id="trl-name" style="font-family:'Instrument Serif',serif;font-size:18px;">Dra. Tatiana</div>
-            <div id="trl-meta" style="font-size:11px;color:var(--text-2);margin-top:1px;">Harmonização Facial</div>
+          <div id="trl-av" style="width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0"></div>
+          <div style="flex:1">
+            <div id="trl-name" style="font-family:'Instrument Serif',serif;font-size:18px">Dra. Tatiana</div>
+            <div id="trl-meta" style="font-size:11px;color:var(--text2);margin-top:1px">Harmonização Facial</div>
           </div>
-          
-          <button class="btn btn-ghost" onclick="openPerfilClinica()" style="font-size:12px;">👤 Perfil da Clínica</button>
-          <button class="btn btn-gold" onclick="openNewCard()">+ Novo Card</button>
+          <button class="btn btn-ghost" onclick="openPerfil()" style="font-size:12px">👤 Perfil da Clínica</button>
+          <button class="btn btn-gold" onclick="openNovoCard()">+ Novo Card</button>
         </div>
-        <div class="trl-months" id="trl-month-tabs"></div>
+        <div class="trl-months" id="trl-months"></div>
       </div>
       <div class="trl-body">
         <div class="trl-sidebar">
-          <div style="padding:10px 10px 6px;">
-            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-3);margin-bottom:8px;padding:0 4px;">Clínicas</div>
-            <input style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:6px 10px;font-family:'Outfit',sans-serif;font-size:12px;color:var(--text);outline:none;" placeholder="🔍 Buscar..." oninput="trlFilterClients(this.value)">
+          <div style="padding:10px 10px 6px">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:8px;padding:0 4px">Clínicas</div>
+            <input id="busca-cliente" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:6px 10px;font-family:'Outfit',sans-serif;font-size:12px;color:var(--text);outline:none" placeholder="🔍 Buscar...">
           </div>
-          <div style="flex:1;overflow-y:auto;padding:4px 8px 8px;" id="trl-clients-list"></div>
-          <div style="padding:8px;">
-            <button onclick="showNotif('➕ Nova clínica em breve!')" style="width:100%;padding:8px;border-radius:8px;border:1px dashed var(--border2);background:transparent;color:var(--text-3);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;">+ Nova clínica</button>
-          </div>
+          <div style="flex:1;overflow-y:auto;padding:4px 8px 8px" id="sidebar-clientes"></div>
         </div>
         <div class="trl-kanban">
-          <div class="trl-legend">
-            <div style="display:flex;gap:12px;" id="trl-legend-dots"></div>
-            <div style="margin-left:auto;display:flex;gap:7px;">
-              <button class="btn btn-ghost" style="font-size:11.5px;padding:5px 10px;" onclick="showNotif('🔍 Filtros em breve!')">🔍 Filtrar</button>
-            </div>
-          </div>
-          <div class="trl-board-wrap" id="trl-board"></div>
+          <div class="trl-legend" id="trl-legend"></div>
+          <div class="trl-board" id="trl-board"></div>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- ══ CLIENTES TAB ══ -->
-  <div class="tab-content" id="tab-clientes">
-    <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-3);font-size:15px;">
-      Aba Clientes em desenvolvimento 🚧
+    <!-- CLIENTES VIEW -->
+    <div class="view" id="view-clientes">
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-size:15px">Aba Clientes em breve 🚧</div>
     </div>
-  </div>
-
-  <!-- ══ PORTAL CLIENTE ══ -->
-  <div id="cliente-view">
-    <div class="portal-header">
-      <div id="portal-avatar" style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;background:var(--purple-dim);color:var(--purple);">?</div>
-      <div>
-        <div style="font-family:'Instrument Serif',serif;font-size:20px;" id="portal-name">Bem-vinda!</div>
-        <div style="font-size:12px;color:var(--text-2);">Aqui estão seus posts para aprovação</div>
-      </div>
-    </div>
-    <div class="portal-cards" id="portal-cards"></div>
-  </div>
-
-</div><!-- /app-body -->
-</div><!-- /app -->
-
-<!-- ══ MODAL: CARD COMPLETO ══ -->
-<div class="modal-overlay" id="modal-card" onclick="if(event.target===this)closeModal('modal-card')">
-  <div class="modal" style="max-width:640px;">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-card-title">Card</div>
-      <button class="modal-close" onclick="closeModal('modal-card')">×</button>
-    </div>
-    <div class="modal-body" id="modal-card-body"></div>
-    <div class="modal-footer" id="modal-card-footer"></div>
   </div>
 </div>
 
-<!-- ══ MODAL: NOVO CARD ══ -->
-<div class="modal-overlay" id="modal-new-card" onclick="if(event.target===this)closeModal('modal-new-card')">
-  <div class="modal" style="max-width:560px;">
-    <div class="modal-header">
+<!-- PORTAL CLIENTE -->
+<div id="portal">
+  <div class="topbar" id="topbar-cliente" style="display:none">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div class="brand-name">MKhof <span>Marketing</span></div>
+    </div>
+    <div class="topbar-right">
+      <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+      <div class="user-chip">
+        <div class="avatar" id="cli-av"></div>
+        <span id="cli-name"></span>
+      </div>
+      <button class="sair-btn" onclick="logout()">Sair</button>
+    </div>
+  </div>
+  <div class="portal-hdr" id="portal-hdr"></div>
+  <div class="portal-cards-area" id="portal-cards"></div>
+</div>
+
+<!-- MODAL: NOVO CARD -->
+<div class="modal-overlay" id="modal-novo" onclick="if(event.target===this)fecharModal('modal-novo')">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-hdr">
       <div class="modal-title">Novo Card</div>
-      <button class="modal-close" onclick="closeModal('modal-new-card')">×</button>
+      <button class="modal-close" onclick="fecharModal('modal-novo')">×</button>
     </div>
     <div class="modal-body">
-      <div class="field-group">
-        <div class="field-label">Título do post</div>
-        <input class="field-input" id="nc-title" placeholder="Ex: POST CARROSSEL 28/04">
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div class="field-group">
-          <div class="field-label">Data de postagem</div>
-          <input class="field-input" type="date" id="nc-date">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div class="fgroup" style="grid-column:1/4">
+          <div class="flabel">Título</div>
+          <input class="finput" id="nc-titulo" placeholder="Ex: POST CARROSSEL 28/04">
         </div>
-        <div class="field-group">
-          <div class="field-label">Horário</div>
-          <input class="field-input" type="time" id="nc-time" value="09:00">
+        <div class="fgroup">
+          <div class="flabel">Data</div>
+          <input class="finput" type="date" id="nc-data">
+        </div>
+        <div class="fgroup">
+          <div class="flabel">Horário</div>
+          <input class="finput" type="time" id="nc-hora" value="09:00">
+        </div>
+        <div class="fgroup">
+          <div class="flabel">Cliente</div>
+          <select class="finput" id="nc-cliente"></select>
         </div>
       </div>
-      <div class="field-group">
-        <div class="field-label">📝 Legenda / Copy</div>
-        <textarea class="field-textarea" id="nc-copy" placeholder="Cole a legenda completa aqui..."></textarea>
+      <div class="fgroup">
+        <div class="flabel">📝 Legenda / Copy</div>
+        <textarea class="ftextarea" id="nc-legenda" placeholder="Legenda completa..."></textarea>
       </div>
-      <div class="field-group">
-        <div class="field-label">🎵 Música sugerida</div>
-        <input class="field-input" id="nc-music" placeholder="Ex: Nome da música — Artista">
+      <div class="fgroup">
+        <div class="flabel">🎵 Música sugerida</div>
+        <input class="finput" id="nc-musica" placeholder="Nome da música — Artista">
       </div>
-      <div class="field-group">
-        <div class="field-label">#️⃣ Hashtags</div>
-        <input class="field-input" id="nc-hashtags" placeholder="#skincare #harmonizacao #beleza">
+      <div class="fgroup">
+        <div class="flabel">#️⃣ Hashtags</div>
+        <input class="finput" id="nc-hashtags" placeholder="#skincare #harmonizacao">
       </div>
-      <div class="field-group">
-        <div class="field-label">🖼️ Capa do carrossel (thumbnail)</div>
-        <div class="upload-zone" onclick="document.getElementById('nc-capa-input').click()" id="nc-capa-zone" style="padding:16px;">
-          <div style="font-size:20px;margin-bottom:4px;">🖼️</div>
-          <div style="font-size:12px;font-weight:500;">Clique para adicionar a capa</div>
-          <div style="font-size:10px;color:var(--text-3);margin-top:2px;">Imagem thumbnail que identifica o carrossel</div>
+      <div class="fgroup">
+        <div class="flabel">🖼️ Capa (thumbnail)</div>
+        <div class="upload-zone" onclick="document.getElementById('nc-capa-inp').click()">
+          <div style="font-size:20px;margin-bottom:4px">🖼️</div>
+          <div style="font-size:12px;font-weight:500">Clique para adicionar capa</div>
         </div>
-        <input type="file" id="nc-capa-input" accept="image/*" style="display:none" onchange="handleNewCardCapa(this.files)">
-        <div id="nc-capa-preview"></div>
+        <input type="file" id="nc-capa-inp" accept="image/*" style="display:none">
+        <div id="nc-capa-prev"></div>
       </div>
-      <div class="field-group">
-        <div class="field-label">🗂️ Slides do carrossel</div>
-        <div class="upload-zone" onclick="document.getElementById('nc-files').click()">
-          <div style="font-size:24px;margin-bottom:6px;">🗂️</div>
-          <div style="font-size:13px;font-weight:500;">Clique para adicionar os slides</div>
-          <div style="font-size:11px;color:var(--text-3);margin-top:3px;">A ordem de upload será a ordem dos slides</div>
+      <div class="fgroup">
+        <div class="flabel">🗂️ Slides</div>
+        <div class="upload-zone" onclick="document.getElementById('nc-slides-inp').click()">
+          <div style="font-size:20px;margin-bottom:4px">🗂️</div>
+          <div style="font-size:12px;font-weight:500">Clique para adicionar slides</div>
         </div>
-        <input type="file" id="nc-files" multiple accept="image/*" style="display:none" onchange="handleNewCardFiles(this.files)">
-        <div class="slides-grid" id="nc-slides-preview"></div>
+        <input type="file" id="nc-slides-inp" multiple accept="image/*" style="display:none">
+        <div class="slides-grid" id="nc-slides-prev"></div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-new-card')">Cancelar</button>
-      <div style="margin-left:auto;">
-        <button class="btn btn-gold" onclick="createCard()">Criar Card</button>
-      </div>
+      <button class="btn btn-ghost" onclick="fecharModal('modal-novo')">Cancelar</button>
+      <div style="margin-left:auto"><button class="btn btn-gold" onclick="criarCard()">Criar Card</button></div>
     </div>
   </div>
 </div>
 
-<!-- ══ MODAL: AJUSTE CLIENTE ══ -->
-<div class="modal-overlay" id="modal-ajuste" onclick="if(event.target===this)closeModal('modal-ajuste')">
-  <div class="modal" style="max-width:420px;">
-    <div class="modal-header">
+<!-- MODAL: VER CARD -->
+<div class="modal-overlay" id="modal-card" onclick="if(event.target===this)fecharModal('modal-card')">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-hdr">
+      <div class="modal-title" id="card-modal-titulo"></div>
+      <button class="modal-close" onclick="fecharModal('modal-card')">×</button>
+    </div>
+    <div class="modal-body" id="card-modal-body"></div>
+    <div class="modal-footer" id="card-modal-footer"></div>
+  </div>
+</div>
+
+<!-- MODAL: PERFIL CLÍNICA -->
+<div class="modal-overlay" id="modal-perfil" onclick="if(event.target===this)fecharModal('modal-perfil')">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-hdr">
+      <div class="modal-title" id="perfil-titulo">Perfil da Clínica</div>
+      <button class="modal-close" onclick="fecharModal('modal-perfil')">×</button>
+    </div>
+    <div class="modal-body" id="perfil-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="fecharModal('modal-perfil')">Fechar</button>
+      <div style="margin-left:auto"><button class="btn btn-gold" onclick="salvarPerfil()">💾 Salvar</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PEDIR AJUSTE -->
+<div class="modal-overlay" id="modal-ajuste" onclick="if(event.target===this)fecharModal('modal-ajuste')">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-hdr">
       <div class="modal-title">Pedir Ajuste</div>
-      <button class="modal-close" onclick="closeModal('modal-ajuste')">×</button>
+      <button class="modal-close" onclick="fecharModal('modal-ajuste')">×</button>
     </div>
     <div class="modal-body">
-      <div class="field-group">
-        <div class="field-label">O que precisa mudar?</div>
-        <textarea class="field-textarea" id="ajuste-texto" placeholder="Descreva o ajuste necessário..." style="min-height:100px;"></textarea>
+      <div class="fgroup">
+        <div class="flabel">O que precisa mudar?</div>
+        <textarea class="ftextarea" id="ajuste-txt" style="min-height:100px" placeholder="Descreva o ajuste..."></textarea>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-ajuste')">Cancelar</button>
-      <div style="margin-left:auto;">
-        <button class="btn btn-red" onclick="enviarAjuste()">Enviar pedido de ajuste</button>
-      </div>
+      <button class="btn btn-ghost" onclick="fecharModal('modal-ajuste')">Cancelar</button>
+      <div style="margin-left:auto"><button class="btn btn-red" onclick="enviarAjuste()">Enviar ajuste</button></div>
     </div>
   </div>
 </div>
 
-
-<!-- ══ MODAL: PERFIL CLÍNICA ══ -->
-<div class="modal-overlay" id="modal-perfil" onclick="if(event.target===this)closeModal('modal-perfil')">
-  <div class="modal" style="max-width:680px;">
-    <div class="modal-header">
-      <div class="modal-title" id="perfil-modal-title">Perfil da Clínica</div>
-      <button class="modal-close" onclick="closeModal('modal-perfil')">×</button>
-    </div>
-    <div class="modal-body" id="perfil-modal-body"></div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-perfil')">Fechar</button>
-      <div style="margin-left:auto;">
-        <button class="btn btn-gold" onclick="salvarPerfil()">💾 Salvar alterações</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="notif"></div>
+<div id="toast"></div>
 
 <script>
-// ══════════════════════════════════════
-// USERS
-// ══════════════════════════════════════
+// ═══════════════════════════════
+// DADOS
+// ═══════════════════════════════
 const USERS = {
-  'kellen.franco':    { name:'Kellen Franco',    role:'social_media', initials:'KF', color:'#d4a843' },
-  'stephanie':        { name:'Stephanie',         role:'designer',     initials:'ST', color:'#4a9eff' },
-  'marcio.franco':    { name:'Márcio Franco',     role:'poster',       initials:'MF', color:'#3ecf8e' },
-  'marina.flores':    { name:'Dra. Marina',       role:'cliente',      clientId:'marina',  initials:'DM', color:'#fb923c' },
-  'tatiana.finamor':  { name:'Dra. Tatiana',      role:'cliente',      clientId:'tatiana', initials:'DT', color:'#a78bfa' },
-  'vanessa.pacifico': { name:'Dra. Vanessa',      role:'cliente',      clientId:'vanessa', initials:'DV', color:'#d4a843' },
-  'dayane.falcomer':  { name:'Dra. Dayane',       role:'cliente',      clientId:'dayane',  initials:'DD', color:'#3ecf8e' },
-  'camila.daher':     { name:'Dra. Camila',       role:'cliente',      clientId:'camila',  initials:'DC', color:'#ec4899' },
-  'carolina.paulino': { name:'Dra. Carol',        role:'cliente',      clientId:'carol',   initials:'CB', color:'#f43f5e' },
-  'leticia.fridel':   { name:'Dra. Letícia',      role:'cliente',      clientId:'leticia', initials:'DL', color:'#4a9eff' },
-  'instituto.kav':    { name:'Instituto Kav',     role:'cliente',      clientId:'kav',     initials:'KV', color:'#a78bfa' },
+  'kellen.franco':    {name:'Kellen Franco',   role:'agencia', initials:'KF', color:'#d4a843'},
+  'stephanie':        {name:'Stephanie',        role:'agencia', initials:'ST', color:'#4a9eff'},
+  'marcio.franco':    {name:'Márcio Franco',    role:'agencia', initials:'MF', color:'#3ecf8e'},
+  'marina.flores':    {name:'Dra. Marina',      role:'cliente', clientId:'marina',  initials:'DM', color:'#fb923c'},
+  'tatiana.finamor':  {name:'Dra. Tatiana',     role:'cliente', clientId:'tatiana', initials:'DT', color:'#a78bfa'},
+  'vanessa.pacifico': {name:'Dra. Vanessa',     role:'cliente', clientId:'vanessa', initials:'DV', color:'#d4a843'},
+  'dayane.falcomer':  {name:'Dra. Dayane',      role:'cliente', clientId:'dayane',  initials:'DD', color:'#3ecf8e'},
+  'camila.daher':     {name:'Dra. Camila',      role:'cliente', clientId:'camila',  initials:'DC', color:'#ec4899'},
+  'carolina.paulino': {name:'Dra. Carol',       role:'cliente', clientId:'carol',   initials:'CB', color:'#f43f5e'},
+  'leticia.fridel':   {name:'Dra. Letícia',     role:'cliente', clientId:'leticia', initials:'DL', color:'#4a9eff'},
+  'instituto.kav':    {name:'Instituto Kav',    role:'cliente', clientId:'kav',     initials:'KV', color:'#a78bfa'}
 };
 const PASS = '123456';
 
-
-let portalMes = 'Maio 2026';
-
-
-// ══════════════════════════════════════
-// TRELLO DATA
-// ══════════════════════════════════════
-const trlClients = [
-  { id:'tatiana', name:'Dra. Tatiana',  initials:'DT', bg:'#a78bfa22', color:'#a78bfa', meta:'Harmonização Facial · Joinville' },
-  { id:'camila',  name:'Dra. Camila',   initials:'DC', bg:'#ec489922', color:'#ec4899', meta:'Harmonização · Laser CO2' },
-  { id:'leticia', name:'Dra. Letícia',  initials:'DL', bg:'#4a9eff22', color:'#4a9eff', meta:'Harmonização Full Face' },
-  { id:'dayane',  name:'Dra. Dayane',   initials:'DD', bg:'#3ecf8e22', color:'#3ecf8e', meta:'Harmonização Facial · HERUS' },
-  { id:'marina',  name:'Dra. Marina',   initials:'DM', bg:'#fb923c22', color:'#fb923c', meta:'Ultrassom · HIPRO' },
-  { id:'carol',   name:'Dra. Carol',    initials:'CB', bg:'#f43f5e22', color:'#f43f5e', meta:'Cirurgias Estéticas · BH' },
-  { id:'vanessa', name:'Dra. Vanessa',  initials:'DV', bg:'#d4a84322', color:'#d4a843', meta:'Cirurgias Estéticas da Face' },
-  { id:'kav',     name:'Instituto Kav', initials:'KV', bg:'#a78bfa22', color:'#a78bfa', meta:'Mentorias · BH' },
+const CLIENTES = [
+  {id:'tatiana', name:'Dra. Tatiana',  initials:'DT', color:'#a78bfa', meta:'Harmonização Facial · Joinville'},
+  {id:'camila',  name:'Dra. Camila',   initials:'DC', color:'#ec4899', meta:'Harmonização · Laser CO2'},
+  {id:'leticia', name:'Dra. Letícia',  initials:'DL', color:'#4a9eff', meta:'Harmonização Full Face'},
+  {id:'dayane',  name:'Dra. Dayane',   initials:'DD', color:'#3ecf8e', meta:'Harmonização · HERUS'},
+  {id:'marina',  name:'Dra. Marina',   initials:'DM', color:'#fb923c', meta:'Ultrassom · HIPRO'},
+  {id:'carol',   name:'Dra. Carol',    initials:'CB', color:'#f43f5e', meta:'Cirurgias Estéticas · BH'},
+  {id:'vanessa', name:'Dra. Vanessa',  initials:'DV', color:'#d4a843', meta:'Cirurgias Estéticas da Face'},
+  {id:'kav',     name:'Instituto Kav', initials:'KV', color:'#a78bfa', meta:'Mentorias · BH'}
 ];
 
-// Perfis completos das clínicas (editável pela agência)
-const clinicaProfiles = {
-  tatiana: { nome:'Dra. Tatiana Lorenzi Finamor', especialidade:'Harmonização Facial · Rejuvenescimento · Bioestimuladores', cidade:'Joinville, SC', instagram:'@dra.tatianafinamor', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-  camila:  { nome:'Dra. Camila Daher', especialidade:'Harmonização Facial · Laser CO2', cidade:'Joinville, SC', instagram:'@camiladaher', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-  leticia: { nome:'Dra. Letícia Fridel', especialidade:'Harmonização Full Face', cidade:'', instagram:'@dra.leticiafridel', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-  dayane:  { nome:'Dra. Dayane Falcomer', especialidade:'Harmonização Facial · HERUS', cidade:'', instagram:'@dradayanefalcomer', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-  marina:  { nome:'Dra. Marina Flores', especialidade:'Ultrassom · HIPRO', cidade:'', instagram:'@dra.marinaflores', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-  carol:   { nome:'Dra. Carolina Paulino', especialidade:'Cirurgias Estéticas · BH', cidade:'Belo Horizonte, MG', instagram:'@dra.carolinapaulino', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-  vanessa: { nome:'Dra. Vanessa Pacífico', especialidade:'Cirurgias Estéticas da Face', cidade:'', instagram:'@dra.vanessapacifico', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-  kav:     { nome:'Instituto Kav', especialidade:'Mentorias para Médicos', cidade:'Belo Horizonte, MG', instagram:'@institutokav', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+const COLS = {
+  design:  {label:'Edição Design',   color:'#4a9eff', info:'Social media cria, designer adiciona artes.'},
+  admin:   {label:'Aprovação Admin', color:'#d4a843', info:'Revisão interna antes de enviar à clínica.'},
+  clinica: {label:'Clínica Aprovar', color:'#a78bfa', info:'Cliente visualiza e aprova ou pede ajuste.'},
+  postar:  {label:'Postar',          color:'#3ecf8e', info:'Aprovado! Poster baixa e agenda.'}
 };
 
-const trlMonths = ['Janeiro 2026','Fevereiro 2026','Março 2026','Abril 2026','Maio 2026','Junho 2026'];
-let trlMonth = 'Maio 2026';
+const MESES = ['Janeiro 2026','Fevereiro 2026','Março 2026','Abril 2026','Maio 2026','Junho 2026'];
 
-const trlColConfig = {
-  design:  { label:'Edição Design',   color:'#4a9eff', info:'Social media cria, designer adiciona as artes.' },
-  admin:   { label:'Aprovação Admin', color:'#d4a843', info:'Revisão interna antes de enviar para a clínica.' },
-  clinica: { label:'Clínica Aprovar', color:'#a78bfa', info:'Cliente visualiza e aprova ou pede ajuste.' },
-  postar:  { label:'Postar',          color:'#3ecf8e', info:'Aprovado! Poster baixa as artes e agenda.' },
-};
+const PERFIS = {};
+CLIENTES.forEach(c => {
+  PERFIS[c.id] = {nome:c.name, especialidade:c.meta, cidade:'', instagram:'', drive:'', onb_drive:'', onb_doc:'', foto:''};
+});
 
-const trlBoardData = {
-  tatiana: {
-    design:[
-      {id:'t1',title:'POST CARROSSEL 12/05',date:'12/05',horario:'09:00',emoji:'🖼️',copy:'✨ Renovação celular com tecnologia de ponta...',music:'Flowers — Miley Cyrus',hashtags:'#harmonizacao #rejuvenescimento #botox',tags:[{l:'Feed',c:'#ec4899'}],comments:1,files:0,slides:[],members:['ST'],checklist:{copy:true,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false},
-    ],
-    admin:[
-      {id:'t4',title:'POST CARROSSEL 10/05',date:'10/05',horario:'11:00',emoji:'✅',copy:'Harmonização Facial de Alto Padrão\n\nResultados naturais que realçam sua beleza única.',music:'Espelho — Djavan',hashtags:'#harmonizacao #beauty #procedimentos',tags:[{l:'Urgente',c:'#f43f5e'}],comments:2,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[{autor:'Kellen',role:'Social Media',texto:'Legenda e hashtags prontos! Aguardando artes da Stephanie.',time:'09:14'}],approved:false},
-    ],
-    clinica:[
-      {id:'t6',title:'POST CARROSSEL 05/05',date:'05/05',horario:'14:00',emoji:'💆‍♀️',copy:'Protocolo de rejuvenescimento exclusivo da Dra. Tatiana.',music:'Golden Hour — JVKE',hashtags:'#pele #skincare #harmonizacaofacial',tags:[{l:'Aprovação',c:'#a78bfa'}],comments:1,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:true,aprovacao_admin:true,aprovacao_clinica:false,postado:false},comentarios:[{autor:'Kellen',role:'Social Media',texto:'Tudo pronto! Enviado para aprovação da Dra. Tatiana.',time:'10:00'}],approved:false},
-    ],
-    postar:[
-      {id:'t7',title:'POST CARROSSEL 03/05',date:'03/05',horario:'10:00',emoji:'🚀',copy:'Procedimento aprovado e pronto para publicar!',music:'As It Was — Harry Styles',hashtags:'#harmonizacao #botox #fillers',tags:[{l:'Aprovado',c:'#3ecf8e'}],comments:1,files:0,slides:[],members:['KF'],checklist:{copy:true,music:true,hashtags:true,artes:true,aprovacao_admin:true,aprovacao_clinica:true,postado:false},comentarios:[{autor:'Dra. Tatiana',role:'Cliente',texto:'✅ Aprovado! Ficou lindo!',time:'11:45'}],approved:true},
-    ]
-  },
-  camila:{ design:[{id:'c1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy para Dra. Camila...',music:'',hashtags:'',tags:[{l:'Feed',c:'#ec4899'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
-  leticia:{ design:[{id:'l1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy Dra. Letícia',music:'',hashtags:'',tags:[{l:'Feed',c:'#4a9eff'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
-  dayane:{ design:[], admin:[{id:'d1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'10:00',emoji:'📸',copy:'HERUS FULL — harmonização facial completa.',music:'Blinding Lights — The Weeknd',hashtags:'#herus #harmonizacao',tags:[{l:'Urgente',c:'#f43f5e'}],comments:1,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], clinica:[], postar:[] },
-  marina:{ design:[{id:'m1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Ultrassom de imagem — Dra. Marina.',music:'',hashtags:'',tags:[{l:'Feed',c:'#fb923c'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
-  carol:{ design:[{id:'cb1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Cirurgias estéticas da face.',music:'',hashtags:'',tags:[{l:'Feed',c:'#f43f5e'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
-  vanessa:{ design:[{id:'v1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy Dra. Vanessa.',music:'',hashtags:'',tags:[{l:'Feed',c:'#d4a843'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
-  kav:{ design:[{id:'k1',title:'POST FIXO 10/05',date:'10/05',horario:'09:00',emoji:'🖼️',copy:'KAV MENTORIAS — transforme sua carreira.',music:'',hashtags:'',tags:[{l:'Feed',c:'#a78bfa'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
-};
-
-
-let currentUser = null;
-let currentTheme = localStorage.getItem('mktheme') || 'dark';
-document.body.setAttribute('data-theme', currentTheme);
-
-function updateThemeBtn() {
-  document.querySelectorAll('.theme-toggle').forEach(btn => {
-    btn.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
-  });
-}
-updateThemeBtn();
-
-// ══════════════════════════════════════
-// LOGIN
-// ══════════════════════════════════════
-function doLogin() {
-  const user = document.getElementById('login-user').value.trim().toLowerCase();
-  const pass = document.getElementById('login-pass').value;
-  const err  = document.getElementById('login-err');
-
-  if (!USERS[user] || pass !== PASS) {
-    err.textContent = 'Usuário ou senha incorretos.';
-    return;
+// Board data
+const BOARD = {
+  tatiana:{
+    design:[{id:'t1',titulo:'POST CARROSSEL 12/05',data:'12/05',hora:'09:00',emoji:'🖼️',legenda:'✨ Renovação celular com tecnologia de ponta...',musica:'Flowers — Miley Cyrus',hashtags:'#harmonizacao #botox',tags:[{l:'Feed',c:'#ec4899'}],capa:null,slides:[],comentarios:[],checklist:{copy:false,musica:false,hashtags:false,artes:false,adm:false,clinica:false,postado:false},aprovado:false,ajuste:false}],
+    admin:[{id:'t2',titulo:'POST CARROSSEL 10/05',data:'10/05',hora:'11:00',emoji:'✅',legenda:'Harmonização Facial de Alto Padrão\n\nResultados naturais.',musica:'Espelho — Djavan',hashtags:'#harmonizacao #beauty',tags:[{l:'Urgente',c:'#f43f5e'}],capa:null,slides:[],comentarios:[{autor:'Kellen',role:'Social Media',txt:'Legenda pronta! Aguardando artes.',hora:'09:14'}],checklist:{copy:true,musica:true,hashtags:true,artes:false,adm:false,clinica:false,postado:false},aprovado:false,ajuste:false}],
+    clinica:[{id:'t3',titulo:'POST CARROSSEL 05/05',data:'05/05',hora:'14:00',emoji:'💆',legenda:'Protocolo de rejuvenescimento exclusivo.',musica:'Golden Hour — JVKE',hashtags:'#pele #skincare',tags:[{l:'Aprovação',c:'#a78bfa'}],capa:null,slides:[],comentarios:[],checklist:{copy:true,musica:true,hashtags:true,artes:true,adm:true,clinica:false,postado:false},aprovado:false,ajuste:false}],
+    postar:[{id:'t4',titulo:'POST CARROSSEL 03/05',data:'03/05',hora:'10:00',emoji:'🚀',legenda:'Procedimento aprovado e pronto para publicar!',musica:'As It Was — Harry Styles',hashtags:'#harmonizacao #botox',tags:[{l:'Aprovado',c:'#3ecf8e'}],capa:null,slides:[],comentarios:[{autor:'Dra. Tatiana',role:'Cliente',txt:'✅ Aprovado! Ficou lindo!',hora:'11:45'}],checklist:{copy:true,musica:true,hashtags:true,artes:true,adm:true,clinica:true,postado:false},aprovado:true,ajuste:false}]
   }
+};
+CLIENTES.forEach(c => {
+  if (!BOARD[c.id]) BOARD[c.id] = {design:[],admin:[],clinica:[],postar:[]};
+});
 
-  currentUser = { username: user, ...USERS[user] };
+// ═══════════════════════════════
+// STATE
+// ═══════════════════════════════
+let EU = null;
+let trlAtivo = 'tatiana';
+let trlMes = 'Maio 2026';
+let portalMes = 'Maio 2026';
+let cardAtivo = null;
+let colAtiva = 'design';
+let ajusteCardId = null;
+let ncCapa = null;
+let ncSlides = [];
+let tema = localStorage.getItem('mk_tema') || 'dark';
+
+// ═══════════════════════════════
+// INIT
+// ═══════════════════════════════
+document.body.setAttribute('data-theme', tema);
+atualizarTemaBtn();
+
+document.getElementById('login-btn').onclick = login;
+document.getElementById('login-pass').onkeydown = function(e){ if(e.key==='Enter') login(); };
+document.getElementById('login-user').onkeydown = function(e){ if(e.key==='Enter') login(); };
+document.getElementById('busca-cliente').oninput = function(){ renderSidebar(this.value); };
+document.getElementById('nc-capa-inp').onchange = function(){ handleCapaFile(this.files, 'nc'); };
+document.getElementById('nc-slides-inp').onchange = function(){ handleSlidesFiles(this.files); };
+
+// ═══════════════════════════════
+// AUTH
+// ═══════════════════════════════
+function login() {
+  const u = document.getElementById('login-user').value.trim().toLowerCase();
+  const p = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-err');
+  if (!USERS[u] || p !== PASS) { err.textContent = 'Usuário ou senha incorretos.'; return; }
+  EU = {username:u, ...USERS[u]};
   err.textContent = '';
   document.getElementById('login-screen').style.display = 'none';
-
-  if (currentUser.role === 'cliente') {
-    // Small timeout ensures all JS is parsed before accessing trlBoardData
-    setTimeout(() => loadClientePortal(), 10);
+  if (EU.role === 'cliente') {
+    iniciarPortal();
   } else {
-    loadAgenciaApp();
+    iniciarAgencia();
   }
 }
 
-function doLogout() {
-  currentUser = null;
+function logout() {
+  EU = null;
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('login-user').value = '';
   document.getElementById('login-pass').value = '';
   document.getElementById('app').style.display = 'none';
-  document.getElementById('app-body').style.display = '';
-  document.getElementById('cliente-view').classList.remove('active');
-  document.getElementById('main-topbar').style.display = '';
-  document.getElementById('cliente-topbar').style.display = 'none';
+  document.getElementById('portal').classList.remove('active');
+  document.getElementById('topbar-cliente').style.display = 'none';
 }
 
-function toggleTheme() {
-  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-  document.body.setAttribute('data-theme', currentTheme);
-  localStorage.setItem('mktheme', currentTheme);
-  updateThemeBtn();
-}
-
-// ══════════════════════════════════════
-// AGENCIA APP
-// ══════════════════════════════════════
-function loadAgenciaApp() {
-  const app = document.getElementById('app');
-  app.style.display = 'flex';
-
-  document.getElementById('user-avatar').textContent  = currentUser.initials;
-  document.getElementById('user-avatar').style.background = currentUser.color + '33';
-  document.getElementById('user-avatar').style.color  = currentUser.color;
-  document.getElementById('user-label').textContent   = currentUser.name;
-
-  // Poster vê só a coluna postar — mas sem travar
-  setTimeout(() => { trlInit(); }, 50);
-}
-
-function switchTab(tab, btn) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.topbar-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  if (btn) btn.classList.add('active');
-  if (tab === 'trello') setTimeout(() => trlInit(), 50);
-}
-
-// ══════════════════════════════════════
-// PORTAL CLIENTE
-// ══════════════════════════════════════
-function loadClientePortal(mes) {
-  if (mes) portalMes = mes;
-
-  document.getElementById('main-topbar').style.display = 'none';
-  document.getElementById('cliente-topbar').style.display = 'flex';
+// ═══════════════════════════════
+// AGÊNCIA
+// ═══════════════════════════════
+function iniciarAgencia() {
   document.getElementById('app').style.display = 'flex';
-  document.getElementById('app-body').style.display = 'none';
+  var av = document.getElementById('user-av');
+  av.textContent = EU.initials;
+  av.style.background = EU.color + '33';
+  av.style.color = EU.color;
+  document.getElementById('user-name').textContent = EU.name;
+  renderLegenda();
+  selecionarCliente('tatiana');
+  popularSelectClientes();
+}
 
-  // Topbar info
-  const av = document.getElementById('cliente-avatar');
-  av.textContent = currentUser.initials;
-  av.style.background = currentUser.color + '33';
-  av.style.color = currentUser.color;
-  document.getElementById('cliente-label').textContent = currentUser.name;
+function showView(v, btn) {
+  document.querySelectorAll('.view').forEach(function(x){ x.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(x){ x.classList.remove('active'); });
+  document.getElementById('view-' + v).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
 
-  // Remove portal antigo
-  const oldPortal = document.getElementById('portal-dinamico');
-  if (oldPortal) oldPortal.remove();
-
-  const cid = currentUser.clientId;
-  const data = trlBoardData[cid] || { design:[], admin:[], clinica:[], postar:[] };
-  const cards = [...(data.clinica||[]), ...(data.postar||[])];
-
-  // Build portal
-  const portal = document.createElement('div');
-  portal.id = 'portal-dinamico';
-  portal.style.cssText = 'display:flex;flex-direction:column;flex:1;overflow:hidden;background:var(--bg);';
-
-  // ── Header com abas de meses
-  const header = document.createElement('div');
-  header.style.cssText = 'background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;';
-  let monthTabs = '';
-  trlMonths.forEach(m => {
-    const active = m === portalMes;
-    monthTabs += '<button onclick="loadClientePortal(\'' + m + '\')" style="padding:7px 14px;border-radius:7px 7px 0 0;font-size:12px;font-weight:600;color:' + (active?'var(--gold)':'var(--text-3)') + ';cursor:pointer;border:none;background:' + (active?'var(--gold-dim)':'transparent') + ';border-bottom:2px solid ' + (active?'var(--gold)':'transparent') + ';transition:all 0.12s;font-family:Outfit,sans-serif;white-space:nowrap;">' + m + '</button>';
+function renderLegenda() {
+  var html = '';
+  Object.entries(COLS).forEach(function(e) {
+    html += '<span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3)"><span style="width:8px;height:8px;border-radius:50%;background:' + e[1].color + ';display:inline-block"></span>' + e[1].label + '</span>';
   });
-  header.innerHTML = '<div style="display:flex;align-items:center;gap:14px;padding:16px 28px 12px;">'
-    + '<div style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;background:' + currentUser.color + '33;color:' + currentUser.color + ';">' + currentUser.initials + '</div>'
-    + '<div><div style="font-family:Instrument Serif,serif;font-size:20px;color:var(--text);">Olá, ' + currentUser.name + '!</div>'
-    + '<div style="font-size:12px;color:var(--text-2);">Seus posts para aprovação</div></div>'
-    + '</div>'
-    + '<div style="display:flex;gap:4px;overflow-x:auto;padding:0 28px;">' + monthTabs + '</div>';
-  portal.appendChild(header);
-
-  // ── Cards area
-  const area = document.createElement('div');
-  area.style.cssText = 'flex:1;overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;gap:16px;';
-
-  if (cards.length === 0) {
-    area.innerHTML = '<div style="text-align:center;padding:80px 20px;color:var(--text-3);font-size:15px;">📭 Nenhum post para revisar em ' + portalMes + '</div>';
-  } else {
-    cards.forEach(card => {
-      const isApproved = card.approved;
-      const hasAjuste = card.ajustePendente;
-      const badgeBg = isApproved ? 'var(--green-dim)' : hasAjuste ? 'var(--red-dim)' : 'var(--gold-dim)';
-      const badgeColor = isApproved ? 'var(--green)' : hasAjuste ? 'var(--red)' : 'var(--gold)';
-      const badgeText = isApproved ? '✅ Aprovado' : hasAjuste ? '⚠️ Aguardando ajuste' : '⏳ Aguardando aprovação';
-
-      const lastAjuste = (card.comentarios||[]).filter(c => c.texto && c.texto.startsWith('✏️ Pedido de ajuste:')).pop();
-
-      let slidesHtml = '';
-      if (card.slides && card.slides.length > 0) {
-        slidesHtml = '<div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;">';
-        card.slides.forEach(s => { slidesHtml += '<img src="' + s.dataUrl + '" style="width:90px;height:90px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);">'; });
-        slidesHtml += '</div>';
-      }
-
-      let actionsHtml = '';
-      if (isApproved) {
-        actionsHtml = '<span style="font-size:13px;color:var(--green);">✅ Você aprovou este post</span>';
-      } else if (hasAjuste) {
-        actionsHtml = '<span style="font-size:13px;color:var(--red);">⚠️ Ajuste enviado — a equipe está trabalhando nisso</span>';
-      } else {
-        actionsHtml = '<button onclick="clienteAprovar(\'' + cid + '\',\'' + card.id + '\',this)" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(62,207,142,0.3);background:var(--green-dim);color:var(--green);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✅ Aprovar</button>'
-          + '<button onclick="clientePedirAjuste(\'' + card.id + '\')" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(255,107,107,0.3);background:var(--red-dim);color:var(--red);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✏️ Pedir ajuste</button>';
-      }
-
-      const div = document.createElement('div');
-      div.id = 'portalcard-' + card.id;
-      div.style.cssText = 'background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:20px;';
-      div.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">'
-        + '<div style="font-size:24px;">' + (card.emoji||'📝') + '</div>'
-        + '<div style="font-size:15px;font-weight:700;color:var(--text);flex:1;">' + card.title + '</div>'
-        + '<span id="badge-' + card.id + '" style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:' + badgeBg + ';color:' + badgeColor + ';">' + badgeText + '</span>'
-        + '</div>'
-        + (card.capa ? '<img src="' + card.capa.dataUrl + '" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;margin-bottom:14px;display:block;">' : '')
-        + slidesHtml
-        + (card.copy ? '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3);margin-bottom:6px;">📝 Legenda</div><div style="font-size:13px;color:var(--text-2);line-height:1.6;white-space:pre-wrap;margin-bottom:12px;">' + card.copy + '</div>' : '')
-        + (card.music ? '<div style="font-size:12px;color:var(--text-3);margin-bottom:8px;">🎵 <strong style="color:var(--text-2);">Música:</strong> ' + card.music + '</div>' : '')
-        + (card.hashtags ? '<div style="font-size:12px;color:var(--text-3);margin-bottom:14px;">#️⃣ ' + card.hashtags + '</div>' : '')
-        + (lastAjuste ? '<div style="margin-bottom:12px;padding:10px 14px;background:var(--red-dim);border-radius:8px;border:1px solid rgba(255,107,107,0.3);font-size:12px;color:var(--red);">✏️ <strong>Último ajuste solicitado:</strong> ' + lastAjuste.texto.replace('✏️ Pedido de ajuste: ','') + '</div>' : '')
-        + '<div id="coment-' + card.id + '"></div>'
-        + '<div style="display:flex;gap:8px;padding-top:14px;border-top:1px solid var(--border);" id="actions-' + card.id + '">' + actionsHtml + '</div>';
-      area.appendChild(div);
-    });
-  }
-
-  portal.appendChild(area);
-  document.getElementById('app').appendChild(portal);
+  document.getElementById('trl-legend').innerHTML = html;
 }
 
-
-let ajusteCardId = null;
-function clientePedirAjuste(cardId) {
-  ajusteCardId = cardId;
-  document.getElementById('ajuste-texto').value = '';
-  openModal('modal-ajuste');
+function renderSidebar(filtro) {
+  filtro = (filtro || '').toLowerCase();
+  var html = '';
+  CLIENTES.forEach(function(c) {
+    if (filtro && !c.name.toLowerCase().includes(filtro)) return;
+    var ativo = c.id === trlAtivo;
+    var total = Object.values(BOARD[c.id]).flat().length;
+    html += '<button class="client-btn" onclick="selecionarCliente(\'' + c.id + '\')" style="background:' + (ativo ? c.color+'22' : 'transparent') + '">'
+      + '<div style="width:26px;height:26px;border-radius:7px;background:' + c.color + '22;color:' + c.color + ';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">' + c.initials + '</div>'
+      + '<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:' + (ativo ? c.color : 'var(--text2)') + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + c.name + '</div></div>'
+      + (total > 0 ? '<div style="width:16px;height:16px;border-radius:50%;background:var(--gold-dim);color:var(--gold);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center">' + total + '</div>' : '')
+      + '</button>';
+  });
+  document.getElementById('sidebar-clientes').innerHTML = html;
 }
 
-function enviarAjuste() {
-  const texto = document.getElementById('ajuste-texto').value.trim();
-  if (!texto) { showNotif('⚠️ Descreva o ajuste necessário'); return; }
-  const cid = currentUser.clientId;
-  const card = Object.values(trlBoardData[cid]).flat().find(c => c.id === ajusteCardId);
-  if (card) {
-    card.comments = (card.comments || 0) + 1;
-    card.ajustePendente = true;
-    card.approved = false;
-    // Limpa tags de aprovado e adiciona ajuste
-    card.tags = (card.tags||[]).filter(t => t.l !== 'Aprovado' && t.l !== 'Ajuste solicitado');
-    card.tags.push({ l: '⚠️ Ajuste solicitado', c: '#ff6b6b' });
-    if (!card.comentarios) card.comentarios = [];
-    const time = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
-    card.comentarios.push({ autor: currentUser.name, role: 'Cliente', texto: '✏️ Pedido de ajuste: ' + texto, time });
-    // Atualiza badge do card no portal sem recarregar tudo
-    const badge = document.getElementById('badge-' + ajusteCardId);
-    if (badge) {
-      badge.style.background = 'var(--red-dim)';
-      badge.style.color = 'var(--red)';
-      badge.textContent = '⚠️ Aguardando ajuste';
-    }
-    // Mostra comentário enviado abaixo do card
-    const comentDiv = document.getElementById('coment-' + ajusteCardId);
-    if (comentDiv) {
-      comentDiv.innerHTML = `<div style="margin-top:10px;padding:10px 14px;background:var(--red-dim);border-radius:8px;border:1px solid rgba(255,107,107,0.3);font-size:12px;color:var(--red);">✏️ <strong>Ajuste enviado:</strong> ${texto}</div>`;
-    }
-    // Atualiza kanban
-    trlRenderBoard();
-  }
-  closeModal('modal-ajuste');
-  showNotif('✉️ Ajuste enviado! Equipe notificada.');
+function renderMeses() {
+  var html = '';
+  MESES.forEach(function(m) {
+    html += '<button class="month-btn' + (m === trlMes ? ' active' : '') + '" onclick="selecionarMes(\'' + m + '\')">' + m + '</button>';
+  });
+  document.getElementById('trl-months').innerHTML = html;
 }
 
-function clienteAprovar(cid, cardId, btn) {
-  const card = Object.values(trlBoardData[cid]).flat().find(c => c.id === cardId);
-  if (card) {
-    card.approved = true;
-    card.ajustePendente = false;
-    card.tags = (card.tags || []).filter(t => t.l !== 'Ajuste solicitado' && t.l !== '⚠️ Ajuste solicitado' && t.l !== 'Aprovação');
-    card.tags.push({ l: 'Aprovado', c: '#3ecf8e' });
-    if (!card.comentarios) card.comentarios = [];
-    card.comentarios.push({ autor: currentUser.name, role: 'Cliente', texto: '✅ Aprovado pela clínica!', time: new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }) });
-    // Atualiza badge imediatamente
-    const badge = document.getElementById('badge-' + cardId);
-    if (badge) { badge.style.background = 'var(--green-dim)'; badge.style.color = 'var(--green)'; badge.textContent = '✅ Aprovado'; }
-    if (btn) { btn.parentElement.innerHTML = '<span style="font-size:13px;color:var(--green);">✅ Você aprovou este post</span>'; }
-    // Move para clinica se estava lá, mantém em postar se já estava
-    const col = Object.keys(trlBoardData[cid]).find(col => trlBoardData[cid][col].find(c => c.id === cardId));
-    if (col === 'clinica') {
-      trlBoardData[cid]['clinica'] = trlBoardData[cid]['clinica'].filter(c => c.id !== cardId);
-      trlBoardData[cid]['postar'].push(card);
-    }
-  }
-  trlRenderBoard();
-  showNotif('✅ Post aprovado! A equipe foi notificada.');
-}
-
-// ══════════════════════════════════════
-// TRELLO RENDER
-// ══════════════════════════════════════
-let trlActive = 'tatiana';
-let trlActiveCardId = null;
-let trlActiveCol = 'design';
-let ncSlides = [];
-
-function trlInit() {
-  trlRenderClients();
-  trlSelectClient('tatiana');
-  renderLegend();
-}
-
-function renderLegend() {
-  document.getElementById('trl-legend-dots').innerHTML = Object.entries(trlColConfig).map(([,cfg]) =>
-    `<span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-3);">
-      <span style="width:8px;height:8px;border-radius:50%;background:${cfg.color};display:inline-block;"></span>${cfg.label}
-    </span>`
-  ).join('');
-}
-
-function trlFilterClients(v) { trlRenderClients(v); }
-
-function trlRenderClients(filter='') {
-  const list = document.getElementById('trl-clients-list');
-  if (!list) return;
-  list.innerHTML = trlClients
-    .filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
-    .map(c => {
-      const total = Object.values(trlBoardData[c.id]||{}).flat().length;
-      return `<button onclick="trlSelectClient('${c.id}')" style="width:100%;padding:8px 10px;border-radius:9px;border:none;background:${c.id===trlActive?c.bg:'transparent'};cursor:pointer;text-align:left;display:flex;align-items:center;gap:7px;margin-bottom:2px;transition:all 0.12s;">
-        <div style="width:26px;height:26px;border-radius:7px;background:${c.bg};color:${c.color};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">${c.initials}</div>
-        <div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;color:${c.id===trlActive?c.color:'var(--text-2)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.name}</div></div>
-        ${total>0?`<div style="width:16px;height:16px;border-radius:50%;background:var(--gold-dim);color:var(--gold);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;">${total}</div>`:''}
-      </button>`;
-    }).join('');
-}
-
-function trlSelectClient(id) {
-  trlActive = id;
-  trlRenderClients();
-  const c = trlClients.find(x => x.id === id);
-  document.getElementById('trl-avatar').textContent = c.initials;
-  document.getElementById('trl-avatar').style.background = c.bg;
-  document.getElementById('trl-avatar').style.color = c.color;
+function selecionarCliente(id) {
+  trlAtivo = id;
+  renderSidebar(document.getElementById('busca-cliente').value);
+  var c = CLIENTES.find(function(x){ return x.id === id; });
+  document.getElementById('trl-av').textContent = c.initials;
+  document.getElementById('trl-av').style.background = c.color + '22';
+  document.getElementById('trl-av').style.color = c.color;
   document.getElementById('trl-name').textContent = c.name;
   document.getElementById('trl-meta').textContent = c.meta;
-  trlRenderMonths();
-  trlRenderBoard();
+  renderMeses();
+  renderBoard();
+  popularSelectClientes();
 }
 
-function trlRenderMonths() {
-  const wrap = document.getElementById('trl-month-tabs');
-  if (!wrap) return;
-  wrap.innerHTML = trlMonths.map(m =>
-    `<button onclick="trlSelectMonth('${m}')" style="padding:7px 14px;border-radius:7px 7px 0 0;font-size:12px;font-weight:600;color:${m===trlMonth?'var(--gold)':'var(--text-3)'};cursor:pointer;border:none;background:${m===trlMonth?'var(--gold-dim)':'transparent'};border-bottom:2px solid ${m===trlMonth?'var(--gold)':'transparent'};transition:all 0.12s;font-family:'Outfit',sans-serif;">${m}</button>`
-  ).join('') + `<button onclick="showNotif('➕ Novo mês!')" style="padding:7px 10px;font-size:14px;color:var(--text-3);border:none;background:transparent;cursor:pointer;">+</button>`;
+function selecionarMes(m) {
+  trlMes = m;
+  renderMeses();
+  renderBoard();
 }
 
-function trlSelectMonth(m) { trlMonth = m; trlRenderMonths(); trlRenderBoard(); }
-
-function trlRenderBoard() {
-  const board = document.getElementById('trl-board');
-  if (!board) return;
-  const data = trlBoardData[trlActive] || { design:[], admin:[], clinica:[], postar:[] };
-  let html = '';
-  Object.entries(trlColConfig).forEach(([col, cfg]) => {
-    const cards = data[col] || [];
-    const isDark = currentTheme === 'dark';
-    const colBg = isDark
-      ? (col==='design'?'#0d1520':col==='admin'?'#141008':col==='clinica'?'#120f1e':'#0b160f')
-      : 'var(--surface)';
-    const colBorder = isDark
-      ? (col==='design'?'rgba(74,158,255,0.2)':col==='admin'?'rgba(212,168,67,0.2)':col==='clinica'?'rgba(167,139,250,0.2)':'rgba(62,207,142,0.2)')
-      : 'var(--border2)';
-    let cardsHtml = '';
+function renderBoard() {
+  var data = BOARD[trlAtivo] || {design:[],admin:[],clinica:[],postar:[]};
+  var html = '';
+  Object.entries(COLS).forEach(function(e) {
+    var col = e[0], cfg = e[1];
+    var cards = data[col] || [];
+    var isDark = tema === 'dark';
+    var bg = isDark ? (col==='design'?'#0d1520':col==='admin'?'#141008':col==='clinica'?'#120f1e':'#0b160f') : 'var(--surface)';
+    var border = isDark ? (col==='design'?'rgba(74,158,255,.2)':col==='admin'?'rgba(212,168,67,.2)':col==='clinica'?'rgba(167,139,250,.2)':'rgba(62,207,142,.2)') : 'var(--border2)';
+    var cardsHtml = '';
     if (cards.length === 0) {
-      cardsHtml = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 10px;gap:6px;text-align:center;"><div style="font-size:24px;opacity:0.2;">📭</div><div style="font-size:11px;color:var(--text-3);">Nenhum card</div></div>';
+      cardsHtml = '<div style="text-align:center;padding:24px 10px;color:var(--text3);font-size:11px">📭 Nenhum card</div>';
     } else {
-      cards.forEach(card => { cardsHtml += cardMiniHtml(card, col, cfg); });
+      cards.forEach(function(card) { cardsHtml += miniCard(card, col, cfg); });
     }
-    const addBtn = col === 'design'
-      ? '<button onclick="openNewCard()" style="margin:0 8px 8px;padding:7px 10px;border-radius:7px;border:1px dashed var(--border2);background:transparent;color:var(--text-3);font-family:Outfit,sans-serif;font-size:12px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:5px;">+ Adicionar card</button>'
-      : '';
-    html += '<div style="width:265px;flex-shrink:0;border-radius:12px;display:flex;flex-direction:column;max-height:100%;overflow:hidden;border:1px solid ' + colBorder + ';background:' + colBg + ';">'
-      + '<div style="padding:10px 12px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border);flex-shrink:0;">'
-      + '<div style="width:9px;height:9px;border-radius:50%;background:' + cfg.color + ';flex-shrink:0;"></div>'
-      + '<div style="font-size:12px;font-weight:700;color:' + cfg.color + ';flex:1;">' + cfg.label + '</div>'
-      + '<div style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--surface3);color:var(--text-3);">' + cards.length + '</div>'
-      + '</div>'
-      + '<div style="font-size:10px;color:var(--text-3);padding:5px 12px 7px;border-bottom:1px solid var(--border);flex-shrink:0;line-height:1.4;">' + cfg.info + '</div>'
-      + '<div style="flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:7px;">' + cardsHtml + '</div>'
+    var addBtn = col === 'design' ? '<button class="add-card-btn" onclick="openNovoCard()">+ Adicionar card</button>' : '';
+    html += '<div class="col" style="border:1px solid ' + border + ';background:' + bg + '">'
+      + '<div class="col-header"><div style="width:9px;height:9px;border-radius:50%;background:' + cfg.color + ';flex-shrink:0"></div><div style="font-size:12px;font-weight:700;color:' + cfg.color + ';flex:1">' + cfg.label + '</div><div style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--surface3);color:var(--text3)">' + cards.length + '</div></div>'
+      + '<div class="col-info">' + cfg.info + '</div>'
+      + '<div class="col-cards">' + cardsHtml + '</div>'
       + addBtn
       + '</div>';
   });
-  board.innerHTML = html;
+  document.getElementById('trl-board').innerHTML = html;
 }
 
-function cardMiniHtml(card, col, cfg) {
-  const checkDone = Object.values(card.checklist||{}).filter(Boolean).length;
-  const checkTotal = Object.values(card.checklist||{}).length;
-  const pct = Math.round((checkDone / checkTotal) * 100);
-  return `<div onclick="openCard('${card.id}','${col}')" style="background:var(--surface2);border:1px solid var(--border);border-radius:9px;cursor:pointer;transition:all 0.15s;overflow:hidden;" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor=var('--border2');" onmouseout="this.style.transform='';this.style.borderColor='';">
-    <div style="height:2px;background:${cfg.color};width:100%;"></div>
-    <div style="padding:9px 11px 10px;">
-      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-3);margin-bottom:4px;">📅 ${card.date} ${card.horario||''}</div>
-      <div style="font-size:12.5px;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:5px;">${card.emoji} ${card.title}</div>
-      ${card.copy ? `<div style="font-size:11px;color:var(--text-3);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:6px;">${esc(card.copy.substring(0,80))}</div>` : ''}
-      <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:7px;">
-        ${(card.tags||[]).map(t=>`<span style="font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700;background:${t.c}22;color:${t.c};">${t.l}</span>`).join('')}
-        ${card.approved ? `<span style="font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700;background:#3ecf8e22;color:#3ecf8e;">✅ Aprovado</span>` : ''}
-      </div>
-      <div style="display:flex;align-items:center;gap:5px;padding-top:5px;border-top:1px solid var(--border);">
-        <div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden;">
-          <div style="height:100%;width:${pct}%;background:${cfg.color};border-radius:2px;"></div>
-        </div>
-        <span style="font-size:9px;color:var(--text-3);">${checkDone}/${checkTotal}</span>
-        ${card.slides&&card.slides.length>0?`<span style="font-size:10px;color:var(--text-3);">🖼️${card.slides.length}</span>`:''}
-        <span style="font-size:10px;color:var(--text-3);">💬${card.comments||0}</span>
-      </div>
-    </div>
-  </div>`;
+function miniCard(card, col, cfg) {
+  var chk = Object.values(card.checklist);
+  var done = chk.filter(Boolean).length;
+  var pct = Math.round(done / chk.length * 100);
+  var capaHtml = card.capa ? '<img src="' + card.capa + '" style="width:100%;height:90px;object-fit:cover;display:block">' : '<div style="height:2px;background:' + cfg.color + ';width:100%"></div>';
+  var tagsHtml = '';
+  (card.tags || []).forEach(function(t) {
+    tagsHtml += '<span style="font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700;background:' + t.c + '22;color:' + t.c + '">' + t.l + '</span>';
+  });
+  if (card.aprovado) tagsHtml += '<span style="font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700;background:#3ecf8e22;color:#3ecf8e">✅ Aprovado</span>';
+  if (card.ajuste) tagsHtml += '<span style="font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700;background:#ff6b6b22;color:#ff6b6b">⚠️ Ajuste</span>';
+  return '<div class="mini-card" onclick="abrirCard(\'' + card.id + '\',\'' + col + '\')">'
+    + capaHtml
+    + '<div class="mini-card-body">'
+    + '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:4px">📅 ' + card.data + ' ' + card.hora + '</div>'
+    + '<div style="font-size:12.5px;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:5px">' + card.emoji + ' ' + card.titulo + '</div>'
+    + (card.legenda ? '<div style="font-size:11px;color:var(--text3);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:6px">' + esc(card.legenda.substring(0,80)) + '</div>' : '')
+    + '<div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:7px">' + tagsHtml + '</div>'
+    + '<div style="display:flex;align-items:center;gap:5px;padding-top:5px;border-top:1px solid var(--border)">'
+    + '<div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden"><div style="height:100%;width:' + pct + '%;background:' + cfg.color + ';border-radius:2px"></div></div>'
+    + '<span style="font-size:9px;color:var(--text3)">' + done + '/' + chk.length + '</span>'
+    + (card.slides && card.slides.length > 0 ? '<span style="font-size:10px;color:var(--text3)">🗂️' + card.slides.length + '</span>' : '')
+    + (card.capa ? '<span style="font-size:10px;color:var(--text3)">🖼️</span>' : '')
+    + '<span style="font-size:10px;color:var(--text3)">💬' + card.comentarios.length + '</span>'
+    + '</div></div></div>';
 }
 
-// ══════════════════════════════════════
+// ═══════════════════════════════
 // CARD MODAL
-// ══════════════════════════════════════
-function openCard(id, col) {
-  trlActiveCardId = id;
-  trlActiveCol = col;
-  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === id);
+// ═══════════════════════════════
+function abrirCard(id, col) {
+  var card = null;
+  Object.values(BOARD[trlAtivo]).flat().forEach(function(c){ if(c.id===id) card=c; });
   if (!card) return;
-  const cfg = trlColConfig[col];
-  const client = trlClients.find(c => c.id === trlActive);
+  cardAtivo = card;
+  colAtiva = col;
+  var cfg = COLS[col];
+  var cli = CLIENTES.find(function(x){ return x.id===trlAtivo; });
 
-  document.getElementById('modal-card-title').textContent = card.title;
+  document.getElementById('card-modal-titulo').textContent = card.titulo;
 
-  const checkLabels = {
-    copy: '📝 Legenda/copy preenchida',
-    music: '🎵 Música sugerida',
-    hashtags: '#️⃣ Hashtags adicionadas',
-    artes: '🖼️ Artes/slides enviados',
-    aprovacao_admin: '✅ Aprovação interna (admin)',
-    aprovacao_clinica: '✅ Aprovação da clínica',
-    postado: '🚀 Postado no Instagram'
-  };
+  var chkLabels = {copy:'📝 Legenda preenchida',musica:'🎵 Música sugerida',hashtags:'#️⃣ Hashtags adicionadas',artes:'🖼️ Artes enviadas',adm:'✅ Aprovação interna',clinica:'✅ Aprovação da clínica',postado:'🚀 Postado no Instagram'};
+  var chkHtml = '';
+  Object.entries(card.checklist).forEach(function(e) {
+    var k=e[0], v=e[1];
+    chkHtml += '<div class="check-item"><div class="check-box' + (v?' on':'') + '" onclick="toggleCheck(\'' + id + '\',\'' + k + '\',this)">' + (v?'✓':'') + '</div><span class="check-lbl' + (v?' on':'')+'">' + (chkLabels[k]||k) + '</span></div>';
+  });
 
-  document.getElementById('modal-card-body').innerHTML = `
-    <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;">
-      <span class="badge" style="background:${cfg.color}22;color:${cfg.color};">${cfg.label}</span>
-      <span class="badge badge-gray">📅 ${card.date}/2026</span>
-      <span class="badge" style="background:${client.bg};color:${client.color};">👤 ${client.name}</span>
-      ${card.approved ? '<span class="badge badge-green">✅ Aprovado pela clínica</span>' : ''}
-    </div>
+  var slidesHtml = '';
+  (card.slides||[]).forEach(function(s,i){
+    slidesHtml += '<div class="sthumb"><img src="' + s + '"><div class="snum">' + (i+1) + '</div><button class="srm" onclick="rmSlideCard(\'' + id + '\',' + i + ')">×</button></div>';
+  });
 
-    <div style="margin-bottom:16px;">
-      <div class="field-label" style="margin-bottom:8px;">📋 Checklist de progresso</div>
-      <div class="checklist" id="card-checklist">
-        ${Object.entries(card.checklist||{}).map(([key,val]) => `
-          <div class="check-item">
-            <div class="check-box ${val?'checked':''}" onclick="toggleCheck('${id}','${key}',this)">${val?'✓':''}</div>
-            <span class="check-label ${val?'checked':''}">${checkLabels[key]||key}</span>
-          </div>`).join('')}
-      </div>
-    </div>
+  var comsHtml = '';
+  card.comentarios.forEach(function(c){
+    comsHtml += '<div style="display:flex;gap:8px;margin-bottom:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--surface3);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">' + c.autor.charAt(0) + '</div><div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:8px 11px"><div style="font-size:10px;font-weight:700;margin-bottom:3px">' + esc(c.autor) + ' <span style="background:var(--surface3);padding:1px 6px;border-radius:10px;font-weight:400;color:var(--text3)">' + c.role + '</span><span style="float:right;color:var(--text3)">' + c.hora + '</span></div><div style="font-size:12px;color:var(--text2)">' + esc(c.txt) + '</div></div></div>';
+  });
 
-    <div class="field-group">
-      <div class="field-label">📅 Data e horário de postagem</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <input class="field-input" value="${card.date||''}" placeholder="DD/MM" onchange="updateCardField('${id}','date',this.value)">
-        <input class="field-input" type="time" value="${card.horario||'09:00'}" onchange="updateCardField('${id}','horario',this.value)">
-      </div>
-    </div>
+  var capaSection = card.capa
+    ? '<div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--border2);margin-bottom:6px"><img src="' + card.capa + '" style="width:100%;max-height:160px;object-fit:cover;display:block"><button onclick="rmCapaCard(\'' + id + '\')" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer">× Remover</button></div>'
+    : '<div class="upload-zone" onclick="document.getElementById(\'card-capa-inp\').click()" style="padding:14px"><div style="font-size:16px;margin-bottom:3px">🖼️</div><div style="font-size:12px;font-weight:500">Clique para adicionar capa</div></div>';
 
-    <div class="field-group">
-      <div class="field-label">📝 Legenda / Copy</div>
-      <textarea class="field-textarea" id="card-copy" onchange="updateCardField('${id}','copy',this.value)">${esc(card.copy||'')}</textarea>
-      <button class="btn btn-ghost" style="font-size:11.5px;margin-top:6px;" onclick="copiarTexto('card-copy')">📋 Copiar legenda</button>
-    </div>
+  document.getElementById('card-modal-body').innerHTML =
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">'
+    + '<span class="badge" style="background:' + cfg.color + '22;color:' + cfg.color + '">' + cfg.label + '</span>'
+    + '<span class="badge" style="background:var(--surface2);color:var(--text2)">📅 ' + card.data + ' ' + card.hora + '</span>'
+    + '<span class="badge" style="background:' + cli.color + '22;color:' + cli.color + '">👤 ' + cli.name + '</span>'
+    + (card.aprovado ? '<span class="badge" style="background:var(--green-dim);color:var(--green)">✅ Aprovado</span>' : '')
+    + (card.ajuste ? '<span class="badge" style="background:var(--red-dim);color:var(--red)">⚠️ Ajuste pendente</span>' : '')
+    + '</div>'
+    + '<div class="flabel" style="margin-bottom:8px">📋 Checklist</div>' + chkHtml
+    + '<div class="divider"></div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">'
+    + '<div class="fgroup"><div class="flabel">Data</div><input class="finput" value="' + card.data + '" onchange="updateField(\'' + id + '\',\'data\',this.value)"></div>'
+    + '<div class="fgroup"><div class="flabel">Horário</div><input class="finput" type="time" value="' + card.hora + '" onchange="updateField(\'' + id + '\',\'hora\',this.value)"></div>'
+    + '</div>'
+    + '<div class="fgroup"><div class="flabel">📝 Legenda</div><textarea class="ftextarea" id="card-legenda" onchange="updateField(\'' + id + '\',\'legenda\',this.value)">' + esc(card.legenda||'') + '</textarea><button class="btn btn-ghost" style="font-size:11.5px;margin-top:6px" onclick="copiarLegenda()">📋 Copiar legenda</button></div>'
+    + '<div class="fgroup"><div class="flabel">🎵 Música</div><input class="finput" value="' + esc(card.musica||'') + '" onchange="updateField(\'' + id + '\',\'musica\',this.value)"></div>'
+    + '<div class="fgroup"><div class="flabel">#️⃣ Hashtags</div><input class="finput" value="' + esc(card.hashtags||'') + '" onchange="updateField(\'' + id + '\',\'hashtags\',this.value)"></div>'
+    + '<div class="fgroup"><div class="flabel">🖼️ Capa (thumbnail)</div>' + capaSection + '<input type="file" id="card-capa-inp" accept="image/*" style="display:none" onchange="handleCapaFile(this.files,\'card\')"></div>'
+    + '<div class="fgroup"><div class="flabel">🗂️ Slides</div>'
+    + '<div class="upload-zone" onclick="document.getElementById(\'card-slides-inp\').click()" style="padding:14px"><div style="font-size:16px;margin-bottom:3px">🗂️</div><div style="font-size:12px;font-weight:500">Clique para adicionar slides</div></div>'
+    + '<input type="file" id="card-slides-inp" multiple accept="image/*" style="display:none" onchange="handleSlidesCard(\'' + id + '\',this.files)">'
+    + '<div class="slides-grid" id="card-slides-grid">' + slidesHtml + '</div>'
+    + (card.slides && card.slides.length > 0 ? '<button class="btn btn-ghost" style="margin-top:8px;font-size:11.5px" onclick="baixarSlides()">⬇️ Baixar todos</button>' : '')
+    + '</div>'
+    + '<div class="fgroup"><div class="flabel">💬 Comentários</div><div id="card-coms" style="max-height:200px;overflow-y:auto;margin-bottom:10px">' + comsHtml + '</div>'
+    + '<div style="display:flex;gap:8px"><textarea id="new-com" class="ftextarea" style="min-height:50px;flex:1" placeholder="Comentário..."></textarea><button class="btn btn-gold" style="align-self:flex-end" onclick="enviarCom(\'' + id + '\')">Enviar</button></div></div>';
 
-    <div class="field-group">
-      <div class="field-label">🎵 Música sugerida</div>
-      <input class="field-input" value="${esc(card.music||'')}" placeholder="Nome da música — Artista" onchange="updateCardField('${id}','music',this.value)">
-    </div>
+  var cols = Object.keys(COLS);
+  var idx = cols.indexOf(col);
+  var footerHtml = '<button class="btn btn-red" style="font-size:12px" onclick="deletarCard(\'' + id + '\')">🗑️ Excluir</button><div style="margin-left:auto;display:flex;gap:7px">';
+  if (idx > 0) footerHtml += '<button class="btn btn-ghost" onclick="moverCard(\'' + id + '\',\'' + cols[idx-1] + '\')">← ' + COLS[cols[idx-1]].label + '</button>';
+  if (idx < cols.length-1) footerHtml += '<button class="btn" style="background:' + COLS[cols[idx+1]].color + '22;color:' + COLS[cols[idx+1]].color + ';border:1px solid ' + COLS[cols[idx+1]].color + '44" onclick="moverCard(\'' + id + '\',\'' + cols[idx+1] + '\')">Mover para ' + COLS[cols[idx+1]].label + ' →</button>';
+  if (col === 'postar') footerHtml += '<button class="btn btn-green" onclick="marcarPostado(\'' + id + '\')">🚀 Marcar como postado</button>';
+  footerHtml += '</div>';
+  document.getElementById('card-modal-footer').innerHTML = footerHtml;
 
-    <div class="field-group">
-      <div class="field-label">#️⃣ Hashtags</div>
-      <input class="field-input" value="${esc(card.hashtags||'')}" placeholder="#skincare #harmonizacao" onchange="updateCardField('${id}','hashtags',this.value)">
-    </div>
-
-    <div class="field-group">
-      <div class="field-label">🖼️ Capa do carrossel (thumbnail)</div>
-      ${card.capa
-        ? \`<div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--border2);margin-bottom:6px;"><img src="\${card.capa.dataUrl}" style="width:100%;max-height:160px;object-fit:cover;display:block;"><button onclick="removeCardCapa('\${id}')" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.65);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;">× Remover capa</button></div>\`
-        : '<div class="upload-zone" onclick="document.getElementById(\'capa-file-input\').click()" style="padding:14px;"><div style="font-size:16px;margin-bottom:3px;">🖼️</div><div style="font-size:12px;font-weight:500;">Clique para adicionar capa</div></div>'
-      }
-      <input type="file" id="capa-file-input" accept="image/*" style="display:none" onchange="handleCardCapa('\${id}',this.files)">
-    </div>
-    <div class="field-group">
-      <div class="field-label">🗂️ Slides do carrossel</div>
-      <div class="upload-zone" onclick="document.getElementById('card-file-input').click()">
-        <div style="font-size:18px;margin-bottom:4px;">🗂️</div>
-        <div style="font-size:12px;font-weight:500;">Clique para adicionar slides</div>
-      </div>
-      <input type="file" id="card-file-input" multiple accept="image/*" style="display:none" onchange="handleCardFiles('${id}',this.files)">
-      <div class="slides-grid" id="card-slides-${id}">
-        ${(card.slides||[]).map((s,i) => `
-          <div class="slide-thumb">
-            <img src="${s.dataUrl}" alt="${i+1}">
-            <div class="slide-num">${i+1}</div>
-            <button class="slide-rm" onclick="removeCardSlide('${id}',${i})">×</button>
-          </div>`).join('')}
-      </div>
-      ${card.slides&&card.slides.length>0 ? `<button class="btn btn-ghost" style="margin-top:8px;font-size:11.5px;" onclick="downloadCardSlides('${id}')">⬇️ Baixar todos os slides</button>` : ''}
-    </div>
-
-    <div class="field-group">
-      <div class="field-label">💬 Comentários</div>
-      <div id="card-comments" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;max-height:200px;overflow-y:auto;">
-        ${(card.comentarios||[]).map(c => `
-          <div style="display:flex;gap:8px;">
-            <div style="width:26px;height:26px;border-radius:50%;background:var(--surface3);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;">${c.autor.charAt(0)}</div>
-            <div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:8px 11px;">
-              <div style="font-size:10px;font-weight:700;color:var(--text);margin-bottom:3px;">${esc(c.autor)} <span class="badge badge-gray">${c.role}</span><span style="font-size:10px;color:var(--text-3);float:right;">${c.time}</span></div>
-              <div style="font-size:12px;color:var(--text-2);line-height:1.5;">${esc(c.texto)}</div>
-            </div>
-          </div>`).join('')}
-      </div>
-      <div style="display:flex;gap:8px;">
-        <textarea id="new-comment" placeholder="Comentário ou instrução..." class="field-textarea" style="min-height:50px;flex:1;"></textarea>
-        <button class="btn btn-gold" style="align-self:flex-end;" onclick="sendComment('${id}')">Enviar</button>
-      </div>
-    </div>
-  `;
-
-  // Footer com botões de mover
-  const cols = Object.keys(trlColConfig);
-  const idx = cols.indexOf(col);
-  let footer = `<button class="btn btn-red" onclick="confirmDeleteCard('${id}')">🗑️ Excluir</button>`;
-  footer += '<div style="margin-left:auto;display:flex;gap:7px;">';
-  if (idx > 0) footer += `<button class="btn btn-ghost" onclick="moveCard('${id}','${cols[idx-1]}')">← ${trlColConfig[cols[idx-1]].label}</button>`;
-  if (idx < cols.length-1) footer += `<button class="btn" style="background:${trlColConfig[cols[idx+1]].color}22;color:${trlColConfig[cols[idx+1]].color};border:1px solid ${trlColConfig[cols[idx+1]].color}44;" onclick="moveCard('${id}','${cols[idx+1]}')">Mover para ${trlColConfig[cols[idx+1]].label} →</button>`;
-  if (col === 'postar') footer += `<button class="btn btn-green" onclick="marcarPostado('${id}')">🚀 Marcar como postado</button>`;
-  footer += '</div>';
-  document.getElementById('modal-card-footer').innerHTML = footer;
-
-  openModal('modal-card');
+  abrirModal('modal-card');
 }
 
-function toggleCheck(cardId, key, el) {
-  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
+function toggleCheck(id, key, el) {
+  var card = buscarCard(id);
   if (!card) return;
   card.checklist[key] = !card.checklist[key];
-  el.classList.toggle('checked');
+  el.classList.toggle('on');
   el.textContent = card.checklist[key] ? '✓' : '';
-  const label = el.nextElementSibling;
-  if (label) label.classList.toggle('checked', card.checklist[key]);
-  trlRenderBoard();
+  el.nextElementSibling.classList.toggle('on', card.checklist[key]);
+  renderBoard();
 }
 
-function updateCardField(cardId, field, value) {
-  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
-  if (card) { card[field] = value; trlRenderBoard(); }
+function updateField(id, key, val) {
+  var card = buscarCard(id);
+  if (card) { card[key] = val; renderBoard(); }
 }
 
-function handleCardFiles(cardId, files) {
-  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
-  if (!card) return;
-  Array.from(files).filter(f => f.type.startsWith('image/')).forEach(f => {
-    const r = new FileReader();
-    r.onload = e => {
-      card.slides = card.slides || [];
-      card.slides.push({ name: f.name, dataUrl: e.target.result, mime: f.type });
-      card.files = card.slides.length;
-      card.checklist.artes = true;
-      refreshSlidesGrid(cardId, card);
-      trlRenderBoard();
-    };
-    r.readAsDataURL(f);
+function moverCard(id, paraCol) {
+  var card = null;
+  Object.keys(BOARD[trlAtivo]).forEach(function(col) {
+    var idx = BOARD[trlAtivo][col].findIndex(function(c){ return c.id===id; });
+    if (idx > -1) { card = BOARD[trlAtivo][col][idx]; BOARD[trlAtivo][col].splice(idx,1); }
   });
-  document.getElementById('card-file-input').value = '';
-}
-
-function refreshSlidesGrid(cardId, card) {
-  const grid = document.getElementById('card-slides-' + cardId);
-  if (!grid) return;
-  grid.innerHTML = (card.slides||[]).map((s,i) => `
-    <div class="slide-thumb">
-      <img src="${s.dataUrl}" alt="${i+1}">
-      <div class="slide-num">${i+1}</div>
-      <button class="slide-rm" onclick="removeCardSlide('${cardId}',${i})">×</button>
-    </div>`).join('');
-}
-
-function removeCardSlide(cardId, idx) {
-  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
-  if (card) { card.slides.splice(idx, 1); card.files = card.slides.length; refreshSlidesGrid(cardId, card); trlRenderBoard(); }
-}
-
-function downloadCardSlides(cardId) {
-  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
-  if (!card || !card.slides) return;
-  const name = card.title.replace(/[\s\/]/g,'_');
-  card.slides.forEach((s,i) => {
-    setTimeout(() => {
-      const a = document.createElement('a');
-      a.href = s.dataUrl;
-      const ext = (s.mime||'image/png') === 'image/png' ? 'png' : 'jpg';
-      a.download = `${name}_slide${i+1}.${ext}`;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    }, i * 200);
-  });
-  showNotif('⬇️ Download iniciado!');
-}
-
-function sendComment(cardId) {
-  const input = document.getElementById('new-comment');
-  const text = input.value.trim();
-  if (!text) return;
-  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === cardId);
-  if (!card) return;
-  if (!card.comentarios) card.comentarios = [];
-  const time = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
-  card.comentarios.push({ autor: currentUser.name, role: currentUser.role, texto: text, time });
-  card.comments = (card.comments||0) + 1;
-  const list = document.getElementById('card-comments');
-  const div = document.createElement('div');
-  div.style.cssText = 'display:flex;gap:8px;';
-  div.innerHTML = `<div style="width:26px;height:26px;border-radius:50%;background:var(--surface3);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;">${currentUser.initials}</div><div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:8px 11px;"><div style="font-size:10px;font-weight:700;margin-bottom:3px;">${esc(currentUser.name)} <span class="badge badge-gray">${currentUser.role}</span><span style="float:right;color:var(--text-3);">${time}</span></div><div style="font-size:12px;color:var(--text-2);">${esc(text)}</div></div>`;
-  list.appendChild(div);
-  list.scrollTop = list.scrollHeight;
-  input.value = '';
-  trlRenderBoard();
-  showNotif('💬 Comentário enviado!');
-}
-
-function copiarTexto(inputId) {
-  const el = document.getElementById(inputId);
-  const text = el.value || el.textContent;
-  if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => showNotif('📋 Copiado!'));
-  else { el.select && el.select(); document.execCommand('copy'); showNotif('📋 Copiado!'); }
-}
-
-function moveCard(id, toCol) {
-  let card = null;
-  Object.keys(trlBoardData[trlActive]).forEach(col => {
-    const idx = trlBoardData[trlActive][col].findIndex(c => c.id === id);
-    if (idx > -1) { card = trlBoardData[trlActive][col][idx]; trlBoardData[trlActive][col].splice(idx, 1); }
-  });
-  if (card) trlBoardData[trlActive][toCol].push(card);
-  closeModal('modal-card');
-  trlRenderBoard();
-  showNotif(`✅ Movido para "${trlColConfig[toCol].label}"`);
+  if (card) BOARD[trlAtivo][paraCol].push(card);
+  fecharModal('modal-card');
+  renderBoard();
+  toast('✅ Movido para "' + COLS[paraCol].label + '"');
 }
 
 function marcarPostado(id) {
-  const card = Object.values(trlBoardData[trlActive]).flat().find(c => c.id === id);
+  var card = buscarCard(id);
   if (card) { card.checklist.postado = true; card.tags = [{l:'Postado',c:'#3ecf8e'}]; }
-  closeModal('modal-card');
-  trlRenderBoard();
-  showNotif('🚀 Marcado como postado!');
+  fecharModal('modal-card');
+  renderBoard();
+  toast('🚀 Marcado como postado!');
 }
 
-function confirmDeleteCard(id) {
-  if (confirm('Excluir este card?')) {
-    Object.keys(trlBoardData[trlActive]).forEach(col => {
-      trlBoardData[trlActive][col] = trlBoardData[trlActive][col].filter(c => c.id !== id);
-    });
-    closeModal('modal-card');
-    trlRenderBoard();
-    showNotif('🗑️ Card excluído');
-  }
+function deletarCard(id) {
+  if (!confirm('Excluir este card?')) return;
+  Object.keys(BOARD[trlAtivo]).forEach(function(col) {
+    BOARD[trlAtivo][col] = BOARD[trlAtivo][col].filter(function(c){ return c.id!==id; });
+  });
+  fecharModal('modal-card');
+  renderBoard();
+  toast('🗑️ Card excluído');
 }
 
-// ══════════════════════════════════════
-// NOVO CARD
-// ══════════════════════════════════════
-ncSlides = [];
-
-let ncCapa = null;
-
-function handleNewCardCapa(files) {
-  if (!files || !files[0]) return;
-  const r = new FileReader();
-  r.onload = e => {
-    ncCapa = { dataUrl: e.target.result, mime: files[0].type, name: files[0].name };
-    const zone = document.getElementById('nc-capa-zone');
-    const preview = document.getElementById('nc-capa-preview');
-    if (zone) zone.style.display = 'none';
-    if (preview) preview.innerHTML = '<div style="position:relative;margin-top:8px;border-radius:10px;overflow:hidden;border:1px solid var(--border2);"><img src="' + e.target.result + '" style="width:100%;max-height:160px;object-fit:cover;display:block;"><button onclick="ncCapa=null;document.getElementById('nc-capa-zone').style.display='';this.parentElement.parentElement.innerHTML='';" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;">× Remover capa</button></div>';
-  };
-  r.readAsDataURL(files[0]);
-  document.getElementById('nc-capa-input').value = '';
+function enviarCom(id) {
+  var txt = document.getElementById('new-com').value.trim();
+  if (!txt) return;
+  var card = buscarCard(id);
+  if (!card) return;
+  var hora = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  card.comentarios.push({autor:EU.name, role:EU.role, txt:txt, hora:hora});
+  document.getElementById('new-com').value = '';
+  var coms = document.getElementById('card-coms');
+  var div = document.createElement('div');
+  div.style.cssText = 'display:flex;gap:8px;margin-bottom:8px';
+  div.innerHTML = '<div style="width:26px;height:26px;border-radius:50%;background:var(--surface3);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">' + EU.initials + '</div><div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:8px 11px"><div style="font-size:10px;font-weight:700;margin-bottom:3px">' + esc(EU.name) + '<span style="float:right;color:var(--text3)">' + hora + '</span></div><div style="font-size:12px;color:var(--text2)">' + esc(txt) + '</div></div>';
+  coms.appendChild(div);
+  coms.scrollTop = coms.scrollHeight;
+  renderBoard();
+  toast('💬 Comentário enviado!');
 }
 
-function openNewCard() {
-  ncSlides = [];
-  ncCapa = null;
-  document.getElementById('nc-title').value = '';
-  document.getElementById('nc-copy').value = '';
-  document.getElementById('nc-music').value = '';
-  document.getElementById('nc-hashtags').value = '';
-  document.getElementById('nc-slides-preview').innerHTML = '';
-  document.getElementById('nc-capa-preview').innerHTML = '';
-  const capaZone = document.getElementById('nc-capa-zone');
-  if (capaZone) capaZone.style.display = '';
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('nc-date').value = today;
-  document.getElementById('nc-time').value = '09:00';
-  openModal('modal-new-card');
+function copiarLegenda() {
+  var el = document.getElementById('card-legenda');
+  if (navigator.clipboard) { navigator.clipboard.writeText(el.value).then(function(){ toast('📋 Copiado!'); }); }
+  else { el.select(); document.execCommand('copy'); toast('📋 Copiado!'); }
 }
 
-function handleNewCardFiles(files) {
-  Array.from(files).filter(f => f.type.startsWith('image/')).forEach(f => {
-    const r = new FileReader();
-    r.onload = e => {
-      ncSlides.push({ name: f.name, dataUrl: e.target.result, mime: f.type });
-      renderNcSlides();
+function rmSlideCard(id, idx) {
+  var card = buscarCard(id);
+  if (card) { card.slides.splice(idx,1); abrirCard(id, colAtiva); renderBoard(); }
+}
+
+function rmCapaCard(id) {
+  var card = buscarCard(id);
+  if (card) { card.capa = null; abrirCard(id, colAtiva); renderBoard(); }
+}
+
+function baixarSlides() {
+  if (!cardAtivo) return;
+  var nome = cardAtivo.titulo.replace(/[\s\/]/g,'_');
+  cardAtivo.slides.forEach(function(s, i) {
+    setTimeout(function() {
+      var a = document.createElement('a');
+      a.href = s; a.download = nome + '_slide' + (i+1) + '.png';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }, i * 200);
+  });
+  toast('⬇️ Download iniciado!');
+}
+
+function handleSlidesCard(id, files) {
+  var card = buscarCard(id);
+  if (!card) return;
+  var arr = Array.from(files).filter(function(f){ return f.type.startsWith('image/'); });
+  var n = 0;
+  arr.forEach(function(f) {
+    var r = new FileReader();
+    r.onload = function(e) {
+      card.slides.push(e.target.result);
+      if (++n === arr.length) { abrirCard(id, colAtiva); renderBoard(); }
     };
     r.readAsDataURL(f);
   });
-  document.getElementById('nc-files').value = '';
+  document.getElementById('card-slides-inp').value = '';
+}
+
+// ═══════════════════════════════
+// NOVO CARD
+// ═══════════════════════════════
+function popularSelectClientes() {
+  var sel = document.getElementById('nc-cliente');
+  sel.innerHTML = CLIENTES.map(function(c){ return '<option value="' + c.id + '"' + (c.id===trlAtivo?' selected':'') + '>' + c.name + '</option>'; }).join('');
+}
+
+function openNovoCard() {
+  ncCapa = null; ncSlides = [];
+  document.getElementById('nc-titulo').value = '';
+  document.getElementById('nc-legenda').value = '';
+  document.getElementById('nc-musica').value = '';
+  document.getElementById('nc-hashtags').value = '';
+  document.getElementById('nc-capa-prev').innerHTML = '';
+  document.getElementById('nc-slides-prev').innerHTML = '';
+  document.getElementById('nc-data').value = new Date().toISOString().split('T')[0];
+  document.getElementById('nc-hora').value = '09:00';
+  abrirModal('modal-novo');
+}
+
+function handleCapaFile(files, modo) {
+  if (!files || !files[0]) return;
+  var r = new FileReader();
+  r.onload = function(e) {
+    var src = e.target.result;
+    if (modo === 'nc') {
+      ncCapa = src;
+      document.getElementById('nc-capa-prev').innerHTML = '<div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--border2);margin-top:8px"><img src="' + src + '" style="width:100%;max-height:140px;object-fit:cover;display:block"><button onclick="ncCapa=null;document.getElementById(\'nc-capa-prev\').innerHTML=\'\'" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer">× Remover</button></div>';
+    } else if (modo === 'card' && cardAtivo) {
+      cardAtivo.capa = src;
+      renderBoard();
+      abrirCard(cardAtivo.id, colAtiva);
+    }
+  };
+  r.readAsDataURL(files[0]);
+  if (modo === 'nc') document.getElementById('nc-capa-inp').value = '';
+  else document.getElementById('card-capa-inp').value = '';
+}
+
+function handleSlidesFiles(files) {
+  var arr = Array.from(files).filter(function(f){ return f.type.startsWith('image/'); });
+  var n = 0;
+  arr.forEach(function(f) {
+    var r = new FileReader();
+    r.onload = function(e) {
+      ncSlides.push(e.target.result);
+      if (++n === arr.length) renderNcSlides();
+    };
+    r.readAsDataURL(f);
+  });
+  document.getElementById('nc-slides-inp').value = '';
 }
 
 function renderNcSlides() {
-  document.getElementById('nc-slides-preview').innerHTML = ncSlides.map((s,i) => `
-    <div class="slide-thumb">
-      <img src="${s.dataUrl}" alt="${i+1}">
-      <div class="slide-num">${i+1}</div>
-      <button class="slide-rm" onclick="ncSlides.splice(${i},1);renderNcSlides()">×</button>
-    </div>`).join('');
+  document.getElementById('nc-slides-prev').innerHTML = ncSlides.map(function(s,i){
+    return '<div class="sthumb"><img src="' + s + '"><div class="snum">' + (i+1) + '</div><button class="srm" onclick="ncSlides.splice(' + i + ',1);renderNcSlides()">×</button></div>';
+  }).join('');
 }
 
-function createCard() {
-  const title = document.getElementById('nc-title').value.trim() || 'NOVO POST';
-  const dateVal = document.getElementById('nc-date').value;
-  const date = dateVal ? dateVal.split('-').reverse().slice(0,2).join('/') : '--/--';
-  const newCard = {
-    id: 'card_' + Date.now(),
-    title, date,
-    horario: document.getElementById('nc-time').value,
+function criarCard() {
+  var titulo = document.getElementById('nc-titulo').value.trim() || 'NOVO POST';
+  var dataVal = document.getElementById('nc-data').value;
+  var data = dataVal ? dataVal.split('-').reverse().slice(0,2).join('/') : '--/--';
+  var clienteId = document.getElementById('nc-cliente').value || trlAtivo;
+  var card = {
+    id: 'c' + Date.now(),
+    titulo: titulo, data: data, hora: document.getElementById('nc-hora').value,
     emoji: '📝',
-    copy: document.getElementById('nc-copy').value,
-    music: document.getElementById('nc-music').value,
+    legenda: document.getElementById('nc-legenda').value,
+    musica: document.getElementById('nc-musica').value,
     hashtags: document.getElementById('nc-hashtags').value,
     capa: ncCapa || null,
-    tags: [{ l: 'Novo', c: '#4a9eff' }],
-    comments: 0, files: ncSlides.length,
     slides: [...ncSlides],
-    members: [currentUser.initials || 'K'],
+    tags: [{l:'Novo',c:'#4a9eff'}],
+    comentarios: [],
     checklist: {
-      copy: !!document.getElementById('nc-copy').value,
-      music: !!document.getElementById('nc-music').value,
+      copy: !!document.getElementById('nc-legenda').value,
+      musica: !!document.getElementById('nc-musica').value,
       hashtags: !!document.getElementById('nc-hashtags').value,
       artes: ncSlides.length > 0,
-      aprovacao_admin: false, aprovacao_clinica: false, postado: false
+      adm: false, clinica: false, postado: false
     },
-    comentarios: [], approved: false
+    aprovado: false, ajuste: false
   };
-  if (!trlBoardData[trlActive]) trlBoardData[trlActive] = { design:[], admin:[], clinica:[], postar:[] };
-  trlBoardData[trlActive].design.push(newCard);
-  ncSlides = [];
-  closeModal('modal-new-card');
-  trlRenderBoard();
-  showNotif(`✨ Card "${title}" criado!`);
+  BOARD[clienteId].design.push(card);
+  ncCapa = null; ncSlides = [];
+  fecharModal('modal-novo');
+  if (clienteId !== trlAtivo) selecionarCliente(clienteId);
+  else renderBoard();
+  toast('✨ Card "' + titulo + '" criado!');
 }
 
-// ══════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════
-
-// ══════════════════════════════════════
-// PERFIL DA CLÍNICA
-// ══════════════════════════════════════
-function openPerfilClinica() {
-  const cid = trlActive;
-  const c = trlClients.find(x => x.id === cid);
-  const p = clinicaProfiles[cid];
-  if (!p || !c) return;
-  document.getElementById('perfil-modal-title').textContent = 'Perfil — ' + c.name;
-  const body = document.getElementById('perfil-modal-body');
-  const driveLink = p.drive ? '<a href="' + p.drive + '" target="_blank" class="btn btn-ghost" style="white-space:nowrap;font-size:12px;">🔗 Abrir</a>' : '';
-  const onbLink = p.onboarding_drive ? '<a href="' + p.onboarding_drive + '" target="_blank" class="btn btn-ghost" style="white-space:nowrap;font-size:12px;">🔗 Abrir</a>' : '';
-  const fotoHtml = p.foto
-    ? '<img src="' + p.foto + '" style="width:100%;height:100%;object-fit:cover;">'
-    : '<span style="font-size:32px;font-weight:700;">' + c.initials + '</span>';
-  body.innerHTML =
-    '<div style="display:grid;grid-template-columns:140px 1fr;gap:20px;margin-bottom:20px;">'
-    + '<div style="display:flex;flex-direction:column;align-items:center;gap:8px;">'
-    + '<div onclick="document.getElementById('perfil-foto-input').click()" style="width:120px;height:120px;border-radius:16px;background:' + c.bg + ';color:' + c.color + ';display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px dashed var(--border2);overflow:hidden;position:relative;">'
+// ═══════════════════════════════
+// PERFIL CLÍNICA
+// ═══════════════════════════════
+function openPerfil() {
+  var cid = trlAtivo;
+  var c = CLIENTES.find(function(x){ return x.id===cid; });
+  var p = PERFIS[cid];
+  document.getElementById('perfil-titulo').textContent = 'Perfil — ' + c.name;
+  var fotoHtml = p.foto
+    ? '<img src="' + p.foto + '" style="width:100%;height:100%;object-fit:cover">'
+    : '<span style="font-size:28px;font-weight:700;color:' + c.color + '">' + c.initials + '</span>';
+  document.getElementById('perfil-body').innerHTML =
+    '<div style="display:grid;grid-template-columns:130px 1fr;gap:20px;margin-bottom:16px">'
+    + '<div style="display:flex;flex-direction:column;align-items:center;gap:8px">'
+    + '<div onclick="document.getElementById(\'perfil-foto-inp\').click()" style="width:110px;height:110px;border-radius:14px;background:' + c.color + '22;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px dashed var(--border2);overflow:hidden;position:relative">'
     + fotoHtml
-    + '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.5);font-size:10px;color:#fff;text-align:center;padding:3px;">Trocar foto</div>'
+    + '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.5);font-size:10px;color:#fff;text-align:center;padding:3px">Trocar foto</div>'
+    + '</div><input type="file" id="perfil-foto-inp" accept="image/*" style="display:none" onchange="handlePerfilFoto(\'' + cid + '\',this.files)">'
     + '</div>'
-    + '<input type="file" id="perfil-foto-input" accept="image/*" style="display:none" onchange="handlePerfilFoto('' + cid + '',this.files)">'
-    + '</div>'
-    + '<div style="display:flex;flex-direction:column;gap:12px;">'
-    + '<div class="field-group"><div class="field-label">Nome completo</div><input class="field-input" id="pf-nome" value="' + (p.nome||'') + '" placeholder="Nome completo"></div>'
-    + '<div class="field-group"><div class="field-label">Especialidade(s)</div><input class="field-input" id="pf-esp" value="' + (p.especialidade||'') + '" placeholder="Ex: Harmonização Facial"></div>'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
-    + '<div class="field-group"><div class="field-label">Cidade / Estado</div><input class="field-input" id="pf-cidade" value="' + (p.cidade||'') + '" placeholder="Ex: Joinville, SC"></div>'
-    + '<div class="field-group"><div class="field-label">Instagram</div><input class="field-input" id="pf-insta" value="' + (p.instagram||'') + '" placeholder="@usuario"></div>'
+    + '<div style="display:flex;flex-direction:column;gap:12px">'
+    + '<div class="fgroup"><div class="flabel">Nome completo</div><input class="finput" id="pf-nome" value="' + esc(p.nome||'') + '"></div>'
+    + '<div class="fgroup"><div class="flabel">Especialidade</div><input class="finput" id="pf-esp" value="' + esc(p.especialidade||'') + '"></div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
+    + '<div class="fgroup"><div class="flabel">Cidade</div><input class="finput" id="pf-cidade" value="' + esc(p.cidade||'') + '"></div>'
+    + '<div class="fgroup"><div class="flabel">Instagram</div><input class="finput" id="pf-insta" value="' + esc(p.instagram||'') + '"></div>'
     + '</div></div></div>'
-    + '<div style="height:1px;background:var(--border);margin:0 0 16px;"></div>'
-    + '<div class="field-group"><div class="field-label">📁 Link do Google Drive da clínica</div>'
-    + '<div style="display:flex;gap:8px;"><input class="field-input" id="pf-drive" value="' + (p.drive||'') + '" placeholder="https://drive.google.com/..." style="flex:1;">' + driveLink + '</div></div>'
-    + '<div style="height:1px;background:var(--border);margin:0 0 16px;"></div>'
-    + '<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px;">📋 Onboarding Estratégico</div>'
-    + '<div class="field-group"><div class="field-label">🔗 Link do Onboarding no Drive</div>'
-    + '<div style="display:flex;gap:8px;"><input class="field-input" id="pf-onb-drive" value="' + (p.onboarding_drive||'') + '" placeholder="https://drive.google.com/..." style="flex:1;">' + onbLink + '</div></div>'
-    + '<div class="field-group"><div class="field-label">📝 Notas e estratégia da clínica</div>'
-    + '<textarea class="field-textarea" id="pf-onb-doc" style="min-height:140px;">' + (p.onboarding_doc||'') + '</textarea></div>';
-  openModal('modal-perfil');
+    + '<div class="divider"></div>'
+    + '<div class="fgroup"><div class="flabel">📁 Google Drive da clínica</div>'
+    + '<div style="display:flex;gap:8px"><input class="finput" id="pf-drive" value="' + esc(p.drive||'') + '" placeholder="https://drive.google.com/..." style="flex:1">'
+    + (p.drive ? '<a href="' + p.drive + '" target="_blank" class="btn btn-ghost" style="white-space:nowrap;font-size:12px">🔗 Abrir</a>' : '')
+    + '</div></div>'
+    + '<div class="divider"></div>'
+    + '<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px">📋 Onboarding Estratégico</div>'
+    + '<div class="fgroup"><div class="flabel">Link do Drive</div>'
+    + '<div style="display:flex;gap:8px"><input class="finput" id="pf-onb-drive" value="' + esc(p.onb_drive||'') + '" placeholder="https://drive.google.com/..." style="flex:1">'
+    + (p.onb_drive ? '<a href="' + p.onb_drive + '" target="_blank" class="btn btn-ghost" style="white-space:nowrap;font-size:12px">🔗 Abrir</a>' : '')
+    + '</div></div>'
+    + '<div class="fgroup"><div class="flabel">Notas e estratégia</div><textarea class="ftextarea" id="pf-doc" style="min-height:120px">' + esc(p.onb_doc||'') + '</textarea></div>';
+  abrirModal('modal-perfil');
 }
 
 function handlePerfilFoto(cid, files) {
   if (!files || !files[0]) return;
-  const r = new FileReader();
-  r.onload = e => { clinicaProfiles[cid].foto = e.target.result; openPerfilClinica(); };
+  var r = new FileReader();
+  r.onload = function(e) { PERFIS[cid].foto = e.target.result; openPerfil(); };
   r.readAsDataURL(files[0]);
 }
 
 function salvarPerfil() {
-  const cid = trlActive;
-  const p = clinicaProfiles[cid];
+  var cid = trlAtivo;
+  var p = PERFIS[cid];
   p.nome = document.getElementById('pf-nome').value;
   p.especialidade = document.getElementById('pf-esp').value;
   p.cidade = document.getElementById('pf-cidade').value;
   p.instagram = document.getElementById('pf-insta').value;
   p.drive = document.getElementById('pf-drive').value;
-  p.onboarding_drive = document.getElementById('pf-onb-drive').value;
-  p.onboarding_doc = document.getElementById('pf-onb-doc').value;
-  const c = trlClients.find(x => x.id === cid);
+  p.onb_drive = document.getElementById('pf-onb-drive').value;
+  p.onb_doc = document.getElementById('pf-doc').value;
+  var c = CLIENTES.find(function(x){ return x.id===cid; });
   if (c) c.meta = p.especialidade + (p.cidade ? ' · ' + p.cidade : '');
-  closeModal('modal-perfil');
-  trlSelectClient(cid);
-  showNotif('✅ Perfil salvo!');
+  fecharModal('modal-perfil');
+  selecionarCliente(cid);
+  toast('✅ Perfil salvo!');
 }
 
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+// ═══════════════════════════════
+// PORTAL CLIENTE
+// ═══════════════════════════════
+function iniciarPortal() {
+  document.getElementById('portal').classList.add('active');
+  document.getElementById('topbar-cliente').style.display = 'flex';
+  var av = document.getElementById('cli-av');
+  av.textContent = EU.initials;
+  av.style.background = EU.color + '33';
+  av.style.color = EU.color;
+  document.getElementById('cli-name').textContent = EU.name;
+  renderPortal();
+}
 
-let notifT;
-function showNotif(msg) {
-  const n = document.getElementById('notif');
-  n.textContent = msg; n.classList.add('show');
-  clearTimeout(notifT);
-  notifT = setTimeout(() => n.classList.remove('show'), 2800);
+function renderPortal(mes) {
+  if (mes) portalMes = mes;
+  var cid = EU.clientId;
+  var data = BOARD[cid] || {design:[],admin:[],clinica:[],postar:[]};
+  var cards = [...(data.clinica||[]), ...(data.postar||[])];
+
+  // Header
+  var c = CLIENTES.find(function(x){ return x.id===cid; }) || {name:EU.name, initials:EU.initials, color:EU.color};
+  var mesesHtml = '';
+  MESES.forEach(function(m) {
+    var ativo = m === portalMes;
+    mesesHtml += '<button class="month-btn' + (ativo?' active':'') + '" onclick="renderPortal(\'' + m + '\')">' + m + '</button>';
+  });
+  document.getElementById('portal-hdr').innerHTML =
+    '<div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">'
+    + '<div style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;background:' + EU.color + '33;color:' + EU.color + '">' + EU.initials + '</div>'
+    + '<div><div style="font-family:\'Instrument Serif\',serif;font-size:20px;color:var(--text)">Olá, ' + EU.name + '!</div>'
+    + '<div style="font-size:12px;color:var(--text2)">Posts para sua aprovação</div></div>'
+    + '</div>'
+    + '<div class="portal-months">' + mesesHtml + '</div>';
+
+  // Cards
+  var area = document.getElementById('portal-cards');
+  if (cards.length === 0) {
+    area.innerHTML = '<div style="text-align:center;padding:80px 20px;color:var(--text3);font-size:15px">📭 Nenhum post para revisar em ' + portalMes + '</div>';
+    return;
+  }
+  var html = '';
+  cards.forEach(function(card) {
+    var badgeBg = card.aprovado ? 'var(--green-dim)' : card.ajuste ? 'var(--red-dim)' : 'var(--gold-dim)';
+    var badgeColor = card.aprovado ? 'var(--green)' : card.ajuste ? 'var(--red)' : 'var(--gold)';
+    var badgeText = card.aprovado ? '✅ Aprovado' : card.ajuste ? '⚠️ Aguardando ajuste' : '⏳ Aguardando aprovação';
+    var slidesHtml = '';
+    if (card.slides && card.slides.length > 0) {
+      slidesHtml = '<div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:14px">';
+      card.slides.forEach(function(s){ slidesHtml += '<img src="' + s + '" style="width:90px;height:90px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)">'; });
+      slidesHtml += '</div>';
+    }
+    var lastAjuste = card.comentarios.filter(function(c){ return c.txt && c.txt.startsWith('✏️ Ajuste:'); }).pop();
+    var acoes = '';
+    if (card.aprovado) {
+      acoes = '<span style="font-size:13px;color:var(--green)">✅ Você aprovou este post</span>';
+    } else if (card.ajuste) {
+      acoes = '<span style="font-size:13px;color:var(--red)">⚠️ Ajuste enviado — equipe trabalhando nisso</span>';
+    } else {
+      acoes = '<button class="btn btn-green" onclick="clienteAprovar(\'' + cid + '\',\'' + card.id + '\')">✅ Aprovar</button>'
+        + '<button class="btn btn-red" onclick="clientePedirAjuste(\'' + card.id + '\')">✏️ Pedir ajuste</button>';
+    }
+    html += '<div class="portal-card" id="pcard-' + card.id + '">'
+      + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'
+      + '<div style="font-size:24px">' + (card.emoji||'📝') + '</div>'
+      + '<div style="font-size:15px;font-weight:700;color:var(--text);flex:1">' + esc(card.titulo) + '</div>'
+      + '<span id="pbadge-' + card.id + '" style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:' + badgeBg + ';color:' + badgeColor + '">' + badgeText + '</span>'
+      + '</div>'
+      + (card.capa ? '<img src="' + card.capa + '" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-bottom:14px;display:block">' : '')
+      + slidesHtml
+      + (card.legenda ? '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:6px">📝 Legenda</div><div style="font-size:13px;color:var(--text2);line-height:1.6;white-space:pre-wrap;margin-bottom:12px">' + esc(card.legenda) + '</div>' : '')
+      + (card.musica ? '<div style="font-size:12px;color:var(--text3);margin-bottom:8px">🎵 <strong style="color:var(--text2)">Música:</strong> ' + esc(card.musica) + '</div>' : '')
+      + (card.hashtags ? '<div style="font-size:12px;color:var(--text3);margin-bottom:14px">#️⃣ ' + esc(card.hashtags) + '</div>' : '')
+      + (lastAjuste ? '<div style="margin-bottom:12px;padding:10px 14px;background:var(--red-dim);border-radius:8px;border:1px solid rgba(255,107,107,.3);font-size:12px;color:var(--red)">✏️ <strong>Último ajuste:</strong> ' + esc(lastAjuste.txt.replace('✏️ Ajuste: ','')) + '</div>' : '')
+      + '<div id="pactions-' + card.id + '" style="display:flex;gap:8px;padding-top:14px;border-top:1px solid var(--border)">' + acoes + '</div>'
+      + '</div>';
+  });
+  area.innerHTML = html;
+}
+
+function clienteAprovar(cid, cardId) {
+  var card = buscarCardEm(cid, cardId);
+  if (!card) return;
+  card.aprovado = true; card.ajuste = false;
+  card.tags = card.tags.filter(function(t){ return !t.l.includes('Ajuste'); });
+  card.tags.push({l:'Aprovado', c:'#3ecf8e'});
+  var hora = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  card.comentarios.push({autor:EU.name, role:'Cliente', txt:'✅ Aprovado pela clínica!', hora:hora});
+  // Move para postar se estava em clinica
+  var col = null;
+  Object.keys(BOARD[cid]).forEach(function(c){ if(BOARD[cid][c].find(function(x){return x.id===cardId;})) col=c; });
+  if (col === 'clinica') {
+    BOARD[cid].clinica = BOARD[cid].clinica.filter(function(c){return c.id!==cardId;});
+    BOARD[cid].postar.push(card);
+  }
+  // Atualiza badge inline
+  var badge = document.getElementById('pbadge-' + cardId);
+  if (badge) { badge.style.background='var(--green-dim)'; badge.style.color='var(--green)'; badge.textContent='✅ Aprovado'; }
+  var actions = document.getElementById('pactions-' + cardId);
+  if (actions) actions.innerHTML = '<span style="font-size:13px;color:var(--green)">✅ Você aprovou este post</span>';
+  toast('✅ Aprovado! Equipe notificada.');
+}
+
+function clientePedirAjuste(cardId) {
+  ajusteCardId = cardId;
+  document.getElementById('ajuste-txt').value = '';
+  abrirModal('modal-ajuste');
+}
+
+function enviarAjuste() {
+  var txt = document.getElementById('ajuste-txt').value.trim();
+  if (!txt) { toast('⚠️ Descreva o ajuste'); return; }
+  var cid = EU.clientId;
+  var card = buscarCardEm(cid, ajusteCardId);
+  if (card) {
+    card.ajuste = true; card.aprovado = false;
+    card.tags = card.tags.filter(function(t){return !t.l.includes('Aprovado')&&!t.l.includes('Ajuste');});
+    card.tags.push({l:'⚠️ Ajuste',c:'#ff6b6b'});
+    var hora = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    card.comentarios.push({autor:EU.name, role:'Cliente', txt:'✏️ Ajuste: ' + txt, hora:hora});
+    var badge = document.getElementById('pbadge-' + ajusteCardId);
+    if (badge) { badge.style.background='var(--red-dim)'; badge.style.color='var(--red)'; badge.textContent='⚠️ Aguardando ajuste'; }
+    var actions = document.getElementById('pactions-' + ajusteCardId);
+    if (actions) actions.innerHTML = '<span style="font-size:13px;color:var(--red)">⚠️ Ajuste enviado — equipe trabalhando nisso</span>';
+    var coment = document.getElementById('coment-' + ajusteCardId);
+    if (coment) coment.innerHTML = '<div style="margin-bottom:12px;padding:10px 14px;background:var(--red-dim);border-radius:8px;border:1px solid rgba(255,107,107,.3);font-size:12px;color:var(--red)">✏️ <strong>Ajuste enviado:</strong> ' + esc(txt) + '</div>';
+  }
+  fecharModal('modal-ajuste');
+  toast('✉️ Ajuste enviado!');
+}
+
+// ═══════════════════════════════
+// UTILS
+// ═══════════════════════════════
+function buscarCard(id) {
+  var found = null;
+  Object.values(BOARD[trlAtivo]).flat().forEach(function(c){ if(c.id===id) found=c; });
+  return found;
+}
+
+function buscarCardEm(cid, id) {
+  var found = null;
+  Object.values(BOARD[cid]).flat().forEach(function(c){ if(c.id===id) found=c; });
+  return found;
+}
+
+function abrirModal(id) { document.getElementById(id).classList.add('open'); }
+function fecharModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function toggleTheme() {
+  tema = tema === 'dark' ? 'light' : 'dark';
+  document.body.setAttribute('data-theme', tema);
+  localStorage.setItem('mk_tema', tema);
+  atualizarTemaBtn();
+  if (trlAtivo) renderBoard();
+}
+
+function atualizarTemaBtn() {
+  document.querySelectorAll('.theme-btn').forEach(function(b){ b.textContent = tema==='dark'?'🌙':'☀️'; });
+}
+
+var toastT;
+function toast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(function(){ el.classList.remove('show'); }, 2800);
 }
 
 function esc(s) {
