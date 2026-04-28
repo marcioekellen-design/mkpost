@@ -602,13 +602,13 @@ const trlBoardData = {
 let currentUser = null;
 let currentTheme = localStorage.getItem('mktheme') || 'dark';
 document.body.setAttribute('data-theme', currentTheme);
-updateThemeBtn();
 
 function updateThemeBtn() {
   document.querySelectorAll('.theme-toggle').forEach(btn => {
     btn.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
   });
 }
+updateThemeBtn();
 
 // ══════════════════════════════════════
 // LOGIN
