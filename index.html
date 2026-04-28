@@ -534,6 +534,71 @@ const USERS = {
 };
 const PASS = '123456';
 
+
+let portalMes = 'Maio 2026';
+
+
+// ══════════════════════════════════════
+// TRELLO DATA
+// ══════════════════════════════════════
+const trlClients = [
+  { id:'tatiana', name:'Dra. Tatiana',  initials:'DT', bg:'#a78bfa22', color:'#a78bfa', meta:'Harmonização Facial · Joinville' },
+  { id:'camila',  name:'Dra. Camila',   initials:'DC', bg:'#ec489922', color:'#ec4899', meta:'Harmonização · Laser CO2' },
+  { id:'leticia', name:'Dra. Letícia',  initials:'DL', bg:'#4a9eff22', color:'#4a9eff', meta:'Harmonização Full Face' },
+  { id:'dayane',  name:'Dra. Dayane',   initials:'DD', bg:'#3ecf8e22', color:'#3ecf8e', meta:'Harmonização Facial · HERUS' },
+  { id:'marina',  name:'Dra. Marina',   initials:'DM', bg:'#fb923c22', color:'#fb923c', meta:'Ultrassom · HIPRO' },
+  { id:'carol',   name:'Dra. Carol',    initials:'CB', bg:'#f43f5e22', color:'#f43f5e', meta:'Cirurgias Estéticas · BH' },
+  { id:'vanessa', name:'Dra. Vanessa',  initials:'DV', bg:'#d4a84322', color:'#d4a843', meta:'Cirurgias Estéticas da Face' },
+  { id:'kav',     name:'Instituto Kav', initials:'KV', bg:'#a78bfa22', color:'#a78bfa', meta:'Mentorias · BH' },
+];
+
+// Perfis completos das clínicas (editável pela agência)
+const clinicaProfiles = {
+  tatiana: { nome:'Dra. Tatiana Lorenzi Finamor', especialidade:'Harmonização Facial · Rejuvenescimento · Bioestimuladores', cidade:'Joinville, SC', instagram:'@dra.tatianafinamor', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  camila:  { nome:'Dra. Camila Daher', especialidade:'Harmonização Facial · Laser CO2', cidade:'Joinville, SC', instagram:'@camiladaher', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  leticia: { nome:'Dra. Letícia Fridel', especialidade:'Harmonização Full Face', cidade:'', instagram:'@dra.leticiafridel', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  dayane:  { nome:'Dra. Dayane Falcomer', especialidade:'Harmonização Facial · HERUS', cidade:'', instagram:'@dradayanefalcomer', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  marina:  { nome:'Dra. Marina Flores', especialidade:'Ultrassom · HIPRO', cidade:'', instagram:'@dra.marinaflores', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  carol:   { nome:'Dra. Carolina Paulino', especialidade:'Cirurgias Estéticas · BH', cidade:'Belo Horizonte, MG', instagram:'@dra.carolinapaulino', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  vanessa: { nome:'Dra. Vanessa Pacífico', especialidade:'Cirurgias Estéticas da Face', cidade:'', instagram:'@dra.vanessapacifico', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+  kav:     { nome:'Instituto Kav', especialidade:'Mentorias para Médicos', cidade:'Belo Horizonte, MG', instagram:'@institutokav', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
+};
+
+const trlMonths = ['Janeiro 2026','Fevereiro 2026','Março 2026','Abril 2026','Maio 2026','Junho 2026'];
+let trlMonth = 'Maio 2026';
+
+const trlColConfig = {
+  design:  { label:'Edição Design',   color:'#4a9eff', info:'Social media cria, designer adiciona as artes.' },
+  admin:   { label:'Aprovação Admin', color:'#d4a843', info:'Revisão interna antes de enviar para a clínica.' },
+  clinica: { label:'Clínica Aprovar', color:'#a78bfa', info:'Cliente visualiza e aprova ou pede ajuste.' },
+  postar:  { label:'Postar',          color:'#3ecf8e', info:'Aprovado! Poster baixa as artes e agenda.' },
+};
+
+const trlBoardData = {
+  tatiana: {
+    design:[
+      {id:'t1',title:'POST CARROSSEL 12/05',date:'12/05',horario:'09:00',emoji:'🖼️',copy:'✨ Renovação celular com tecnologia de ponta...',music:'Flowers — Miley Cyrus',hashtags:'#harmonizacao #rejuvenescimento #botox',tags:[{l:'Feed',c:'#ec4899'}],comments:1,files:0,slides:[],members:['ST'],checklist:{copy:true,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false},
+    ],
+    admin:[
+      {id:'t4',title:'POST CARROSSEL 10/05',date:'10/05',horario:'11:00',emoji:'✅',copy:'Harmonização Facial de Alto Padrão\n\nResultados naturais que realçam sua beleza única.',music:'Espelho — Djavan',hashtags:'#harmonizacao #beauty #procedimentos',tags:[{l:'Urgente',c:'#f43f5e'}],comments:2,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[{autor:'Kellen',role:'Social Media',texto:'Legenda e hashtags prontos! Aguardando artes da Stephanie.',time:'09:14'}],approved:false},
+    ],
+    clinica:[
+      {id:'t6',title:'POST CARROSSEL 05/05',date:'05/05',horario:'14:00',emoji:'💆‍♀️',copy:'Protocolo de rejuvenescimento exclusivo da Dra. Tatiana.',music:'Golden Hour — JVKE',hashtags:'#pele #skincare #harmonizacaofacial',tags:[{l:'Aprovação',c:'#a78bfa'}],comments:1,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:true,aprovacao_admin:true,aprovacao_clinica:false,postado:false},comentarios:[{autor:'Kellen',role:'Social Media',texto:'Tudo pronto! Enviado para aprovação da Dra. Tatiana.',time:'10:00'}],approved:false},
+    ],
+    postar:[
+      {id:'t7',title:'POST CARROSSEL 03/05',date:'03/05',horario:'10:00',emoji:'🚀',copy:'Procedimento aprovado e pronto para publicar!',music:'As It Was — Harry Styles',hashtags:'#harmonizacao #botox #fillers',tags:[{l:'Aprovado',c:'#3ecf8e'}],comments:1,files:0,slides:[],members:['KF'],checklist:{copy:true,music:true,hashtags:true,artes:true,aprovacao_admin:true,aprovacao_clinica:true,postado:false},comentarios:[{autor:'Dra. Tatiana',role:'Cliente',texto:'✅ Aprovado! Ficou lindo!',time:'11:45'}],approved:true},
+    ]
+  },
+  camila:{ design:[{id:'c1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy para Dra. Camila...',music:'',hashtags:'',tags:[{l:'Feed',c:'#ec4899'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  leticia:{ design:[{id:'l1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy Dra. Letícia',music:'',hashtags:'',tags:[{l:'Feed',c:'#4a9eff'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  dayane:{ design:[], admin:[{id:'d1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'10:00',emoji:'📸',copy:'HERUS FULL — harmonização facial completa.',music:'Blinding Lights — The Weeknd',hashtags:'#herus #harmonizacao',tags:[{l:'Urgente',c:'#f43f5e'}],comments:1,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], clinica:[], postar:[] },
+  marina:{ design:[{id:'m1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Ultrassom de imagem — Dra. Marina.',music:'',hashtags:'',tags:[{l:'Feed',c:'#fb923c'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  carol:{ design:[{id:'cb1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Cirurgias estéticas da face.',music:'',hashtags:'',tags:[{l:'Feed',c:'#f43f5e'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  vanessa:{ design:[{id:'v1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy Dra. Vanessa.',music:'',hashtags:'',tags:[{l:'Feed',c:'#d4a843'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+  kav:{ design:[{id:'k1',title:'POST FIXO 10/05',date:'10/05',horario:'09:00',emoji:'🖼️',copy:'KAV MENTORIAS — transforme sua carreira.',music:'',hashtags:'',tags:[{l:'Feed',c:'#a78bfa'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
+};
+
+
 let currentUser = null;
 let currentTheme = localStorage.getItem('mktheme') || 'dark';
 document.body.setAttribute('data-theme', currentTheme);
@@ -650,7 +715,7 @@ function loadClientePortal(mes) {
   let monthTabs = '';
   trlMonths.forEach(m => {
     const active = m === portalMes;
-    monthTabs += '<button onclick="loadClientePortal('' + m + '')" style="padding:7px 14px;border-radius:7px 7px 0 0;font-size:12px;font-weight:600;color:' + (active?'var(--gold)':'var(--text-3)') + ';cursor:pointer;border:none;background:' + (active?'var(--gold-dim)':'transparent') + ';border-bottom:2px solid ' + (active?'var(--gold)':'transparent') + ';transition:all 0.12s;font-family:Outfit,sans-serif;white-space:nowrap;">' + m + '</button>';
+    monthTabs += '<button onclick="loadClientePortal(\'' + m + '\')" style="padding:7px 14px;border-radius:7px 7px 0 0;font-size:12px;font-weight:600;color:' + (active?'var(--gold)':'var(--text-3)') + ';cursor:pointer;border:none;background:' + (active?'var(--gold-dim)':'transparent') + ';border-bottom:2px solid ' + (active?'var(--gold)':'transparent') + ';transition:all 0.12s;font-family:Outfit,sans-serif;white-space:nowrap;">' + m + '</button>';
   });
   header.innerHTML = '<div style="display:flex;align-items:center;gap:14px;padding:16px 28px 12px;">'
     + '<div style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;background:' + currentUser.color + '33;color:' + currentUser.color + ';">' + currentUser.initials + '</div>'
@@ -689,8 +754,8 @@ function loadClientePortal(mes) {
       } else if (hasAjuste) {
         actionsHtml = '<span style="font-size:13px;color:var(--red);">⚠️ Ajuste enviado — a equipe está trabalhando nisso</span>';
       } else {
-        actionsHtml = '<button onclick="clienteAprovar('' + cid + '','' + card.id + '',this)" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(62,207,142,0.3);background:var(--green-dim);color:var(--green);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✅ Aprovar</button>'
-          + '<button onclick="clientePedirAjuste('' + card.id + '')" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(255,107,107,0.3);background:var(--red-dim);color:var(--red);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✏️ Pedir ajuste</button>';
+        actionsHtml = '<button onclick="clienteAprovar(\'' + cid + '\',\'' + card.id + '\',this)" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(62,207,142,0.3);background:var(--green-dim);color:var(--green);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✅ Aprovar</button>'
+          + '<button onclick="clientePedirAjuste(\'' + card.id + '\')" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(255,107,107,0.3);background:var(--red-dim);color:var(--red);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✏️ Pedir ajuste</button>';
       }
 
       const div = document.createElement('div');
@@ -782,66 +847,6 @@ function clienteAprovar(cid, cardId, btn) {
   trlRenderBoard();
   showNotif('✅ Post aprovado! A equipe foi notificada.');
 }
-
-// ══════════════════════════════════════
-// TRELLO DATA
-// ══════════════════════════════════════
-const trlClients = [
-  { id:'tatiana', name:'Dra. Tatiana',  initials:'DT', bg:'#a78bfa22', color:'#a78bfa', meta:'Harmonização Facial · Joinville' },
-  { id:'camila',  name:'Dra. Camila',   initials:'DC', bg:'#ec489922', color:'#ec4899', meta:'Harmonização · Laser CO2' },
-  { id:'leticia', name:'Dra. Letícia',  initials:'DL', bg:'#4a9eff22', color:'#4a9eff', meta:'Harmonização Full Face' },
-  { id:'dayane',  name:'Dra. Dayane',   initials:'DD', bg:'#3ecf8e22', color:'#3ecf8e', meta:'Harmonização Facial · HERUS' },
-  { id:'marina',  name:'Dra. Marina',   initials:'DM', bg:'#fb923c22', color:'#fb923c', meta:'Ultrassom · HIPRO' },
-  { id:'carol',   name:'Dra. Carol',    initials:'CB', bg:'#f43f5e22', color:'#f43f5e', meta:'Cirurgias Estéticas · BH' },
-  { id:'vanessa', name:'Dra. Vanessa',  initials:'DV', bg:'#d4a84322', color:'#d4a843', meta:'Cirurgias Estéticas da Face' },
-  { id:'kav',     name:'Instituto Kav', initials:'KV', bg:'#a78bfa22', color:'#a78bfa', meta:'Mentorias · BH' },
-];
-
-// Perfis completos das clínicas (editável pela agência)
-const clinicaProfiles = {
-  tatiana: { nome:'Dra. Tatiana Lorenzi Finamor', especialidade:'Harmonização Facial · Rejuvenescimento · Bioestimuladores', cidade:'Joinville, SC', instagram:'@dra.tatianafinamor', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-  camila:  { nome:'Dra. Camila Daher', especialidade:'Harmonização Facial · Laser CO2', cidade:'Joinville, SC', instagram:'@camiladaher', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-  leticia: { nome:'Dra. Letícia Fridel', especialidade:'Harmonização Full Face', cidade:'', instagram:'@dra.leticiafridel', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-  dayane:  { nome:'Dra. Dayane Falcomer', especialidade:'Harmonização Facial · HERUS', cidade:'', instagram:'@dradayanefalcomer', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-  marina:  { nome:'Dra. Marina Flores', especialidade:'Ultrassom · HIPRO', cidade:'', instagram:'@dra.marinaflores', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-  carol:   { nome:'Dra. Carolina Paulino', especialidade:'Cirurgias Estéticas · BH', cidade:'Belo Horizonte, MG', instagram:'@dra.carolinapaulino', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-  vanessa: { nome:'Dra. Vanessa Pacífico', especialidade:'Cirurgias Estéticas da Face', cidade:'', instagram:'@dra.vanessapacifico', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-  kav:     { nome:'Instituto Kav', especialidade:'Mentorias para Médicos', cidade:'Belo Horizonte, MG', instagram:'@institutokav', drive:'', onboarding_drive:'', onboarding_doc:'', foto:'' },
-};
-
-const trlMonths = ['Janeiro 2026','Fevereiro 2026','Março 2026','Abril 2026','Maio 2026','Junho 2026'];
-let trlMonth = 'Maio 2026';
-
-const trlColConfig = {
-  design:  { label:'Edição Design',   color:'#4a9eff', info:'Social media cria, designer adiciona as artes.' },
-  admin:   { label:'Aprovação Admin', color:'#d4a843', info:'Revisão interna antes de enviar para a clínica.' },
-  clinica: { label:'Clínica Aprovar', color:'#a78bfa', info:'Cliente visualiza e aprova ou pede ajuste.' },
-  postar:  { label:'Postar',          color:'#3ecf8e', info:'Aprovado! Poster baixa as artes e agenda.' },
-};
-
-const trlBoardData = {
-  tatiana: {
-    design:[
-      {id:'t1',title:'POST CARROSSEL 12/05',date:'12/05',horario:'09:00',emoji:'🖼️',copy:'✨ Renovação celular com tecnologia de ponta...',music:'Flowers — Miley Cyrus',hashtags:'#harmonizacao #rejuvenescimento #botox',tags:[{l:'Feed',c:'#ec4899'}],comments:1,files:0,slides:[],members:['ST'],checklist:{copy:true,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false},
-    ],
-    admin:[
-      {id:'t4',title:'POST CARROSSEL 10/05',date:'10/05',horario:'11:00',emoji:'✅',copy:'Harmonização Facial de Alto Padrão\n\nResultados naturais que realçam sua beleza única.',music:'Espelho — Djavan',hashtags:'#harmonizacao #beauty #procedimentos',tags:[{l:'Urgente',c:'#f43f5e'}],comments:2,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[{autor:'Kellen',role:'Social Media',texto:'Legenda e hashtags prontos! Aguardando artes da Stephanie.',time:'09:14'}],approved:false},
-    ],
-    clinica:[
-      {id:'t6',title:'POST CARROSSEL 05/05',date:'05/05',horario:'14:00',emoji:'💆‍♀️',copy:'Protocolo de rejuvenescimento exclusivo da Dra. Tatiana.',music:'Golden Hour — JVKE',hashtags:'#pele #skincare #harmonizacaofacial',tags:[{l:'Aprovação',c:'#a78bfa'}],comments:1,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:true,aprovacao_admin:true,aprovacao_clinica:false,postado:false},comentarios:[{autor:'Kellen',role:'Social Media',texto:'Tudo pronto! Enviado para aprovação da Dra. Tatiana.',time:'10:00'}],approved:false},
-    ],
-    postar:[
-      {id:'t7',title:'POST CARROSSEL 03/05',date:'03/05',horario:'10:00',emoji:'🚀',copy:'Procedimento aprovado e pronto para publicar!',music:'As It Was — Harry Styles',hashtags:'#harmonizacao #botox #fillers',tags:[{l:'Aprovado',c:'#3ecf8e'}],comments:1,files:0,slides:[],members:['KF'],checklist:{copy:true,music:true,hashtags:true,artes:true,aprovacao_admin:true,aprovacao_clinica:true,postado:false},comentarios:[{autor:'Dra. Tatiana',role:'Cliente',texto:'✅ Aprovado! Ficou lindo!',time:'11:45'}],approved:true},
-    ]
-  },
-  camila:{ design:[{id:'c1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy para Dra. Camila...',music:'',hashtags:'',tags:[{l:'Feed',c:'#ec4899'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
-  leticia:{ design:[{id:'l1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy Dra. Letícia',music:'',hashtags:'',tags:[{l:'Feed',c:'#4a9eff'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
-  dayane:{ design:[], admin:[{id:'d1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'10:00',emoji:'📸',copy:'HERUS FULL — harmonização facial completa.',music:'Blinding Lights — The Weeknd',hashtags:'#herus #harmonizacao',tags:[{l:'Urgente',c:'#f43f5e'}],comments:1,files:0,slides:[],members:['KF','ST'],checklist:{copy:true,music:true,hashtags:true,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], clinica:[], postar:[] },
-  marina:{ design:[{id:'m1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Ultrassom de imagem — Dra. Marina.',music:'',hashtags:'',tags:[{l:'Feed',c:'#fb923c'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
-  carol:{ design:[{id:'cb1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Cirurgias estéticas da face.',music:'',hashtags:'',tags:[{l:'Feed',c:'#f43f5e'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
-  vanessa:{ design:[{id:'v1',title:'POST CARROSSEL 03/05',date:'03/05',horario:'09:00',emoji:'🖼️',copy:'Copy Dra. Vanessa.',music:'',hashtags:'',tags:[{l:'Feed',c:'#d4a843'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
-  kav:{ design:[{id:'k1',title:'POST FIXO 10/05',date:'10/05',horario:'09:00',emoji:'🖼️',copy:'KAV MENTORIAS — transforme sua carreira.',music:'',hashtags:'',tags:[{l:'Feed',c:'#a78bfa'}],comments:0,files:0,slides:[],members:['ST'],checklist:{copy:false,music:false,hashtags:false,artes:false,aprovacao_admin:false,aprovacao_clinica:false,postado:false},comentarios:[],approved:false}], admin:[], clinica:[], postar:[] },
-};
 
 // ══════════════════════════════════════
 // TRELLO RENDER
@@ -1037,7 +1042,7 @@ function openCard(id, col) {
     <div class="field-group">
       <div class="field-label">🖼️ Capa do carrossel (thumbnail)</div>
       ${card.capa
-        ? '<div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--border2);margin-bottom:6px;"><img src="' + card.capa.dataUrl + '" style="width:100%;max-height:160px;object-fit:cover;display:block;"><button onclick="removeCardCapa('' + id + '')" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.65);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;">× Remover capa</button></div>'
+        ? '<div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--border2);margin-bottom:6px;"><img src="' + card.capa.dataUrl + '" style="width:100%;max-height:160px;object-fit:cover;display:block;"><button onclick="removeCardCapa(\'' + id + '\')" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.65);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;">× Remover capa</button></div>'
         : '<div class="upload-zone" onclick="document.getElementById('capa-file-input').click()" style="padding:14px;"><div style="font-size:16px;margin-bottom:3px;">🖼️</div><div style="font-size:12px;font-weight:500;">Clique para adicionar capa thumbnail</div></div>'
       }
       <input type="file" id="capa-file-input" accept="image/*" style="display:none" onchange="handleCardCapa('${id}',this.files)">
